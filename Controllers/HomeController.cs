@@ -112,10 +112,30 @@ public class HomeController : Controller
                 }
             }
 
+            var model = new HomeModel()
+            {
+                Records = records,
+                UnmatchedRows = unmatchedRows,
+            };
+            model.Groups = records.GroupBy(r => r.ОсновнаГрупа).ToDictionary(r => r.Key + " - " + r.First().Код.Substring(0, 2), r => r.OrderBy(r => r.Подгрупа).ToList());
+
+            model.GroupDataCodes = 
+                model.Groups.ToDictionary(
+                    r => r.Key,
+                    r => r.Value.GroupBy(p => p.Подгрупа).ToDictionary(c => c.Key, c => c.First().Код.Substring(2,2 ))); 
             ViewData["UnmatchedRows"] = unmatchedRows;
-            return View(records);
+            return View(model);
         }
     }
+}
+
+public class HomeModel
+{
+    public List<string> UnmatchedRows { get; set; }
+    public List<CsvRecord> Records { get; set; }
+    public Dictionary<string, List<CsvRecord>> Groups { get; set; }
+    
+    public Dictionary<string, Dictionary<string, string>> GroupDataCodes { get; set; }
 }
 
 public class CsvRecord
