@@ -1,0 +1,10 @@
+
+
+    <p>ADMIN SHIT</p>
+    <form asp-area="Admin" asp-controller="AdminPanel" asp-action="UpdateDatabase" enctype="multipart/form-data" method="post">
+        <div class="mb-3">
+            <label for="file" class="form-label">Upload CSV File</label>
+            <input type="file" name="file" id="file" class="form-control" accept=".csv" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>

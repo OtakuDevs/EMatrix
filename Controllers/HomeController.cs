@@ -117,12 +117,20 @@ public class HomeController : Controller
                 Records = records,
                 UnmatchedRows = unmatchedRows,
             };
-            model.Groups = records.GroupBy(r => r.ОсновнаГрупа).ToDictionary(r => r.Key + " - " + r.First().Код.Substring(0, 2), r => r.OrderBy(r => r.Подгрупа).ToList());
+            model.Groups = records
+                .GroupBy(r => r.ОсновнаГрупа)
+                .ToDictionary(
+                    r => r.Key + " - " + r.First().Код.Substring(0, 2),
+                    r => r.OrderBy(r => r.Подгрупа).ToList());
 
             model.GroupDataCodes = 
                 model.Groups.ToDictionary(
                     r => r.Key,
-                    r => r.Value.GroupBy(p => p.Подгрупа).ToDictionary(c => c.Key, c => c.First().Код.Substring(2,2 ))); 
+                    r => r.Value
+                        .GroupBy(p => p.Подгрупа)
+                        .ToDictionary(
+                            c => c.Key,
+                            c => c.First().Код.Substring(2,2 ))); 
             ViewData["UnmatchedRows"] = unmatchedRows;
             return View(model);
         }

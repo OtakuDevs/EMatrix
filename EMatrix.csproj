@@ -8,6 +8,66 @@
 
     <ItemGroup>
       <PackageReference Include="CsvHelper" Version="33.0.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.15" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.15" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.15" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.15" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.15">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+      <PackageReference Include="Npgsql" Version="8.0.7" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="EMatrix.Database\**" />
+      <Compile Remove="EMatrix.ViewModels\**" />
+      <Compile Remove="EMatrix.DataModels\**" />
+      <Compile Remove="EMatrix.DatabaseServices\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="EMatrix.Database\**" />
+      <EmbeddedResource Remove="EMatrix.ViewModels\**" />
+      <EmbeddedResource Remove="EMatrix.DataModels\**" />
+      <EmbeddedResource Remove="EMatrix.DatabaseServices\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="EMatrix.Database\**" />
+      <Content Remove="EMatrix.ViewModels\**" />
+      <Content Remove="EMatrix.DataModels\**" />
+      <Content Remove="EMatrix.DatabaseServices\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="EMatrix.Database\**" />
+      <None Remove="EMatrix.ViewModels\**" />
+      <None Remove="EMatrix.DataModels\**" />
+      <None Remove="EMatrix.DatabaseServices\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="EMatrix.Database\obj\EMatrix.Database.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.Database\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.Database\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.ViewModels\obj\EMatrix.ViewModels.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.ViewModels\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.ViewModels\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.DataModels\obj\EMatrix.DataModels.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.DataModels\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.DataModels\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.DatabaseServices\obj\EMatrix.DatabaseServices.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.DatabaseServices\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.DatabaseServices\obj\project.packagespec.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="EMatrix.DatabaseServices\EMatrix.DatabaseServices.csproj" />
+      <ProjectReference Include="EMatrix.Database\EMatrix.Database.csproj" />
+      <ProjectReference Include="EMatrix.ViewModels\EMatrix.ViewModels.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,10 @@
 using EMatrix.Controllers;
+using EMatrix.Database;
+using EMatrix.DatabaseServices;
+using EMatrix.DatabaseServices.Interfaces;
+using EMatrix.DataModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EMatrix;
 
@@ -7,9 +13,28 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        
+        builder.Services.AddDbContext<EMatrixDbContext>(options =>
+            options.UseNpgsql(connectionString: builder.Configuration.GetConnectionString("EMatrixDbContext")));
+        
+        builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
+                options.Lockout.AllowedForNewUsers = false;
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 12;
+            })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<EMatrixDbContext>();
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+        
+        //Register Services
+        builder.Services.AddScoped<IAdminPanelService, AdminPanelService>();
 
         var app = builder.Build();
 
@@ -28,9 +53,16 @@ public class Program
 
         app.UseAuthorization();
 
-        app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                name: "areaRoute",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+        });
 
         app.Run();
     }
