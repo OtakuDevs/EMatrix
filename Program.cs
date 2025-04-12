@@ -35,6 +35,7 @@ public class Program
         
         //Register Services
         builder.Services.AddScoped<IAdminPanelService, AdminPanelService>();
+        builder.Services.AddScoped<IUpdateDatabaseService, UpdateDatabaseService>();
 
         var app = builder.Build();
 

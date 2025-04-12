@@ -21,13 +21,11 @@ public class AdminPanel : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateDatabase()
     { 
-        
         var form = await Request.ReadFormAsync();
-        string fileContent = await _adminPanelService.ReadFileAsync(form);
-        var (records, unmatchedRecords) = _adminPanelService.MatchRecordsToDtoList(fileContent);
-        var result = await _adminPanelService.UpdateDatabaseFromDtos(records);
+        var result = await _adminPanelService.UpdateDatabaseAsync(form);
+        
         if(!result)
             Console.WriteLine("failed to update database");
-        return PartialView("_AdminPanel", records);
+        return RedirectToAction("Index");
     }
 }

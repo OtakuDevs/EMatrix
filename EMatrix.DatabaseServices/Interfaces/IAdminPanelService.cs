@@ -5,9 +5,6 @@ namespace EMatrix.DatabaseServices.Interfaces;
 
 public interface IAdminPanelService
 {
-    Task<string> ReadFileAsync(IFormCollection? form);
+    Task<bool> UpdateDatabaseAsync(IFormCollection? form);
     
-    (List<CsvRecord>, List<string>) MatchRecordsToDtoList(string fileContent);
-    
-    Task<bool> UpdateDatabaseFromDtos(List<CsvRecord> records);
 }

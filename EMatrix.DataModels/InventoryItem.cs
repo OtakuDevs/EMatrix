@@ -4,14 +4,14 @@ namespace EMatrix.DataModels;
 
 public class InventoryItem
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     
-    public int CategoryId { get; set; }
+    public string CategoryId { get; set; }
     
     [Required]
     public Category Category { get; set; }
     
-    public int SubCategoryId { get; set; }
+    public string SubCategoryId { get; set; }
     
     [Required]
     public SubCategory SubCategory { get; set; }

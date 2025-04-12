@@ -4,7 +4,7 @@ public class CsvRecord
 {
     public string ОсновнаГрупа { get; set; }
     public string Подгрупа { get; set; }
-    public int Код { get; set; }
+    public string Код { get; set; }
     public string Име { get; set; }
     public string Описание { get; set; }
     public string Мярка { get; set; }
