@@ -94,11 +94,13 @@ public class HomeController : Controller
 
                 if (match.Success)
                 {
+                    var rawId = match.Groups["Код"].Value.Trim();
+                    var paddedId = rawId.Length == 6 ? rawId : "0" + rawId;
                     records.Add(new CsvRecord
                     {
                         ОсновнаГрупа = match.Groups["ОсновнаГрупа"].Value.Trim(),
                         Подгрупа = match.Groups["Подгрупа"].Value.Trim(),
-                        Код = match.Groups["Код"].Value.Trim(),
+                        Код = paddedId,
                         Име = match.Groups["Име"].Value.Trim(),
                         Описание = match.Groups["Описание"].Value.Trim(),
                         Мярка = match.Groups["Мярка"].Value.Trim(),

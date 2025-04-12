@@ -27,8 +27,14 @@ public class AdminPanelService : IAdminPanelService
             string fileContent = await _updateDatabaseService.ReadFileAsync(form);
             var (records, categories, subcategories) = _updateDatabaseService.GetRecordsWithCategoryTree(fileContent);
             var updateCategories = await _updateDatabaseService.DatabaseUpdateCategories(categories);
-            var updateSubcategories = await _updateDatabaseService.DatabaseUpdateSubcategories(subcategories);
-            var updateRecords = await _updateDatabaseService.DatabaseUpdateRecords(records);
+            if (updateCategories)
+            {
+                var updateSubcategories = await _updateDatabaseService.DatabaseUpdateSubcategories(subcategories);
+                if (updateSubcategories)
+                {
+                    var updateRecords = await _updateDatabaseService.DatabaseUpdateRecords(records);
+                }
+            }
         }
         catch (Exception e)
         {
