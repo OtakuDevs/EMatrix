@@ -20,15 +20,21 @@ public class AdminPanel : Controller
         return View();
     }
 
+    [HttpGet]
+    public IActionResult UpdateDatabase()
+    {
+        return View();
+    }
+
     [HttpPost]
-    public async Task<IActionResult> UpdateDatabase()
+    public async Task<IActionResult> UpdateDatabaseAsync()
     { 
         var form = await Request.ReadFormAsync();
         var result = await _adminPanelService.UpdateDatabaseAsync(form);
         
         if(!result)
             Console.WriteLine("failed to update database");
-        return RedirectToAction("Index");
+        return View();
     }
 
     public async Task<IActionResult> GetMenuManagement()

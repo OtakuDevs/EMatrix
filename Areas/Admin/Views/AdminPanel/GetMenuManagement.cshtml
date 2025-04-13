@@ -1,0 +1,42 @@
+@model EMatrix.ViewModels.Admin.MenuAdminViewModel
+
+@{
+    ViewData["ActiveTab"] = "Menu";
+}
+<div class="container">
+    <!-- Tabs -->
+    @await Html.PartialAsync("_AdminPanelTabsPartial")
+
+    <div class="wrapper">
+        <h2>Menu Administration</h2>
+
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Категория</th>
+                <th>Опции</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.MenuItems)
+            {
+                <tr>
+                    <th>@item.Value</th>
+                    <th>
+                        <a href="@Url.Action("", new { menuItemId = item.Key })">
+                            <i data-bs-toggle="tooltip" data-popper-placement="top" title="Преименуване" class="bi bi-pencil"></i>
+                        </a>
+                        <a href="@Url.Action("", new { menuItemId = item.Key })">
+                            <i data-bs-toggle="tooltip" data-popper-placement="top" title="Редактиране на елементите" class="bi bi-stack"></i>
+                        </a>
+                        <a href="@Url.Action("", new { menuItemId = item.Key })">
+                            <i data-bs-toggle="tooltip" data-popper-placement="top" title="Изтриване" class="bi bi-trash"></i>
+                        </a>
+                    </th>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+    </div>
+</div>

@@ -1,0 +1,28 @@
+
+@{
+    var activeTab = ViewData["ActiveTab"]?.ToString() ?? "Home";
+}
+
+<div class="tabs-container">
+    <ul class="nav nav-tabs" id="tabMenu" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "Home" ? "active" : "")" asp-area="Admin" asp-controller="AdminPanel"
+               asp-action="Index" role="tab" aria-selected="false">
+                Табло
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "Menu" ? "active" : "")" asp-area="Admin" asp-controller="AdminPanel"
+               asp-action="GetMenuManagement" role="tab" aria-selected="false">
+                Редактор на менюто
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(activeTab == "Update" ? "active" : "")" asp-area="Admin" asp-controller="AdminPanel"
+               asp-action="UpdateDatabase" role="tab" aria-selected="false">
+                Синхронизация
+            </a>
+        </li>
+    </ul>
+</div>
+

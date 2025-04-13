@@ -1,5 +1,39 @@
+/* === CSS Reset & Normalize === */
+/* Apply box-sizing globally for consistency */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Remove list styles on ul, ol elements */
+ul, ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Remove anchor underlines by default */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Ensure images scale correctly */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* === Base Typography === */
 html {
-  font-size: 14px;
+  font-size: 16px;
+  scroll-behavior: smooth;
+  position: relative;
+  min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -8,15 +42,10 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
   margin-bottom: 60px;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
