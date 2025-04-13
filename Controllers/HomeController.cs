@@ -125,6 +125,8 @@ public class HomeController : Controller
                     r => r.Key + " - " + r.First().Код.Substring(0, 2),
                     r => r.OrderBy(r => r.Подгрупа).ToList());
 
+            var subgroups = records.GroupBy(r => r.Код.Substring(0, 4));
+
             model.GroupDataCodes = 
                 model.Groups.ToDictionary(
                     r => r.Key,

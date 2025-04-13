@@ -1,14 +1,7 @@
-﻿using System.Globalization;
-using System.Text;
-using System.Text.RegularExpressions;
-using EMatrix.Database;
-using EMatrix.DatabaseServices.Interfaces;
-using EMatrix.DataModels;
-using EMatrix.DataModels.DTOs;
+﻿using EMatrix.DatabaseServices.Admin.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
-namespace EMatrix.DatabaseServices;
+namespace EMatrix.DatabaseServices.Admin;
 
 public class AdminPanelService : IAdminPanelService
 {

@@ -1,7 +1,8 @@
 using EMatrix.Controllers;
 using EMatrix.Database;
 using EMatrix.DatabaseServices;
-using EMatrix.DatabaseServices.Interfaces;
+using EMatrix.DatabaseServices.Admin;
+using EMatrix.DatabaseServices.Admin.Interfaces;
 using EMatrix.DataModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,7 @@ public class Program
         //Register Services
         builder.Services.AddScoped<IAdminPanelService, AdminPanelService>();
         builder.Services.AddScoped<IUpdateDatabaseService, UpdateDatabaseService>();
+        builder.Services.AddScoped<IMenuManageService, MenuManageService>();
 
         var app = builder.Build();
 

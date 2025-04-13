@@ -18,9 +18,15 @@ public class InventoryItem
     
     [Required]
     public string Name { get; set; }
+
+    [Required]
+    public string NameAlias { get; set; }
     
     [Required]
     public string Description { get; set; }
+
+    [Required]
+    public string DescriptionAlias { get; set; }
 
     [Required]
     public string Unit { get; set; }

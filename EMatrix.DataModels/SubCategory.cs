@@ -16,4 +16,6 @@ public class SubCategory
     public Category Category { get; set; }
     
     public ICollection<InventoryItem> InventoryItems { get; set; }
+
+    public ICollection<MenuItemSubCategory> MenuItemLinks{ get; set; } = new List<MenuItemSubCategory>();
 }

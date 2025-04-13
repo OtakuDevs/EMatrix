@@ -11,4 +11,6 @@ public class Category
     public ICollection<InventoryItem> InventoryItems { get; set; }
     
     public ICollection<SubCategory> SubCategories { get; set; }
+
+    public ICollection<MenuItemCategory> MenuItemLinks { get; set; } = new List<MenuItemCategory>();
 }

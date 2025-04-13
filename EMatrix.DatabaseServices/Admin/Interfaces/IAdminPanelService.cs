@@ -1,7 +1,6 @@
-using EMatrix.DataModels.DTOs;
 using Microsoft.AspNetCore.Http;
 
-namespace EMatrix.DatabaseServices.Interfaces;
+namespace EMatrix.DatabaseServices.Admin.Interfaces;
 
 public interface IAdminPanelService
 {
