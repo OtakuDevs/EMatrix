@@ -1,5 +1,7 @@
 @model EMatrix.ViewModels.Admin.MenuAdminViewModel
 
+<link rel="stylesheet" href="~/css/admin-panel-menu-customization.css" asp-append-version="true"/>
+
 @{
     ViewData["ActiveTab"] = "Menu";
 }
@@ -7,9 +9,23 @@
     <!-- Tabs -->
     @await Html.PartialAsync("_AdminPanelTabsPartial")
 
-    <div class="wrapper">
-        <h2>Menu Administration</h2>
+    <div class="content-wrapper menu-index">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
 
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <div class="menu-header">
+            <h2 class="text-center">Съдържание на менюто</h2>
+            <a href="#" class="btn btn-outline-secondary me-1 btn-add" data-bs-toggle="modal" data-bs-target="#addMenuItemModal" title="Създай нова категория">
+                <i class="bi bi-bookmark-plus me-2"></i>Добави категория
+            </a>
+        </div>
         <table class="table table-bordered table-striped">
             <thead>
             <tr>
@@ -21,18 +37,32 @@
             @foreach (var item in Model.MenuItems)
             {
                 <tr>
-                    <th>@item.Value</th>
-                    <th>
-                        <a href="@Url.Action("", new { menuItemId = item.Key })">
-                            <i data-bs-toggle="tooltip" data-popper-placement="top" title="Преименуване" class="bi bi-pencil"></i>
+                    <td>@item.Value</td>
+                    <td>
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary me-1 btn-rename"
+                            data-bs-toggle="modal"
+                            data-bs-target="#renameModal"
+                            data-menu-item-id="@item.Key"
+                            data-menu-item-name="@item.Value"
+                            title="Редактиране име на категория">
+                            <i class="bi bi-pencil me-2"></i>Преименуване
+                        </button>
+
+                        <a href="@Url.Action("UpdateMenuItemCategories", new { menuItemId = item.Key })" class="btn btn-outline-secondary me-1" data-bs-toggle="tooltip" data-popper-placement="top" title="Редактиране на елементи в категория">
+                            <i class="bi bi-stack me-2"></i>Редакция
                         </a>
-                        <a href="@Url.Action("", new { menuItemId = item.Key })">
-                            <i data-bs-toggle="tooltip" data-popper-placement="top" title="Редактиране на елементите" class="bi bi-stack"></i>
-                        </a>
-                        <a href="@Url.Action("", new { menuItemId = item.Key })">
-                            <i data-bs-toggle="tooltip" data-popper-placement="top" title="Изтриване" class="bi bi-trash"></i>
-                        </a>
-                    </th>
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary btn-delete"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"
+                            data-menu-item-id="@item.Key"
+                            title="Изтриване на категория">
+                            <i class="bi bi-trash me-2"></i>Изтриване
+                        </button>
+                    </td>
                 </tr>
             }
             </tbody>
@@ -40,3 +70,146 @@
 
     </div>
 </div>
+
+<div class="modal fade" id="addMenuItemModal" tabindex="-1" aria-labelledby="addMenuItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-area="Admin" asp-controller="AdminPanel" asp-action="AddMenuItem" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMenuItemModalLabel">Нова категория</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="CategoryName" class="form-label">Име на категория</label>
+                        <input type="text" class="form-control" id="CategoryName" name="Name" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Отказ</button>
+                    <button type="submit" class="btn btn-success">Добави</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="renameModal" tabindex="-1" aria-labelledby="renameModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" asp-action="RenameMenuItem">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="renameModalLabel">Преименуване на категория</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="renameMenuItemId" />
+                    <div class="mb-3">
+                        <label for="oldMenuItemName" class="form-label">Текущо име</label>
+                        <input type="text" class="form-control" id="oldMenuItemName" readonly disabled/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="renameMenuItemName" class="form-label">Ново име</label>
+                        <input type="text" class="form-control" id="renameMenuItemName" name="name" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Отказ</button>
+                    <button type="submit" class="btn btn-success">Запази</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" asp-action="DeleteMenuItem">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Изтриване на категория</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
+                </div>
+                <div class="modal-body" style="color: darkred">
+                    <input type="hidden" name="id" id="deleteMenuItemId" />
+                    <p>
+                        <strong>Внимание:</strong> Изтриването на категория от менюто е <u>необратимо действие</u>.
+                    </p>
+                    <p>
+                        След потвърждение, категорията ще бъде <strong>завинаги премахната</strong> от менюто.
+                    </p>
+                    <p>
+                        <strong>Свързаните групи и подгрупи няма да бъдат изтрити</strong>, но връзката им с тази категория ще бъде загубена.
+                        Ако желаете да възстановите категорията в бъдеще, ще трябва ръчно да я създадете отново и да добавите съответните групи.
+                    </p>
+                    <p>
+                        Освен това, категорията ще изчезне от публичното меню на сайта и няма да бъде достъпна за потребителите.
+                    </p>
+                    <p class="fw-bold">
+                        Сигурни ли сте, че желаете да изтриете тази категория?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Отказ</button>
+                    <button type="submit" class="btn btn-success">Изтрий</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        const renameModal = document.getElementById('renameModal');
+        renameModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-menu-item-id');
+            const name = button.getAttribute('data-menu-item-name');
+
+            renameModal.querySelector('#renameMenuItemId').value = id;
+            renameModal.querySelector('#oldMenuItemName').value = name;
+        });
+
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event){
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-menu-item-id');
+            deleteModal.querySelector('#deleteMenuItemId').value = id;
+        })
+    </script>
+
+    <script>
+        // Define tooltipList in the outer scope so both blocks can access it
+        const tooltipList = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var add = document.querySelector('.btn-add');
+            var rename = document.querySelectorAll('.btn-rename');
+            var remove = document.querySelectorAll('.btn-delete');
+
+            if (add) {
+                tooltipList.push(new bootstrap.Tooltip(add));
+            }
+
+            rename.forEach(function (tooltipTriggerEl) {
+                tooltipList.push(new bootstrap.Tooltip(tooltipTriggerEl));
+            });
+
+            remove.forEach(function (tooltipTriggerEl) {
+                tooltipList.push(new bootstrap.Tooltip(tooltipTriggerEl));
+            });
+        });
+
+        // Listen globally for all modal closes and hide all tooltips
+        document.addEventListener('shown.bs.modal', function () {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                modal.addEventListener('hidden.bs.modal', function () {
+                    tooltipList.forEach(t => t.hide());
+                });
+            });
+        });
+    </script>
+
+}

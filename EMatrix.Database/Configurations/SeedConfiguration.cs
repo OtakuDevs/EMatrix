@@ -1,6 +1,7 @@
 using EMatrix.DataModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using static EMatrix.Constants.ConfigurationConstants;
 
 namespace EMatrix.Database.Configurations;
 

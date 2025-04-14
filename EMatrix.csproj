@@ -26,6 +26,7 @@
       <Compile Remove="EMatrix.ViewModels\**" />
       <Compile Remove="EMatrix.DataModels\**" />
       <Compile Remove="EMatrix.DatabaseServices\**" />
+      <Compile Remove="EMatrix.Constants\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -33,6 +34,7 @@
       <EmbeddedResource Remove="EMatrix.ViewModels\**" />
       <EmbeddedResource Remove="EMatrix.DataModels\**" />
       <EmbeddedResource Remove="EMatrix.DatabaseServices\**" />
+      <EmbeddedResource Remove="EMatrix.Constants\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -40,6 +42,7 @@
       <Content Remove="EMatrix.ViewModels\**" />
       <Content Remove="EMatrix.DataModels\**" />
       <Content Remove="EMatrix.DatabaseServices\**" />
+      <Content Remove="EMatrix.Constants\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -47,6 +50,7 @@
       <None Remove="EMatrix.ViewModels\**" />
       <None Remove="EMatrix.DataModels\**" />
       <None Remove="EMatrix.DatabaseServices\**" />
+      <None Remove="EMatrix.Constants\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -62,6 +66,9 @@
       <_ContentIncludedByDefault Remove="EMatrix.DatabaseServices\obj\EMatrix.DatabaseServices.csproj.nuget.dgspec.json" />
       <_ContentIncludedByDefault Remove="EMatrix.DatabaseServices\obj\project.assets.json" />
       <_ContentIncludedByDefault Remove="EMatrix.DatabaseServices\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.Constants\obj\EMatrix.Constants.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.Constants\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.Constants\obj\project.packagespec.json" />
     </ItemGroup>
 
     <ItemGroup>

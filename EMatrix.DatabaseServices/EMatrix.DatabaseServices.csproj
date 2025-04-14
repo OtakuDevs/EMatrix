@@ -10,6 +10,9 @@
       <Reference Include="Microsoft.AspNetCore.Http.Features">
         <HintPath>..\..\..\..\..\..\usr\lib\dotnet\shared\Microsoft.AspNetCore.App\8.0.14\Microsoft.AspNetCore.Http.Features.dll</HintPath>
       </Reference>
+      <Reference Include="Microsoft.AspNetCore.Mvc.ViewFeatures">
+        <HintPath>..\..\..\..\.dotnet\shared\Microsoft.AspNetCore.App\8.0.13\Microsoft.AspNetCore.Mvc.ViewFeatures.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
     <ItemGroup>

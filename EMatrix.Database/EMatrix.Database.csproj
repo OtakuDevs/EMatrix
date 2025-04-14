@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EMatrix.Constants\EMatrix.Constants.csproj" />
       <ProjectReference Include="..\EMatrix.DataModels\EMatrix.DataModels.csproj" />
     </ItemGroup>
 
