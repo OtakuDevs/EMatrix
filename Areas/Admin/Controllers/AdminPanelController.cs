@@ -10,10 +10,12 @@ namespace EMatrix.Areas.Admin.Controllers;
 public class AdminPanelController : Controller
 {
     private readonly IAdminPanelService _adminPanelService;
+    private readonly IManageInventoryService _adminInventoryService;
 
-    public AdminPanelController(IAdminPanelService adminPanelService)
+    public AdminPanelController(IAdminPanelService adminPanelService, IManageInventoryService adminInventoryService)
     {
         _adminPanelService = adminPanelService;
+        _adminInventoryService = adminInventoryService;
     }
 
     // GET
@@ -63,5 +65,11 @@ public class AdminPanelController : Controller
             TempData["Error"] = StatusMessages.UpdateDatabaseException;
             return View(new List<string>());
         }
+    }
+
+    public async Task<IActionResult> GetAllInventoryItems()
+    {
+        var model = await _adminInventoryService.GetInventoryIndexAsync();
+        return View(model);
     }
 }

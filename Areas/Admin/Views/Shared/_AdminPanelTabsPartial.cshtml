@@ -20,6 +20,12 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link @(activeTab == "Inventory" ? "active" : "")" asp-area="Admin" asp-controller="AdminPanel"
+               asp-action="GetAllInventoryItems" role="tab" aria-selected="false">
+                Склад
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link @(activeTab == "Update" ? "active" : "")" asp-area="Admin" asp-controller="AdminPanel"
                asp-action="UpdateDatabase" role="tab" aria-selected="false">
                 Синхронизация

@@ -9,10 +9,19 @@
     @await Html.PartialAsync("_AdminPanelTabsPartial")
 
     <div class="wrapper">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
         <p>ADMIN SHIT</p>
     </div>
 </div>
 
 
 
-    <a href="@Url.Action("GetMenuManagement")">Menu Management</a>

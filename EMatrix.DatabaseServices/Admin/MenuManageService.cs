@@ -5,6 +5,7 @@ using EMatrix.DataModels;
 using EMatrix.ViewModels.Admin;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+// ReSharper disable ConvertToPrimaryConstructor
 
 namespace EMatrix.DatabaseServices.Admin;
 
@@ -45,11 +46,11 @@ public class MenuManageService : IMenuManageService
             _context.MenuItems.Add(menuItem);
             await _context.SaveChangesAsync();
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return false;
         }
-       return true;
+        return true;
     }
 
     public async Task RenameMenuItemAsync(int id, string name)

@@ -35,6 +35,14 @@
             </div>
         </form>
 
+        <div id="loading-spinner" class="text-center mt-3" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Зареждане...</span>
+            </div>
+            <p>Актуализиране на базата данни, моля изчакайте...</p>
+            <p>Изминало време: <span id="loading-timer">0</span> сек.</p>
+        </div>
+
         @if (Model.Any())
         {
             <fieldset class="border rounded p-3 mt-4">
@@ -68,4 +76,24 @@
             fileNameInput.value = fileInput.files.length > 0 ? fileInput.files[0].name : 'Няма избран файл';
         }
     </script>
+    <script>
+        document.querySelector("form").addEventListener("submit", function () {
+            // Show spinner
+            const spinner = document.getElementById("loading-spinner");
+            spinner.style.display = "block";
+
+            // Disable submit
+            this.querySelector("button[type='submit']").disabled = true;
+
+            // Start timer
+            let seconds = 0;
+            const timerElement = document.getElementById("loading-timer");
+            window.loadingInterval = setInterval(() => {
+                seconds++;
+                timerElement.textContent = seconds;
+            }, 1000);
+        });
+    </script>
+
+
 }

@@ -1,0 +1,48 @@
+@model EMatrix.ViewModels.Admin.InventoryIndexViewModel
+
+@{
+    ViewData["Title"] = "Склад";
+    ViewData["ActiveTab"] = "Inventory";
+}
+
+<div class="container mt-3">
+    <!-- Tabs -->
+    @await Html.PartialAsync("_AdminPanelTabsPartial")
+
+    <div class="content-wrapper">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <h2>Складови наличности</h2>
+
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Код</th>
+                <th>Наименувание</th>
+                <th>Цена</th>
+                <th>Количество</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.InventoryItems)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.NameAlias</td>
+                    <td>@item.Price</td>
+                    <td>@item.Quantity</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

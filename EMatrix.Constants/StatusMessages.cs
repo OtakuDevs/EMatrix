@@ -12,4 +12,8 @@ public static class StatusMessages
 
     public const string UpdateDatabaseFileNotSupported = "Поддържат се само файлове с разширение .csv.";
 
+    public const string MenuEditorFailedToLoad = "Възникна грешка при зареждане на редактор меню. Моля, опитайте отново.";
+
+    public const string MenuItemEditorFailedToLoad =
+        "Възникна грешка при зареждане на редактор елемент на меню. Моля, опитайте отново.";
 }

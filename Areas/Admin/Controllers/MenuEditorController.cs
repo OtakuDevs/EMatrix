@@ -15,8 +15,17 @@ public class MenuEditorController : Controller
     }
     public async Task<IActionResult> GetMenuManagement()
     {
-        var model = await _menuManageService.GetMenu(ConfigurationConstants.MenuId);
-        return View(model);
+        try
+        {
+            var model = await _menuManageService.GetMenu(ConfigurationConstants.MenuId);
+            return View(model);
+        }
+        catch (Exception )
+        {
+            TempData["Error"] = StatusMessages.MenuEditorFailedToLoad;
+            return RedirectToAction("Index", "AdminPanel");
+        }
+
     }
 
     [HttpPost]
@@ -38,7 +47,7 @@ public class MenuEditorController : Controller
         {
             await _menuManageService.RenameMenuItemAsync(id, name);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             TempData["Error"] = "Неуспешно преименуване на категория.";
             return RedirectToAction("GetMenuManagement");
@@ -55,7 +64,7 @@ public class MenuEditorController : Controller
         {
             await _menuManageService.DeleteMenuItemAsync(id);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             TempData["Error"] = "Неуспешно изтриване на категория.";
             return RedirectToAction("GetMenuManagement");
@@ -68,8 +77,16 @@ public class MenuEditorController : Controller
     [HttpGet]
     public async Task<IActionResult> UpdateMenuItemCategories(int menuItemId)
     {
-        var model = await _menuManageService.GetMenuItemModelAsync(menuItemId);
-        return View(model);
+        try
+        {
+            var model = await _menuManageService.GetMenuItemModelAsync(menuItemId);
+            return View(model);
+        }
+        catch (Exception)
+        {
+            TempData["Error"] = StatusMessages.MenuItemEditorFailedToLoad;
+            return RedirectToAction("Index", "AdminPanel");
+        }
     }
 
     [HttpPost]
@@ -79,7 +96,7 @@ public class MenuEditorController : Controller
         {
             await _menuManageService.UpdateMenuItemAssignmentsAsync(menuItemId, selectedCategories, selectedSubCategories);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             TempData["Error"] = "Неуспешна промяна на групи и подгрупи за дадената категория.";
             return RedirectToAction("GetMenuManagement");

@@ -172,10 +172,10 @@ public class UpdateDatabaseService : IUpdateDatabaseService
                        ?? newRecords.FirstOrDefault(c => c.Id == record.Код);
             if (item != null)
             {
+                item.NameAlias = item.Name != record.Име ? record.Име : item.NameAlias;
                 item.Name = record.Име;
-                item.Name = item.Name != record.Име ? record.Име : item.NameAlias;
-                item.Description = record.Описание;
                 item.DescriptionAlias = item.Description != record.Описание ? record.Описание : item.DescriptionAlias;
+                item.Description = record.Описание;
                 item.Unit = record.Мярка;
                 item.Price = record.Цена;
                 item.Quantity = record.Количество;
