@@ -5,9 +5,9 @@ namespace EMatrix.DatabaseServices.Admin.Interfaces;
 
 public interface IUpdateDatabaseService
 {
-    Task<string> ReadFileAsync(IFormCollection? form);
+    Task<string> ReadFileAsync(IFormCollection form);
     
-    (List<CsvRecord>,  Dictionary<string, string>,  Dictionary<string, string>) GetRecordsWithCategoryTree(string fileContent);
+    (List<CsvRecord>,  Dictionary<string, string>,  Dictionary<string, string>, List<string>) GetRecordsWithCategoryTree(string fileContent);
     
     Task<bool> DatabaseUpdateCategories(Dictionary<string, string> categories);
     

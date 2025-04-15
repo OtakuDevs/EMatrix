@@ -4,6 +4,6 @@ namespace EMatrix.DatabaseServices.Admin.Interfaces;
 
 public interface IAdminPanelService
 {
-    Task<bool> UpdateDatabaseAsync(IFormCollection? form);
+    Task<(bool result, List<string>)> UpdateDatabaseAsync(IFormCollection form);
     
 }

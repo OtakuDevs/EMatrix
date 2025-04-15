@@ -1,5 +1,6 @@
 ﻿using EMatrix.DatabaseServices.Admin.Interfaces;
 using Microsoft.AspNetCore.Http;
+// ReSharper disable ConvertToPrimaryConstructor
 
 namespace EMatrix.DatabaseServices.Admin;
 
@@ -13,33 +14,22 @@ public class AdminPanelService : IAdminPanelService
     }
 
 
-    public async Task<bool> UpdateDatabaseAsync(IFormCollection? form)
+    public async Task<(bool, List<string>)> UpdateDatabaseAsync(IFormCollection form)
     {
-        try
+        string fileContent = await _updateDatabaseService.ReadFileAsync(form);
+        var (records, categories, subcategories, unmatchedRecords) =
+            _updateDatabaseService.GetRecordsWithCategoryTree(fileContent);
+        var updateCategories = await _updateDatabaseService.DatabaseUpdateCategories(categories);
+        if (updateCategories)
         {
-            string fileContent = await _updateDatabaseService.ReadFileAsync(form);
-            var (records, categories, subcategories) = _updateDatabaseService.GetRecordsWithCategoryTree(fileContent);
-            var updateCategories = await _updateDatabaseService.DatabaseUpdateCategories(categories);
-            if (updateCategories)
+            var updateSubcategories = await _updateDatabaseService.DatabaseUpdateSubcategories(subcategories);
+            if (updateSubcategories)
             {
-                var updateSubcategories = await _updateDatabaseService.DatabaseUpdateSubcategories(subcategories);
-                if (updateSubcategories)
-                {
-                    var updateRecords = await _updateDatabaseService.DatabaseUpdateRecords(records);
-                }
+                var updateRecords = await _updateDatabaseService.DatabaseUpdateRecords(records);
+                if (updateRecords)
+                    return (true, unmatchedRecords);
             }
         }
-        catch (Exception e)
-        {
-            return false;
-        }
-        return true;
+        return (false, new List<string>());
     }
-
-   
-
-   
-
-    
-    
 }

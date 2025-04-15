@@ -1,5 +1,8 @@
+using EMatrix.Constants;
 using EMatrix.DatabaseServices.Admin.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+
+// ReSharper disable ConvertToPrimaryConstructor
 
 namespace EMatrix.Areas.Admin.Controllers;
 
@@ -12,6 +15,7 @@ public class AdminPanelController : Controller
     {
         _adminPanelService = adminPanelService;
     }
+
     // GET
     public IActionResult Index()
     {
@@ -21,17 +25,43 @@ public class AdminPanelController : Controller
     [HttpGet]
     public IActionResult UpdateDatabase()
     {
-        return View();
+        return View(new List<string>());
     }
 
     [HttpPost]
     public async Task<IActionResult> UpdateDatabaseAsync()
-    { 
-        var form = await Request.ReadFormAsync();
-        var result = await _adminPanelService.UpdateDatabaseAsync(form);
-        
-        if(!result)
-            Console.WriteLine("failed to update database");
-        return View();
+    {
+        try
+        {
+            var form = await Request.ReadFormAsync();
+            if (form.Count == 0)
+            {
+                TempData["Error"] = StatusMessages.UpdateDatabaseFormEmpty;
+                return View(new List<string>());
+            }
+
+            var (result, unmatchedRecords) = await _adminPanelService.UpdateDatabaseAsync(form);
+
+            if (!result)
+            {
+                TempData["Error"] = StatusMessages.UpdateDatabaseFailed;
+            }
+            else
+            {
+                TempData["Success"] = StatusMessages.UpdateDatabaseSuccess;
+            }
+
+            return View(unmatchedRecords);
+        }
+        catch (FormatException ex)
+        {
+            TempData["Error"] = StatusMessages.UpdateDatabaseFileNotSupported;
+            return View(new List<string> { ex.Message });
+        }
+        catch (Exception)
+        {
+            TempData["Error"] = StatusMessages.UpdateDatabaseException;
+            return View(new List<string>());
+        }
     }
 }

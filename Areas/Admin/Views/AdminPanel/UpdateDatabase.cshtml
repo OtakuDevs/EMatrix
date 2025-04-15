@@ -1,20 +1,71 @@
-
+@model List<string>;
 @{
     ViewData["ActiveTab"] = "Update";
 }
 
-<div class="container">
+<div class="container mt-3">
     <!-- Tabs -->
     @await Html.PartialAsync("_AdminPanelTabsPartial")
 
-    <div class="wrapper">
-        <h2>Update</h2>
-        <form asp-area="Admin" asp-controller="AdminPanel" asp-action="UpdateDatabase" enctype="multipart/form-data" method="post">
+    <div class="content-wrapper">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <h2>Актуализация</h2>
+
+        <form asp-area="Admin" asp-controller="AdminPanel" asp-action="UpdateDatabase" enctype="multipart/form-data"
+              method="post">
             <div class="mb-3">
-                <label for="file" class="form-label">Upload CSV File</label>
-                <input type="file" name="file" id="file" class="form-control" accept=".csv" required />
+                <label for="file" class="form-label">Качи CSV файл</label>
+
+                <div class="input-group">
+                    <input type="file" name="file" id="file" class="form-control d-none" accept=".csv" onchange="updateFileName()" />
+                    <input type="text" id="file-name" class="form-control" placeholder="Няма избран файл" readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('file').click()">Избери файл</button>
+                </div>
+                <button type="submit" class="btn btn-primary d-block m-auto mt-4">Актуализирай</button>
             </div>
-            <button type="submit" class="btn btn-primary">Upload</button>
         </form>
+
+        @if (Model.Any())
+        {
+            <fieldset class="border rounded p-3 mt-4">
+                <legend class="fw-bold">Невалидни редове от файла</legend>
+                <p>Следните редове не бяха обработени успешно:</p>
+                <ul class="mb-0">
+                    @foreach (var line in Model)
+                    {
+                        <li>@line</li>
+                    }
+                </ul>
+            </fieldset>
+        }
+        else
+        {
+            <fieldset class="border rounded p-3 mt-4">
+                <legend class="fw-bold">Резултат</legend>
+                <p>Всички редове бяха обработени успешно.</p>
+            </fieldset>
+        }
+
     </div>
+
 </div>
+@section Scripts
+{
+    <script>
+        function updateFileName() {
+            const fileInput = document.getElementById('file');
+            const fileNameInput = document.getElementById('file-name');
+            fileNameInput.value = fileInput.files.length > 0 ? fileInput.files[0].name : 'Няма избран файл';
+        }
+    </script>
+}

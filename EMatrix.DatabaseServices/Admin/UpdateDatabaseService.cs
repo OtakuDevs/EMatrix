@@ -7,6 +7,8 @@ using EMatrix.DataModels;
 using EMatrix.DataModels.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+// ReSharper disable ConvertToPrimaryConstructor
+// ReSharper disable ConvertToUsingDeclaration
 
 namespace EMatrix.DatabaseServices.Admin;
 
@@ -18,41 +20,51 @@ public class UpdateDatabaseService : IUpdateDatabaseService
     {
         _context = context;
     }
-    public async Task<string> ReadFileAsync(IFormCollection? form)
+    public async Task<string> ReadFileAsync(IFormCollection form)
     {
         var file = form.Files["file"];
-        string content = string.Empty;
-        
+        var fileExtension = Path.GetExtension(file.FileName);
+        if (fileExtension != ".csv")
+            throw new FormatException("File is not a .csv file");
+
         // Register encoding provider for Windows-1251 support
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-        await using (var stream = file.OpenReadStream())
-        using (var reader = new StreamReader(stream, Encoding.GetEncoding("windows-1251")))
+        try
         {
-            content = await reader.ReadToEndAsync();
+            string content;
+            await using (var stream = file.OpenReadStream())
+            using (var reader = new StreamReader(stream, Encoding.GetEncoding("windows-1251")))
+            {
+                content = await reader.ReadToEndAsync();
+            }
+            return content;
         }
-        return content;
+        catch (Exception e)
+        {
+            throw new Exception("Error reading file", e);
+        }
     }
-    
-    public (List<CsvRecord>,  Dictionary<string, string>, Dictionary<string, string>) GetRecordsWithCategoryTree(string fileContent)
+
+    public (List<CsvRecord>,  Dictionary<string, string>, Dictionary<string, string>, List<string>) GetRecordsWithCategoryTree(string fileContent)
     {
-        string pattern =
+        const string pattern =
             @"^\s*(?<ОсновнаГрупа>.+?)\s*\t{1}(?<Подгрупа>.+?)\s*\t{1}(?<Код>\d{6})\t{1}(?<Име>.+?)\t{1}(?<Описание>.*?)\s*\t?(?<Мярка>БР\.|М\.|Л\.)\s*(?<Цена>\d+(?:\.\d+)?)\s*\t{1}\s*(?<Количество>-?\d+(?:\.\d+)?)\s*$";
 
-        Regex regex = new Regex(pattern, RegexOptions.Multiline);
-        var records = new List<CsvRecord>();
-        var unmatchedRecords = new List<string>();
-        
+        var regex = new Regex(pattern, RegexOptions.Multiline);
+
         var processedLines = ProcessLinesToFullRows(fileContent, regex);
-        records = MapToCsvRecords(processedLines, regex);
-        Dictionary<string, string> Categories = records
+        (List<CsvRecord> records, List<string> unmatchedRecords) = MapToCsvRecords(processedLines, regex);
+
+        Dictionary<string, string> categories = records
             .GroupBy(r => r.Код.ToString().Substring(0, 2))
             .ToDictionary(r => r.Key, g => g.First().ОсновнаГрупа);
 
-        Dictionary<string, string> SubCategories = records
+        Dictionary<string, string> subCategories = records
             .GroupBy(r => r.Код.ToString().Substring(0, 4))
             .ToDictionary(r => r.Key, g => g.First().Подгрупа);
-        return (records, Categories, SubCategories);
+
+        return (records, categories, subCategories, unmatchedRecords);
     }
 
     public async Task<bool> DatabaseUpdateCategories(Dictionary<string, string> categories)
@@ -86,10 +98,18 @@ public class UpdateDatabaseService : IUpdateDatabaseService
                 }
             }
         }
-        _context.Categories.RemoveRange(categoriesToRemove);
-        _context.Categories.AddRange(newCategories);
-        await _context.SaveChangesAsync(); // now CategoryIds are set
-        return true;
+
+        try
+        {
+            _context.Categories.RemoveRange(categoriesToRemove);
+            _context.Categories.AddRange(newCategories);
+            await _context.SaveChangesAsync(); // now CategoryIds are set
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public async Task<bool> DatabaseUpdateSubcategories(Dictionary<string, string> subcategories)
@@ -124,10 +144,19 @@ public class UpdateDatabaseService : IUpdateDatabaseService
                 }
             }
         }
-        _context.SubCategories.RemoveRange(subCategoriesToRemove);
-        _context.SubCategories.AddRange(newSubCategories);
-        await _context.SaveChangesAsync(); // now CategoryIds are set
-        return true;
+
+        try
+        {
+            _context.SubCategories.RemoveRange(subCategoriesToRemove);
+            _context.SubCategories.AddRange(newSubCategories);
+            await _context.SaveChangesAsync(); // now CategoryIds are set
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
     }
 
     public async Task<bool> DatabaseUpdateRecords(List<CsvRecord> records)
@@ -172,7 +201,7 @@ public class UpdateDatabaseService : IUpdateDatabaseService
         }
 
         // Explicitly handle the remove and add operations separately
-        using (var transaction = await _context.Database.BeginTransactionAsync())
+        await using (var transaction = await _context.Database.BeginTransactionAsync())
         {
             try
             {
@@ -197,7 +226,7 @@ public class UpdateDatabaseService : IUpdateDatabaseService
 
         return true;
     }
-    
+
     private List<string> ProcessLinesToFullRows(string fileContent, Regex regex)
     {
         var lines = fileContent.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -232,10 +261,11 @@ public class UpdateDatabaseService : IUpdateDatabaseService
         return processedLines;
     }
 
-    private List<CsvRecord> MapToCsvRecords(List<string> processedLines, Regex regex)
+    private (List<CsvRecord>, List<string>) MapToCsvRecords(List<string> processedLines, Regex regex)
     {
         List<CsvRecord> records = new List<CsvRecord>();
-        
+        List<string> unmatchedLines = new List<string>();
+
         foreach (var processedLine in processedLines)
         {
             var match = regex.Match(processedLine);
@@ -256,7 +286,9 @@ public class UpdateDatabaseService : IUpdateDatabaseService
                     Количество = float.Parse(match.Groups["Количество"].Value.Trim(), CultureInfo.InvariantCulture)
                 });
             }
+            else
+                unmatchedLines.Add(processedLine);
         }
-        return records;
+        return (records, unmatchedLines);
     }
 }
