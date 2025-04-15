@@ -1,0 +1,177 @@
+@model EMatrix.ViewModels.Admin.MenuItemAdminViewModel
+
+<link rel="stylesheet" href="~/css/admin-panel-menu-customization.css" asp-append-version="true"/>
+
+@{
+    ViewData["ActiveTab"] = "Menu";
+    ViewData["Title"] = "Редактор категория";
+}
+
+<div class="container mt-3">
+    <!-- Tabs -->
+    @await Html.PartialAsync("_AdminPanelTabsPartial")
+
+    <h2 class="mt-4">Редактиране на групи и подгрупи за меню категория</h2>
+    <hr/>
+    <form asp-action="UpdateMenuItemAssignments" method="post">
+        <input type="hidden" name="menuItemId" value="@Model.Id"/>
+
+        <div class="content-wrapper update-menu-item">
+            <div class="select-section">
+                <h4 style="margin-bottom: 32px">Добави нова асоциация</h4>
+                <div class="form-floating mb-3">
+                    <input id="menu-item-title" class="form-control" placeholder="" value="@Model.Name" readonly/>
+                    <label for="menu-item-title">Категория</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="categorySelect">
+                        <option value="">-- Избери група --</option>
+                        @foreach (var cat in Model.AvailableCategories)
+                        {
+                            <option value="@cat.Value">@cat.Value - @cat.Text</option>
+                        }
+                    </select>
+                    <label for="categorySelect">Групи</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="subcategorySelect">
+                        <option value="">-- Избери подгрупа --</option>
+                        @foreach (var sub in Model.AvailableSubCategories)
+                        {
+                            <option value="@sub.Value" data-cat="@sub.Value.Substring(0, 2)">@sub.Value - @sub.Text</option>
+                        }
+                    </select>
+                    <label for="subcategorySelect">Подгрупи</label>
+                </div>
+                <div class="select-section-buttons">
+                    <button type="button" class="btn btn-success" onclick="addGroup()">Добави група
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="addSubGroup()">Добави подгрупа
+                    </button>
+                    <button type="submit" class="btn btn-primary">Запази промените</button>
+                    <a href="@Url.Action("GetMenuManagement")" class="btn btn-secondary">Назад</a>
+                </div>
+                <fieldset class="border rounded p-3 mb-3 mt-3">
+                    <legend>Редактиране на категории</legend>
+                    <ul class="mb-0">
+                        <li>Изберете <strong>група</strong> от падащия списък и натиснете <em>„Добави група“</em>.</li>
+                        <li>Изберете <strong>подгрупа</strong> от падащия списък и натиснете <em>„Добави подгрупа“</em>.</li>
+                        <li>Премахнете асоциация с бутона <strong>Х</strong>.</li>
+                        <li>Натиснете <strong>„Запази промените“</strong>, за да запишете.</li>
+                    </ul>
+                </fieldset>
+            </div>
+
+            <div id="categoriesContainer">
+                <h4>Съществуващи категории</h4>
+                    <div>
+                        <strong>Групи:</strong>
+                        <div id="groupsContainer">
+                            @foreach (var c in Model.Categories)
+                            {
+                                <div class="mb-2" data-value="@c.Key">
+                                    <input type="hidden" name="selectedCategories" value="@c.Key"/>
+                                    <input type="text" class="form-control d-inline-block w-auto" value="@c.Value" readonly/>
+                                    <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        <strong>Подгрупи:</strong>
+                        <div id="subGroupsContainer">
+                            @foreach (var sc in Model.SubCategories)
+                            {
+                                <div class="mb-2" data-value="@sc.Key">
+                                    <input type="hidden" name="selectedSubCategories" value="@sc.Key"/>
+                                    <input type="text" class="form-control d-inline-block w-auto" value="@sc.Value" readonly/>
+                                    <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("categorySelect").addEventListener("change", function () {
+            var selectedPrefix = this.value;
+            var subcategorySelect = document.getElementById("subcategorySelect");
+
+            Array.from(subcategorySelect.options).forEach(opt => {
+                opt.hidden = opt.value !== "" && !opt.dataset.cat?.startsWith(selectedPrefix);
+            });
+
+            subcategorySelect.value = "";
+        });
+    </script>
+    <script>
+        function addGroup() {
+            let dropdown = document.getElementById("categorySelect");
+            let selectedOption = dropdown.options[dropdown.selectedIndex];
+
+            if (!selectedOption || selectedOption.value === "") {
+                return; // Skip if no group selected
+            }
+
+            let rawText = selectedOption.text;
+            let selectedText = rawText.substring(5);
+            let selectedValue = selectedOption.value;
+
+            let container = document.getElementById("groupsContainer");
+
+            // Check for duplicates
+            if ([...container.children].some(div => div.dataset.value === selectedValue)) {
+                return;
+            }
+
+            let div = document.createElement('div');
+            div.dataset.value = selectedValue;
+            div.classList.add('mb-2'); // optional, adds spacing
+
+            div.innerHTML = `
+        <input type="hidden" name="selectedCategories" value="${selectedValue}" />
+        <input type="text" class="form-control d-inline-block w-auto" value="${selectedText}" readonly />
+        <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
+    `;
+
+            container.appendChild(div);
+        }
+
+        function addSubGroup() {
+            let dropdown = document.getElementById("subcategorySelect");
+            let selectedOption = dropdown.options[dropdown.selectedIndex];
+
+            if (!selectedOption || selectedOption.value === "") {
+                return;
+            }
+
+            let rawText = selectedOption.text;
+            let selectedText = rawText.substring(7); // Trim "XX - "
+            let selectedValue = selectedOption.value;
+
+            let container = document.getElementById("subGroupsContainer");
+
+            if ([...container.children].some(div => div.dataset.value === selectedValue)) {
+                return;
+            }
+
+            let div = document.createElement('div');
+            div.classList.add('mb-2');
+            div.dataset.value = selectedValue;
+            div.innerHTML = `
+        <input type="hidden" name="selectedSubCategories" value="${selectedValue}" />
+        <input type="text" class="form-control d-inline-block w-auto" value="${selectedText}" readonly />
+        <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
+    `;
+            container.appendChild(div);
+        }
+
+        function removeAssignment(button){
+            button.parentElement.remove();
+        }
+    </script>
+}

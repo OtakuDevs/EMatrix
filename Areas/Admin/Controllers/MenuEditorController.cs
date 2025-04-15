@@ -1,43 +1,18 @@
-using EMatrix.Constants;
 using EMatrix.DatabaseServices.Admin.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using EMatrix.Constants;
 
 namespace EMatrix.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class AdminPanel : Controller
+public class MenuEditorController : Controller
 {
-    private readonly IAdminPanelService _adminPanelService;
     private readonly IMenuManageService _menuManageService;
 
-    public AdminPanel(IAdminPanelService adminPanelService, IMenuManageService menuManageService)
+    public MenuEditorController(IMenuManageService menuManageService)
     {
-        _adminPanelService = adminPanelService;
         _menuManageService = menuManageService;
     }
-    // GET
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-    [HttpGet]
-    public IActionResult UpdateDatabase()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> UpdateDatabaseAsync()
-    { 
-        var form = await Request.ReadFormAsync();
-        var result = await _adminPanelService.UpdateDatabaseAsync(form);
-        
-        if(!result)
-            Console.WriteLine("failed to update database");
-        return View();
-    }
-
     public async Task<IActionResult> GetMenuManagement()
     {
         var model = await _menuManageService.GetMenu(ConfigurationConstants.MenuId);
@@ -95,5 +70,21 @@ public class AdminPanel : Controller
     {
         var model = await _menuManageService.GetMenuItemModelAsync(menuItemId);
         return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateMenuItemAssignments(int menuItemId, string[] selectedCategories, string[] selectedSubCategories)
+    {
+        try
+        {
+            await _menuManageService.UpdateMenuItemAssignmentsAsync(menuItemId, selectedCategories, selectedSubCategories);
+        }
+        catch (Exception e)
+        {
+            TempData["Error"] = "Неуспешна промяна на групи и подгрупи за дадената категория.";
+            return RedirectToAction("GetMenuManagement");
+        }
+        TempData["Success"] = "Успешна промяна на групи и подгрупи за дадената категория.";
+        return RedirectToAction("GetMenuManagement");
     }
 }

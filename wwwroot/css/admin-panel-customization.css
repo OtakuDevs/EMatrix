@@ -1,0 +1,13 @@
+
+.tabs-container {
+    & .nav-link {
+        color: #495057;
+    }
+    & .nav-link:hover {
+        background-color: #efefef;
+    }
+    & .nav-link.active {
+        background-color: #efefef;
+        border-color: #dee2e6;
+    }
+}

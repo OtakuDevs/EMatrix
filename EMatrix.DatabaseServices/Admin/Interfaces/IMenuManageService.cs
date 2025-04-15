@@ -13,4 +13,6 @@ public interface IMenuManageService
     Task DeleteMenuItemAsync(int id);
 
     Task<MenuItemAdminViewModel> GetMenuItemModelAsync(int id);
+
+    Task UpdateMenuItemAssignmentsAsync(int menuItemId, string[] selectedCategories, string[] selectedSubCategories);
 }

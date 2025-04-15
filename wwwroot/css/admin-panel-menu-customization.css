@@ -1,0 +1,94 @@
+
+.menu-index .menu-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.menu-index table th {
+    text-align: center;
+}
+
+.menu-index table td:last-child {
+    text-align: center;
+    text-wrap: nowrap;
+}
+
+.menu-index table td:first-child {
+    width: 100%;
+}
+
+.menu-index .btn-outline-secondary {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.menu-index .btn-outline-secondary:hover {
+    background-color: var(--color-opacity-2);
+    color: #000000;
+    border-color: #999;
+}
+
+.menu-index .btn-outline-secondary i {
+    font-size: 1.1rem;
+}
+
+/* Section Update Menu Item */
+.update-menu-item {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 2rem;
+    padding: 1rem;
+}
+
+.update-menu-item .select-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.update-menu-item .select-section-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.update-menu-item fieldset legend {
+    font-size: 1.3rem;
+    font-weight: 400;
+    border-bottom: 1px solid #ced4da;
+}
+
+.update-menu-item fieldset ul {
+    padding-left: 0.75rem;
+    list-style-position: inside; /* brings bullet points inside the padding */
+}
+
+.update-menu-item fieldset ul li {
+    padding-left: 0; /* remove extra padding from li */
+    list-style-type: disc;
+    font-size: 0.9rem;
+}
+
+
+.update-menu-item #categoriesContainer {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #ced4da;
+    padding-left: 1rem;
+}
+
+#groupsContainer, #subGroupsContainer {
+    margin-bottom: 1rem;
+    & div {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+
+        & input {
+            flex-grow: 1;
+        }
+    }
+}

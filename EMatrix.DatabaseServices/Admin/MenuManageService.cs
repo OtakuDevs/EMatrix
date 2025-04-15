@@ -76,7 +76,7 @@ public class MenuManageService : IMenuManageService
         var availableCategories = await _context.Categories
             .Select(c => new SelectListItem
             {
-                Text = c.Name,
+                Text = c.Alias,
                 Value = c.Id
             })
             .OrderBy(c => c.Value)
@@ -85,7 +85,7 @@ public class MenuManageService : IMenuManageService
         var availableSubCategories = await _context.SubCategories
             .Select(sc => new SelectListItem
             {
-                Text = sc.Name,
+                Text = sc.Alias,
                 Value = sc.Id
             })
             .OrderBy(sc => sc.Value) // assuming Value = XXNN format
@@ -112,4 +112,24 @@ public class MenuManageService : IMenuManageService
         return model;
     }
 
+    public async  Task UpdateMenuItemAssignmentsAsync(int menuItemId, string[] selectedCategories, string[] selectedSubCategories)
+    {
+        var menuItem = await _context.MenuItems
+            .Include(c => c.MenuItemCategories)
+            .Include(c => c.MenuItemSubCategories)
+            .FirstOrDefaultAsync(m => m.Id == menuItemId);
+        if(menuItem == null)
+            throw new KeyNotFoundException();
+
+        var newCategories = selectedCategories
+            .Select(cat => new MenuItemCategory() { MenuItemId = menuItemId, CategoryId = cat }).ToList();
+        var newSubCategories = selectedSubCategories
+            .Select(scat => new MenuItemSubCategory() { MenuItemId = menuItemId, SubCategoryId = scat }).ToList();
+
+        _context.MenuItemCategories.RemoveRange(menuItem.MenuItemCategories);
+        _context.MenuItemSubCategories.RemoveRange(menuItem.MenuItemSubCategories);
+        _context.MenuItemCategories.AddRange(newCategories);
+        _context.MenuItemSubCategories.AddRange(newSubCategories);
+        await _context.SaveChangesAsync();
+    }
 }
