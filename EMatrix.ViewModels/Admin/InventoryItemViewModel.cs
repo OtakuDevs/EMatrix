@@ -15,4 +15,9 @@ public class InventoryItemViewModel
 
     [DisplayName("Количество")]
     public float Quantity { get; set; }
+
+    [DisplayName("Мярка")]
+    public string Unit { get; set; } = null!;
+
+    public string DescriptionAlias  { get; set; } = null!;
 }

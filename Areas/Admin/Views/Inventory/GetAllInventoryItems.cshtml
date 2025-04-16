@@ -1,0 +1,257 @@
+@model EMatrix.ViewModels.Admin.InventoryIndexViewModel
+
+@{
+    ViewData["Title"] = "Склад";
+    ViewData["ActiveTab"] = "Inventory";
+}
+
+<link rel="stylesheet" href="~/css/admin-panel-invetory-customization.css" asp-append-version="true"/>
+
+<div class="container mt-3">
+    <!-- Tabs -->
+    @await Html.PartialAsync("_AdminPanelTabsPartial")
+
+    <div class="content-wrapper inventory-items">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <h2>Складови наличности</h2>
+        <div class="search-bar">
+                <input type="text" class="form-control"
+                       name="search"
+                       value="@Model.SearchTerm"
+                       form="search-form"
+                       id="search"
+                       placeholder="Търси артикул..."/>
+
+            <button type="submit" form="search-form" class="btn btn-outline-secondary">Търси</button>
+            <a href="@Url.Action("GetAllInventoryItems")" class="btn btn-outline-secondary">Изчисти</a>
+        </div>
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Код</th>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Опции</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.InventoryItems)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.NameAlias</td>
+                    <td>@item.Price.ToString("F2") лв.</td>
+                    <td>@item.Quantity @item.Unit</td>
+                    <td>
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary me-1 btn-details"
+                            data-bs-toggle="modal"
+                            data-bs-target="#detailsModal"
+                            title="Детайли за артикул"
+                            onclick="fetchDetails('@item.Id')">
+                            <i class="bi bi-info-circle me-2"></i>Детайли
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary me-1 btn-update"
+                            data-bs-toggle="modal"
+                            data-bs-target="#updateModal"
+                            data-item-name="@item.NameAlias"
+                            data-item-description="@item.DescriptionAlias"
+                            title="Промяна на име/описание">
+                            <i class="bi bi-pencil me-2"></i>Промяна
+                        </button>
+                        <button class="btn btn-outline-secondary">Продажби</button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <form asp-action="GetAllInventoryItems" id="search-form" class="d-flex justify-content-center">
+                @await Html.PartialAsync("_PaginationPartial")
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Детайли за артикул</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="itemId" readonly disabled/>
+                        <label for="itemId">Код</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="itemName" readonly disabled/>
+                        <label for="itemName">Название (Датабаза)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="itemNameAlias" readonly disabled/>
+                        <label for="itemNameAlias">Название (Публично)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="itemDescription" readonly disabled/>
+                        <label for="itemDescription">Описание (Датабаза)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="itemDescriptionAlias" readonly disabled/>
+                        <label for="itemDescriptionAlias">Описание (Публично)</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="itemPrice" readonly disabled/>
+                        <label for="itemPrice">Цена</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="itemQuantity" readonly disabled/>
+                        <label for="itemQuantity">Количество</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="itemUnit" readonly disabled/>
+                        <label for="itemUnit">Мярка</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="itemCategory" readonly disabled/>
+                        <label for="itemCategory">Група</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="itemSubCategory" readonly disabled/>
+                        <label for="itemSubCategory">Подгрупа</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Затвори</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" asp-action="UpdateInventoryItem">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Промяна на публично име/описание за артикул.</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="renameMenuItemId" />
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="oldItemNameAlias" readonly disabled/>
+                        <label for="oldItemNameAlias">Текущо име (Публично)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="newItemNameAlias" name="nameAlias" required />
+                        <label for="newItemNameAlias">Ново име (Публично)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="oldItemDescriptionAlias" readonly disabled/>
+                        <label for="oldItemDescriptionAlias">Текущо описание (Публично)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="newItemDescriptionAlias" name="descriptionAlias" required />
+                        <label for="newItemDescriptionAlias">Ново описание (Публично)</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Отказ</button>
+                    <button type="submit" class="btn btn-success">Запази</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        // Define tooltipList in the outer scope so both blocks can access it
+        const tooltipList = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var details = document.querySelectorAll('.btn-details');
+            var update = document.querySelectorAll('.btn-update');
+
+            details.forEach(function (tooltipTriggerEl) {
+                tooltipList.push(new bootstrap.Tooltip(tooltipTriggerEl));
+            });
+            update.forEach(function (tooltipTriggerEl) {
+                tooltipList.push(new bootstrap.Tooltip(tooltipTriggerEl));
+            });
+        });
+
+        // Listen globally for all modal closes and hide all tooltips
+        document.addEventListener('shown.bs.modal', function () {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                modal.addEventListener('hidden.bs.modal', function () {
+                    tooltipList.forEach(t => t.hide());
+                });
+            });
+        });
+    </script>
+    <script>
+        function fetchDetails(inventoryItemId){
+            fetch(`/Admin/Inventory/GetInventoryItemDetails/${inventoryItemId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch item details.");
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    if (!result.success) {
+                        alert(result.message || "Възникна грешка при зареждане на артикула.");
+                        return;
+                    }
+
+                    const item = result.data;
+
+                    document.getElementById('itemId').value = item.id;
+                    document.getElementById('itemName').value = item.name;
+                    document.getElementById('itemNameAlias').value = item.nameAlias;
+                    document.getElementById('itemDescription').value = item.description;
+                    document.getElementById('itemDescriptionAlias').value = item.descriptionAlias;
+                    document.getElementById('itemUnit').value = item.unit;
+                    document.getElementById('itemPrice').value = parseFloat(item.price).toFixed(2) + " лв.";
+                    document.getElementById('itemQuantity').value = item.quantity;
+                    document.getElementById('itemCategory').value = item.category;
+                    document.getElementById('itemSubCategory').value = item.subCategory;
+                })
+                .catch(error => console.error("Error fetching blog details:", error));
+        }
+    </script>
+    <script>
+        const updateModal = document.getElementById('updateModal');
+        updateModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const name = button.getAttribute('data-item-name');
+            const description = button.getAttribute('data-item-description');
+
+            updateModal.querySelector('#oldItemNameAlias').value = name;
+            updateModal.querySelector('#oldItemDescriptionAlias').value = description;
+        });
+    </script>
+}

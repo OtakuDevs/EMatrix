@@ -1,0 +1,88 @@
+
+@{
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+}
+
+<nav aria-label="Навигация по страниците">
+    <ul class="pagination justify-content-center">
+        <!-- First -->
+        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+            <button type="submit" class="page-link" asp-route-page="1">Първа</button>
+        </li>
+
+        <!-- Previous -->
+        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+            <button type="submit" class="page-link" asp-route-page="@(currentPage - 1)">‹</button>
+        </li>
+
+        <!-- Page numbers -->
+        @{
+            var start = Math.Max(1, currentPage - 2);
+            var end = Math.Min(totalPages, currentPage + 2);
+
+            if (start > 1)
+            {
+                <li class="page-item"><span class="page-link">...</span></li>
+            }
+
+            for (int i = start; i <= end; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <button type="submit" class="page-link" asp-route-page="@i">@i</button>
+                </li>
+            }
+
+            if (end < totalPages)
+            {
+                <li class="page-item"><span class="page-link">...</span></li>
+            }
+        }
+
+        <!-- Next -->
+        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+            <button type="submit" class="page-link" asp-route-page="@(currentPage + 1)">›</button>
+        </li>
+
+        <!-- Last -->
+        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+            <button type="submit" class="page-link" asp-route-page="@totalPages">Последна</button>
+        </li>
+    </ul>
+</nav>
+
+<style>
+    .pagination {
+        margin-top: 20px;
+        font-size: 0.95rem;
+    }
+
+    .pagination .page-link {
+        color: #333; /* Dark text for contrast */
+        border-color: #ddd; /* Light border */
+        background-color: #fcfcfc; /* Soft background */
+        padding: 4px 10px;
+        position: relative;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #efefef; /* Subtle hover effect */
+        border-color: #ccc;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #ddd; /* Slightly darker to highlight active */
+        border-color: #bbb;
+        color: #000; /* Stronger contrast for active */
+    }
+
+    .pagination .page-item .page-link:focus {
+        box-shadow: none;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #aaa;
+        background-color: #f5f5f5;
+        pointer-events: none;
+    }
+</style>

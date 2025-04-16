@@ -7,6 +7,13 @@
     padding: 1rem 0;
 }
 
+.menu-index table {
+    th, td {
+        vertical-align: middle;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
 .menu-index table th {
     text-align: center;
 }
