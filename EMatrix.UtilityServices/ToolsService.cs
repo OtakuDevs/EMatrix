@@ -1,0 +1,139 @@
+﻿using EMatrix.UtilityServices.Interfaces;
+using EMatrix.ViewModels.Services;
+
+namespace EMatrix.UtilityServices;
+
+public class ToolsService : IToolsService
+{
+    public List<ResistorBandModel> GetResistorColorCodeModel()
+    {
+        var model = new List<ResistorBandModel>();
+        //Black
+        model.Add(new ResistorBandModel
+        {
+            Color = "Черен",
+            SecondDigit = 0,
+            ThirdDigit = 0,
+            Multiplier = 1,
+            TempCoefficient = 250
+        });
+        //Brown
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Кафяв",
+            FirstDigit = 1,
+            SecondDigit = 1,
+            ThirdDigit = 1,
+            Multiplier = 10,
+            Tolerance = 1,
+            TempCoefficient = 100
+        });
+        //Red
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Червен",
+            FirstDigit = 2,
+            SecondDigit = 2,
+            ThirdDigit = 2,
+            Multiplier = 100,
+            Tolerance = 2,
+            TempCoefficient = 50
+        });
+        //Orange
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Оранжев",
+            FirstDigit = 3,
+            SecondDigit = 3,
+            ThirdDigit = 3,
+            Multiplier = 1000,
+            Tolerance = 0.05,
+            TempCoefficient = 15
+        });
+        //Yellow
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Жълто",
+            FirstDigit = 4,
+            SecondDigit = 4,
+            ThirdDigit = 4,
+            Multiplier = 10000,
+            Tolerance = 0.02,
+            TempCoefficient = 25
+        });
+        //Green
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Зелен",
+            FirstDigit = 5,
+            SecondDigit = 5,
+            ThirdDigit = 5,
+            Multiplier = 100000,
+            Tolerance = 0.5,
+            TempCoefficient = 20
+        });
+        //Blue
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Син",
+            FirstDigit = 6,
+            SecondDigit = 6,
+            ThirdDigit = 6,
+            Multiplier = 1000000,
+            Tolerance = 0.25,
+            TempCoefficient = 10
+        });
+        //Purple
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Лилав",
+            FirstDigit = 7,
+            SecondDigit = 7,
+            ThirdDigit = 7,
+            Multiplier = 10000000,
+            Tolerance = 0.1,
+            TempCoefficient = 5
+        });
+        //Gray
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Сив",
+            FirstDigit = 8,
+            SecondDigit = 8,
+            ThirdDigit = 8,
+            Multiplier = 100000000,
+            Tolerance = 0.01,
+            TempCoefficient = 1
+        });
+        //White
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Бял",
+            FirstDigit = 9,
+            SecondDigit = 9,
+            ThirdDigit = 9,
+            Multiplier = 1000000000,
+        });
+        //Gold
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Златен",
+            Multiplier = 0.1,
+            Tolerance = 5
+        });
+        //Silver
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Сребърен",
+            Multiplier = 0.01,
+            Tolerance = 10
+        });
+        //Pink
+        model.Add(new ResistorBandModel()
+        {
+            Color = "Розов",
+            Multiplier = 0.001,
+        });
+        return model;
+    }
+}

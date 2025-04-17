@@ -2,6 +2,7 @@ using System.Text.Json.Nodes;
 using EMatrix.Database;
 using EMatrix.DatabaseServices.Admin.Interfaces;
 using EMatrix.ViewModels.Admin;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EMatrix.DatabaseServices.Admin;
@@ -15,13 +16,23 @@ public class ManageInventoryService : IManageInventoryService
         _context = context;
     }
 
-    public async Task<InventoryIndexViewModel> GetInventoryIndexAsync(int page = 1, string search = "")
+    public async Task<InventoryIndexViewModel> GetInventoryIndexAsync(int page = 1, string search = "", string category = "", string subCategory = "")
     {
         const int pageSize = 10;
         var skip = (page - 1) * pageSize;
+        var availableCategories = await _context.Categories.ToListAsync();
+        var availableSubCategories = await _context.SubCategories.ToListAsync();
 
         //Base query
-        var query = _context.InventoryItems.AsQueryable();
+        var query = _context.InventoryItems
+            .AsQueryable();
+
+        // Apply select filter
+        if(!string.IsNullOrEmpty(category))
+            query = query.Where(i => i.Id.StartsWith(category));
+
+        if(!string.IsNullOrEmpty(subCategory))
+            query = query.Where(i => i.Id.StartsWith(subCategory));
 
         //Apply search filter if provided
         if (!string.IsNullOrEmpty(search))
@@ -52,9 +63,13 @@ public class ManageInventoryService : IManageInventoryService
         var model = new InventoryIndexViewModel()
         {
             InventoryItems = records,
+            AvailableCategories = availableCategories.Select(c => new SelectListItem() { Text = c.Name, Value = c.Id }).ToList(),
+            AvailableSubCategories = availableSubCategories.Select(c => new SelectListItem() { Text = c.Name, Value = c.Id }).ToList(),
             CurrentPage = page,
             TotalPages = (int)Math.Ceiling((double)totalPages / pageSize),
-            SearchTerm = search
+            SearchTerm = search,
+            CategoryFilter = category,
+            SubCategoryFilter = subCategory
         };
         return model;
     }

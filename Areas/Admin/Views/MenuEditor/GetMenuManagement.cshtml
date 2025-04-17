@@ -23,7 +23,10 @@
 
         <div class="menu-header">
             <h2 class="text-center">Съдържание на менюто</h2>
-            <a href="#" class="btn btn-outline-secondary me-1 btn-add" data-bs-toggle="modal" data-bs-target="#addMenuItemModal" title="Създай нова категория">
+            <a href="#" class="btn btn-outline-secondary me-1 btn-add"
+               data-bs-toggle="modal"
+               data-bs-target="#addMenuItemModal"
+               data-tooltip="Създай нова категория">
                 <i class="bi bi-bookmark-plus me-2"></i>Добави категория
             </a>
         </div>
@@ -47,11 +50,13 @@
                             data-bs-target="#renameModal"
                             data-menu-item-id="@item.Key"
                             data-menu-item-name="@item.Value"
-                            title="Редактиране име на категория">
+                            data-tooltip="Редактиране име на категория">
                             <i class="bi bi-pencil me-2"></i>Преименуване
                         </button>
 
-                        <a href="@Url.Action("UpdateMenuItemCategories", new { menuItemId = item.Key })" class="btn btn-outline-secondary me-1" data-bs-toggle="tooltip" data-popper-placement="top" title="Редактиране на елементи в категория">
+                        <a href="@Url.Action("UpdateMenuItemCategories", new { menuItemId = item.Key })"
+                           class="btn btn-outline-secondary me-1"
+                           data-tooltip="Редактиране на елементи в категория">
                             <i class="bi bi-stack me-2"></i>Редакция
                         </a>
                         <button
@@ -60,7 +65,7 @@
                             data-bs-toggle="modal"
                             data-bs-target="#deleteModal"
                             data-menu-item-id="@item.Key"
-                            title="Изтриване на категория">
+                            data-tooltip="Изтриване на категория">
                             <i class="bi bi-trash me-2"></i>Изтриване
                         </button>
                     </td>
@@ -179,38 +184,4 @@
             deleteModal.querySelector('#deleteMenuItemId').value = id;
         })
     </script>
-
-    <script>
-        // Define tooltipList in the outer scope so both blocks can access it
-        const tooltipList = [];
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var add = document.querySelector('.btn-add');
-            var rename = document.querySelectorAll('.btn-rename');
-            var remove = document.querySelectorAll('.btn-delete');
-
-            if (add) {
-                tooltipList.push(new bootstrap.Tooltip(add));
-            }
-
-            rename.forEach(function (tooltipTriggerEl) {
-                tooltipList.push(new bootstrap.Tooltip(tooltipTriggerEl));
-            });
-
-            remove.forEach(function (tooltipTriggerEl) {
-                tooltipList.push(new bootstrap.Tooltip(tooltipTriggerEl));
-            });
-        });
-
-        // Listen globally for all modal closes and hide all tooltips
-        document.addEventListener('shown.bs.modal', function () {
-            const modals = document.querySelectorAll('.modal');
-            modals.forEach(modal => {
-                modal.addEventListener('hidden.bs.modal', function () {
-                    tooltipList.forEach(t => t.hide());
-                });
-            });
-        });
-    </script>
-
 }

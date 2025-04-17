@@ -1,13 +1,13 @@
 @model EMatrix.ViewModels.Admin.InventoryIndexViewModel
 
+<link rel="stylesheet" href="~/css/admin-panel-invetory-customization.css" asp-append-version="true"/>
+
 @{
     ViewData["Title"] = "Склад";
     ViewData["ActiveTab"] = "Inventory";
 }
 
-<link rel="stylesheet" href="~/css/admin-panel-invetory-customization.css" asp-append-version="true"/>
-
-<div class="container mt-3">
+<div class="container">
     <!-- Tabs -->
     @await Html.PartialAsync("_AdminPanelTabsPartial")
 
@@ -25,17 +25,38 @@
 
         <h2>Складови наличности</h2>
         <div class="search-bar">
-                <input type="text" class="form-control"
-                       name="search"
-                       value="@Model.SearchTerm"
-                       form="search-form"
-                       id="search"
-                       placeholder="Търси артикул..."/>
+            <input type="text" class="form-control"
+                   name="search"
+                   asp-for="@Model.SearchTerm"
+                   form="search-form"
+                   id="search"
+                   placeholder="Търси артикул..."/>
 
-            <button type="submit" form="search-form" class="btn btn-outline-secondary">Търси</button>
+            <select asp-for="CategoryFilter" class="form-select"
+                    name="category"
+                    form="search-form"
+                    id="categorySelect">
+                <option value="">-- Избери група --</option>
+                @foreach (var cat in Model.AvailableCategories)
+                {
+                    <option value="@cat.Value">@cat.Value - @cat.Text</option>
+                }
+            </select>
+            <select asp-for="SubCategoryFilter" class="form-select"
+                    name="subCategory"
+                    form="search-form"
+                    id="subcategorySelect">
+                <option value="">-- Избери подгрупа --</option>
+                @foreach (var sub in Model.AvailableSubCategories)
+                {
+                    <option value="@sub.Value"
+                            data-cat="@sub.Value.Substring(0, 2)">@sub.Value - @sub.Text</option>
+                }
+            </select>
+            <button type="submit" form="search-form" class="btn btn-outline-secondary ms-auto">Търси</button>
             <a href="@Url.Action("GetAllInventoryItems")" class="btn btn-outline-secondary">Изчисти</a>
         </div>
-        <table class="table table-striped table-bordered">
+        <table class="table table-bordered table-striped">
             <thead>
             <tr>
                 <th>Код</th>
@@ -51,15 +72,15 @@
                 <tr>
                     <td>@item.Id</td>
                     <td>@item.NameAlias</td>
-                    <td>@item.Price.ToString("F2") лв.</td>
-                    <td>@item.Quantity @item.Unit</td>
+                    <td class="text-center">@item.Price.ToString("F2") лв.</td>
+                    <td class="text-center">@item.Quantity @item.Unit</td>
                     <td>
                         <button
                             type="button"
                             class="btn btn-outline-secondary me-1 btn-details"
                             data-bs-toggle="modal"
                             data-bs-target="#detailsModal"
-                            title="Детайли за артикул"
+                            data-tooltip="Детайли за артикул"
                             onclick="fetchDetails('@item.Id')">
                             <i class="bi bi-info-circle me-2"></i>Детайли
                         </button>
@@ -70,7 +91,7 @@
                             data-bs-target="#updateModal"
                             data-item-name="@item.NameAlias"
                             data-item-description="@item.DescriptionAlias"
-                            title="Промяна на име/описание">
+                            data-tooltip="Промяна на име/описание">
                             <i class="bi bi-pencil me-2"></i>Промяна
                         </button>
                         <button class="btn btn-outline-secondary">Продажби</button>
@@ -80,7 +101,7 @@
             </tbody>
         </table>
         <!-- Pagination -->
-        <div class="pagination-container">
+        <div class="pagination-container mb-3">
             <form asp-action="GetAllInventoryItems" id="search-form" class="d-flex justify-content-center">
                 @await Html.PartialAsync("_PaginationPartial")
             </form>
@@ -157,13 +178,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id" id="renameMenuItemId" />
+                    <input type="hidden" name="id" id="renameMenuItemId"/>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="oldItemNameAlias" readonly disabled/>
                         <label for="oldItemNameAlias">Текущо име (Публично)</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="newItemNameAlias" name="nameAlias" required />
+                        <input type="text" class="form-control" id="newItemNameAlias" name="nameAlias" required/>
                         <label for="newItemNameAlias">Ново име (Публично)</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -171,7 +192,8 @@
                         <label for="oldItemDescriptionAlias">Текущо описание (Публично)</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="newItemDescriptionAlias" name="descriptionAlias" required />
+                        <input type="text" class="form-control" id="newItemDescriptionAlias" name="descriptionAlias"
+                               required/>
                         <label for="newItemDescriptionAlias">Ново описание (Публично)</label>
                     </div>
                 </div>
@@ -187,33 +209,7 @@
 @section Scripts
 {
     <script>
-        // Define tooltipList in the outer scope so both blocks can access it
-        const tooltipList = [];
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var details = document.querySelectorAll('.btn-details');
-            var update = document.querySelectorAll('.btn-update');
-
-            details.forEach(function (tooltipTriggerEl) {
-                tooltipList.push(new bootstrap.Tooltip(tooltipTriggerEl));
-            });
-            update.forEach(function (tooltipTriggerEl) {
-                tooltipList.push(new bootstrap.Tooltip(tooltipTriggerEl));
-            });
-        });
-
-        // Listen globally for all modal closes and hide all tooltips
-        document.addEventListener('shown.bs.modal', function () {
-            const modals = document.querySelectorAll('.modal');
-            modals.forEach(modal => {
-                modal.addEventListener('hidden.bs.modal', function () {
-                    tooltipList.forEach(t => t.hide());
-                });
-            });
-        });
-    </script>
-    <script>
-        function fetchDetails(inventoryItemId){
+        function fetchDetails(inventoryItemId) {
             fetch(`/Admin/Inventory/GetInventoryItemDetails/${inventoryItemId}`)
                 .then(response => {
                     if (!response.ok) {
@@ -252,6 +248,18 @@
 
             updateModal.querySelector('#oldItemNameAlias').value = name;
             updateModal.querySelector('#oldItemDescriptionAlias').value = description;
+        });
+    </script>
+    <script>
+        document.getElementById("categorySelect").addEventListener("change", function () {
+            var selectedPrefix = this.value;
+            var subcategorySelect = document.getElementById("subcategorySelect");
+
+            Array.from(subcategorySelect.options).forEach(opt => {
+                opt.hidden = opt.value !== "" && !opt.dataset.cat?.startsWith(selectedPrefix);
+            });
+
+            subcategorySelect.value = "";
         });
     </script>
 }

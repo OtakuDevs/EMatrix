@@ -38,7 +38,8 @@
                         <option value="">-- Избери подгрупа --</option>
                         @foreach (var sub in Model.AvailableSubCategories)
                         {
-                            <option value="@sub.Value" data-cat="@sub.Value.Substring(0, 2)">@sub.Value - @sub.Text</option>
+                            <option value="@sub.Value"
+                                    data-cat="@sub.Value.Substring(0, 2)">@sub.Value - @sub.Text</option>
                         }
                     </select>
                     <label for="subcategorySelect">Подгрупи</label>
@@ -55,7 +56,8 @@
                     <legend>Редактиране на категории</legend>
                     <ul class="mb-0">
                         <li>Изберете <strong>група</strong> от падащия списък и натиснете <em>„Добави група“</em>.</li>
-                        <li>Изберете <strong>подгрупа</strong> от падащия списък и натиснете <em>„Добави подгрупа“</em>.</li>
+                        <li>Изберете <strong>подгрупа</strong> от падащия списък и натиснете <em>„Добави подгрупа“</em>.
+                        </li>
                         <li>Премахнете асоциация с бутона <strong>Х</strong>.</li>
                         <li>Натиснете <strong>„Запази промените“</strong>, за да запишете.</li>
                     </ul>
@@ -64,32 +66,34 @@
 
             <div id="categoriesContainer">
                 <h4>Съществуващи категории</h4>
-                    <div>
-                        <strong>Групи:</strong>
-                        <div id="groupsContainer">
-                            @foreach (var c in Model.Categories)
-                            {
-                                <div class="mb-2" data-value="@c.Key">
-                                    <input type="hidden" name="selectedCategories" value="@c.Key"/>
-                                    <input type="text" class="form-control d-inline-block w-auto" value="@c.Value" readonly/>
-                                    <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
-                                </div>
-                            }
-                        </div>
+                <div>
+                    <strong>Групи:</strong>
+                    <div id="groupsContainer">
+                        @foreach (var c in Model.Categories)
+                        {
+                            <div class="mb-2" data-value="@c.Key">
+                                <input type="hidden" name="selectedCategories" value="@c.Key"/>
+                                <input type="text" class="form-control d-inline-block w-auto" value="@c.Value"
+                                       readonly/>
+                                <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
+                            </div>
+                        }
                     </div>
-                    <div>
-                        <strong>Подгрупи:</strong>
-                        <div id="subGroupsContainer">
-                            @foreach (var sc in Model.SubCategories)
-                            {
-                                <div class="mb-2" data-value="@sc.Key">
-                                    <input type="hidden" name="selectedSubCategories" value="@sc.Key"/>
-                                    <input type="text" class="form-control d-inline-block w-auto" value="@sc.Value" readonly/>
-                                    <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
-                                </div>
-                            }
-                        </div>
+                </div>
+                <div>
+                    <strong>Подгрупи:</strong>
+                    <div id="subGroupsContainer">
+                        @foreach (var sc in Model.SubCategories)
+                        {
+                            <div class="mb-2" data-value="@sc.Key">
+                                <input type="hidden" name="selectedSubCategories" value="@sc.Key"/>
+                                <input type="text" class="form-control d-inline-block w-auto" value="@sc.Value"
+                                       readonly/>
+                                <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
+                            </div>
+                        }
                     </div>
+                </div>
             </div>
         </div>
     </form>
@@ -170,7 +174,7 @@
             container.appendChild(div);
         }
 
-        function removeAssignment(button){
+        function removeAssignment(button) {
             button.parentElement.remove();
         }
     </script>

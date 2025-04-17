@@ -27,6 +27,7 @@
       <Compile Remove="EMatrix.DataModels\**" />
       <Compile Remove="EMatrix.DatabaseServices\**" />
       <Compile Remove="EMatrix.Constants\**" />
+      <Compile Remove="EMatrix.UtilityServices\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -35,6 +36,7 @@
       <EmbeddedResource Remove="EMatrix.DataModels\**" />
       <EmbeddedResource Remove="EMatrix.DatabaseServices\**" />
       <EmbeddedResource Remove="EMatrix.Constants\**" />
+      <EmbeddedResource Remove="EMatrix.UtilityServices\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -43,6 +45,7 @@
       <Content Remove="EMatrix.DataModels\**" />
       <Content Remove="EMatrix.DatabaseServices\**" />
       <Content Remove="EMatrix.Constants\**" />
+      <Content Remove="EMatrix.UtilityServices\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -51,6 +54,7 @@
       <None Remove="EMatrix.DataModels\**" />
       <None Remove="EMatrix.DatabaseServices\**" />
       <None Remove="EMatrix.Constants\**" />
+      <None Remove="EMatrix.UtilityServices\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -69,11 +73,15 @@
       <_ContentIncludedByDefault Remove="EMatrix.Constants\obj\EMatrix.Constants.csproj.nuget.dgspec.json" />
       <_ContentIncludedByDefault Remove="EMatrix.Constants\obj\project.assets.json" />
       <_ContentIncludedByDefault Remove="EMatrix.Constants\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.UtilityServices\obj\EMatrix.UtilityServices.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.UtilityServices\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="EMatrix.UtilityServices\obj\project.packagespec.json" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="EMatrix.DatabaseServices\EMatrix.DatabaseServices.csproj" />
       <ProjectReference Include="EMatrix.Database\EMatrix.Database.csproj" />
+      <ProjectReference Include="EMatrix.UtilityServices\EMatrix.UtilityServices.csproj" />
       <ProjectReference Include="EMatrix.ViewModels\EMatrix.ViewModels.csproj" />
     </ItemGroup>
 

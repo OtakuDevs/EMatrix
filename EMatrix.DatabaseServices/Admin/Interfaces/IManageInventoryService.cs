@@ -5,7 +5,7 @@ namespace EMatrix.DatabaseServices.Admin.Interfaces;
 
 public interface IManageInventoryService
 {
-    Task<InventoryIndexViewModel> GetInventoryIndexAsync(int page = 1, string search = "");
+    Task<InventoryIndexViewModel> GetInventoryIndexAsync(int page = 1, string search = "", string category = "", string subCategory = "");
 
     Task<JsonObject?>GetInventoryItemByIdAsync(string id);
 

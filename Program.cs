@@ -2,6 +2,8 @@ using EMatrix.Database;
 using EMatrix.DatabaseServices.Admin;
 using EMatrix.DatabaseServices.Admin.Interfaces;
 using EMatrix.DataModels;
+using EMatrix.UtilityServices;
+using EMatrix.UtilityServices.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +39,7 @@ public class Program
         builder.Services.AddScoped<IUpdateDatabaseService, UpdateDatabaseService>();
         builder.Services.AddScoped<IMenuManageService, MenuManageService>();
         builder.Services.AddScoped<IManageInventoryService, ManageInventoryService>();
+        builder.Services.AddScoped<IToolsService, ToolsService>();
 
         var app = builder.Build();
 

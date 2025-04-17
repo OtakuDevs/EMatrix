@@ -1,0 +1,257 @@
+@model List<EMatrix.ViewModels.Services.ResistorBandModel>
+
+<div class="tabs-container mt-4">
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="tab-link active" id="3-band" data-bs-toggle="tab" href="#three" role="tab"
+               aria-controls="three" aria-selected="true">3 ленти</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="tab-link" id="4-band" data-bs-toggle="tab" href="#four" role="tab"
+               aria-controls="four" aria-selected="false">4 ленти</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="tab-link" id="5-band" data-bs-toggle="tab" href="#five" role="tab"
+               aria-controls="five" aria-selected="false">5 ленти</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="tab-link" id="6-band" data-bs-toggle="tab" href="#six"
+               role="tab"
+               aria-controls="six" aria-selected="false">6 ленти</a>
+        </li>
+    </ul>
+</div>
+<!-- Tab Content -->
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="three" role="tabpanel" aria-labelledby="3-band">
+        <div>
+            <input id="resistance-3"/>
+            <input id="tolerance-3"/>
+            <input id="minimum-3"/>
+            <input id="maximum-3"/>
+            <input id="tempcoef-3"/>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Цвят</th>
+                <th>Първа</th>
+                <th>Втора</th>
+                <th>x &#8486;</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var color in Model)
+            {
+                <tr>
+                    <td>@color.Color</td>
+                    @if (color.FirstDigit != null)
+                    {
+                        <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    @if (color.SecondDigit != null)
+                    {
+                        <td><button value="@color.SecondDigit">@color.SecondDigit</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td><button value="@color.Multiplier">x @color.Multiplier</button></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="four" role="tabpanel" aria-labelledby="4-band">
+        <div>
+            <input id="resistance-4"/>
+            <input id="tolerance-4"/>
+            <input id="minimum-4"/>
+            <input id="maximum-4"/>
+            <input id="tempcoef-4"/>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Цвят</th>
+                <th>Първа</th>
+                <th>Втора</th>
+                <th>x &#8486;</th>
+                <th>Толеранс</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var color in Model)
+            {
+                <tr>
+                    <td>@color.Color</td>
+                    @if (color.FirstDigit != null)
+                    {
+                        <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    @if (color.SecondDigit != null)
+                    {
+                        <td><button value="@color.SecondDigit">@color.SecondDigit</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td><button value="@color.Multiplier">x @color.Multiplier</button></td>
+                    @if (color.Tolerance != null)
+                    {
+                        <td><button value="@color.Tolerance">&#177;@color.Tolerance%</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="five" role="tabpanel" aria-labelledby="5-band">
+        <div>
+            <input id="resistance-5"/>
+            <input id="tolerance-5"/>
+            <input id="minimum-5"/>
+            <input id="maximum-5"/>
+            <input id="tempcoef-5"/>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Цвят</th>
+                <th>Първа</th>
+                <th>Втора</th>
+                <th>Трета</th>
+                <th>x &#8486;</th>
+                <th>Толеранс</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var color in Model)
+            {
+                <tr>
+                    <td>@color.Color</td>
+                    @if (color.FirstDigit != null)
+                    {
+                        <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    @if (color.SecondDigit != null)
+                    {
+                        <td><button value="@color.SecondDigit">@color.SecondDigit</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    @if (color.ThirdDigit != null)
+                    {
+                        <td><button value="@color.ThirdDigit">@color.ThirdDigit</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td><button value="@color.Multiplier">x @color.Multiplier</button></td>
+                    @if (color.Tolerance != null)
+                    {
+                        <td><button value="@color.Tolerance">&#177;@color.Tolerance%</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="six" role="tabpanel" aria-labelledby="6-band">
+        <div>
+            <input id="resistance-6"/>
+            <input id="tolerance-6"/>
+            <input id="minimum-6"/>
+            <input id="maximum-6"/>
+            <input id="tempcoef-6"/>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Цвят</th>
+                <th>Първа</th>
+                <th>Втора</th>
+                <th>Трета</th>
+                <th>x &#8486;</th>
+                <th>Толеранс</th>
+                <th>Темп. коеф.(10<sup>-6</sup>/K)</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var color in Model)
+            {
+                <tr>
+                    <td>@color.Color</td>
+                    @if (color.FirstDigit != null)
+                    {
+                        <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    @if (color.SecondDigit != null)
+                    {
+                        <td><button value="@color.SecondDigit">@color.SecondDigit</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    @if (color.ThirdDigit != null)
+                    {
+                        <td><button value="@color.ThirdDigit">@color.ThirdDigit</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td><button value="@color.Multiplier">x @color.Multiplier</button></td>
+                    @if (color.Tolerance != null)
+                    {
+                        <td><button value="@color.Tolerance">&#177;@color.Tolerance%</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    @if (color.TempCoefficient != null)
+                    {
+                        <td><button value="@color.TempCoefficient">&#177;@color.TempCoefficient</button></td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

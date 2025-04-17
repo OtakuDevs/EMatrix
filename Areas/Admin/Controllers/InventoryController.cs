@@ -13,9 +13,9 @@ public class InventoryController : Controller
         _adminInventoryService = adminInventoryService;
     }
 
-    public async Task<IActionResult> GetAllInventoryItems(int page = 1, string search = "")
+    public async Task<IActionResult> GetAllInventoryItems(int page = 1, string search = "", string category = "", string subCategory = "")
     {
-        var model = await _adminInventoryService.GetInventoryIndexAsync(page, search);
+        var model = await _adminInventoryService.GetInventoryIndexAsync(page, search, category, subCategory);
         ViewBag.CurrentPage = model.CurrentPage;
         ViewBag.TotalPages = model.TotalPages;
         return View(model);
