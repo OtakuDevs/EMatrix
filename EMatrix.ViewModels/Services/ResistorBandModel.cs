@@ -4,6 +4,8 @@ public class ResistorBandModel
 {
     public string Color { get; set; } = null!;
 
+    public string Class { get; set; } = null!;
+
     public int? FirstDigit { get; set; }
 
     public int? SecondDigit { get; set; }

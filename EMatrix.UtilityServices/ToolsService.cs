@@ -12,15 +12,16 @@ public class ToolsService : IToolsService
         model.Add(new ResistorBandModel
         {
             Color = "Черен",
+            Class = "black",
             SecondDigit = 0,
             ThirdDigit = 0,
             Multiplier = 1,
-            TempCoefficient = 250
         });
         //Brown
         model.Add(new ResistorBandModel()
         {
             Color = "Кафяв",
+            Class = "brown",
             FirstDigit = 1,
             SecondDigit = 1,
             ThirdDigit = 1,
@@ -32,6 +33,7 @@ public class ToolsService : IToolsService
         model.Add(new ResistorBandModel()
         {
             Color = "Червен",
+            Class = "red",
             FirstDigit = 2,
             SecondDigit = 2,
             ThirdDigit = 2,
@@ -43,6 +45,7 @@ public class ToolsService : IToolsService
         model.Add(new ResistorBandModel()
         {
             Color = "Оранжев",
+            Class = "orange",
             FirstDigit = 3,
             SecondDigit = 3,
             ThirdDigit = 3,
@@ -54,6 +57,7 @@ public class ToolsService : IToolsService
         model.Add(new ResistorBandModel()
         {
             Color = "Жълто",
+            Class = "yellow",
             FirstDigit = 4,
             SecondDigit = 4,
             ThirdDigit = 4,
@@ -65,17 +69,18 @@ public class ToolsService : IToolsService
         model.Add(new ResistorBandModel()
         {
             Color = "Зелен",
+            Class = "green",
             FirstDigit = 5,
             SecondDigit = 5,
             ThirdDigit = 5,
             Multiplier = 100000,
             Tolerance = 0.5,
-            TempCoefficient = 20
         });
         //Blue
         model.Add(new ResistorBandModel()
         {
             Color = "Син",
+            Class = "blue",
             FirstDigit = 6,
             SecondDigit = 6,
             ThirdDigit = 6,
@@ -87,6 +92,7 @@ public class ToolsService : IToolsService
         model.Add(new ResistorBandModel()
         {
             Color = "Лилав",
+            Class = "purple",
             FirstDigit = 7,
             SecondDigit = 7,
             ThirdDigit = 7,
@@ -98,26 +104,29 @@ public class ToolsService : IToolsService
         model.Add(new ResistorBandModel()
         {
             Color = "Сив",
+            Class = "gray",
             FirstDigit = 8,
             SecondDigit = 8,
             ThirdDigit = 8,
             Multiplier = 100000000,
-            Tolerance = 0.01,
-            TempCoefficient = 1
+            Tolerance = 0.01
         });
         //White
         model.Add(new ResistorBandModel()
         {
             Color = "Бял",
+            Class = "white",
             FirstDigit = 9,
             SecondDigit = 9,
             ThirdDigit = 9,
             Multiplier = 1000000000,
+            TempCoefficient = 1
         });
         //Gold
         model.Add(new ResistorBandModel()
         {
             Color = "Златен",
+            Class = "gold",
             Multiplier = 0.1,
             Tolerance = 5
         });
@@ -125,6 +134,7 @@ public class ToolsService : IToolsService
         model.Add(new ResistorBandModel()
         {
             Color = "Сребърен",
+            Class = "silver",
             Multiplier = 0.01,
             Tolerance = 10
         });
@@ -132,6 +142,7 @@ public class ToolsService : IToolsService
         model.Add(new ResistorBandModel()
         {
             Color = "Розов",
+            Class = "pink",
             Multiplier = 0.001,
         });
         return model;

@@ -1,5 +1,7 @@
 @model List<EMatrix.ViewModels.Services.ResistorBandModel>
 
+<link rel="stylesheet" href="~/css/resistor-calculator-customization.css" asp-append-version="true"/>
+
 <div class="tabs-container mt-4">
     <!-- Tabs -->
     <ul class="nav nav-tabs" role="tablist">
@@ -25,12 +27,12 @@
 <!-- Tab Content -->
 <div class="tab-content">
     <div class="tab-pane fade show active" id="three" role="tabpanel" aria-labelledby="3-band">
-        <div>
-            <input id="resistance-3"/>
-            <input id="tolerance-3"/>
-            <input id="minimum-3"/>
-            <input id="maximum-3"/>
-            <input id="tempcoef-3"/>
+        <div class="resistor-values mt-3">
+            <input id="resistance-3" class="form-control mb-2" placeholder="Съпротивление (Ω)" />
+
+            <input id="minimum-3" class="form-control mb-2" placeholder="Минимална стойност (Ω)" />
+
+            <input id="maximum-3" class="form-control mb-2" placeholder="Максимална стойност (Ω)" />
         </div>
         <table class="table table-bordered">
             <thead>
@@ -45,7 +47,7 @@
             @foreach (var color in Model)
             {
                 <tr>
-                    <td>@color.Color</td>
+                    <td class="@color.Class">@color.Color</td>
                     @if (color.FirstDigit != null)
                     {
                         <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
@@ -62,19 +64,25 @@
                     {
                         <td></td>
                     }
-                    <td><button value="@color.Multiplier">x @color.Multiplier</button></td>
+                    @{
+                        var exponent = (int)Math.Log10(color.Multiplier.Value);
+                        var displayMultiplier = $"10<sup>{exponent}</sup>";
+                        <td><button value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button></td>
+                    }
                 </tr>
             }
             </tbody>
         </table>
     </div>
     <div class="tab-pane fade" id="four" role="tabpanel" aria-labelledby="4-band">
-        <div>
-            <input id="resistance-4"/>
-            <input id="tolerance-4"/>
-            <input id="minimum-4"/>
-            <input id="maximum-4"/>
-            <input id="tempcoef-4"/>
+        <div class="resistor-values mt-3">
+            <input id="resistance-4" class="form-control mb-2" placeholder="Съпротивление (Ω)" />
+
+            <input id="tolerance-4" class="form-control mb-2" placeholder="Толеранс (%)" />
+
+            <input id="minimum-4" class="form-control mb-2" placeholder="Минимална стойност (Ω)" />
+
+            <input id="maximum-4" class="form-control mb-2" placeholder="Максимална стойност (Ω)" />
         </div>
         <table class="table table-bordered">
             <thead>
@@ -90,7 +98,7 @@
             @foreach (var color in Model)
             {
                 <tr>
-                    <td>@color.Color</td>
+                    <td class="@color.Class">@color.Color</td>
                     @if (color.FirstDigit != null)
                     {
                         <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
@@ -107,10 +115,14 @@
                     {
                         <td></td>
                     }
-                    <td><button value="@color.Multiplier">x @color.Multiplier</button></td>
+                    @{
+                        var exponent = (int)Math.Log10(color.Multiplier.Value);
+                        var displayMultiplier = $"10<sup>{exponent}</sup>";
+                        <td><button value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button></td>
+                    }
                     @if (color.Tolerance != null)
                     {
-                        <td><button value="@color.Tolerance">&#177;@color.Tolerance%</button></td>
+                        <td><button onclick="setTolerance(this, 4)" value="@color.Tolerance%">&#177;@color.Tolerance%</button></td>
                     }
                     else
                     {
@@ -122,12 +134,14 @@
         </table>
     </div>
     <div class="tab-pane fade" id="five" role="tabpanel" aria-labelledby="5-band">
-        <div>
-            <input id="resistance-5"/>
-            <input id="tolerance-5"/>
-            <input id="minimum-5"/>
-            <input id="maximum-5"/>
-            <input id="tempcoef-5"/>
+        <div class="resistor-values mt-3">
+            <input id="resistance-5" class="form-control mb-2" placeholder="Съпротивление (Ω)" />
+
+            <input id="tolerance-5" class="form-control mb-2" placeholder="Толеранс (%)" />
+
+            <input id="minimum-5" class="form-control mb-2" placeholder="Минимална стойност (Ω)" />
+
+            <input id="maximum-5" class="form-control mb-2" placeholder="Максимална стойност (Ω)" />
         </div>
         <table class="table table-bordered">
             <thead>
@@ -144,7 +158,7 @@
             @foreach (var color in Model)
             {
                 <tr>
-                    <td>@color.Color</td>
+                    <td class="@color.Class">@color.Color</td>
                     @if (color.FirstDigit != null)
                     {
                         <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
@@ -169,10 +183,14 @@
                     {
                         <td></td>
                     }
-                    <td><button value="@color.Multiplier">x @color.Multiplier</button></td>
+                    @{
+                        var exponent = (int)Math.Log10(color.Multiplier.Value);
+                        var displayMultiplier = $"10<sup>{exponent}</sup>";
+                        <td><button value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button></td>
+                    }
                     @if (color.Tolerance != null)
                     {
-                        <td><button value="@color.Tolerance">&#177;@color.Tolerance%</button></td>
+                        <td><button onclick="setTolerance(this, 5)" value="@color.Tolerance%">&#177;@color.Tolerance%</button></td>
                     }
                     else
                     {
@@ -184,13 +202,18 @@
         </table>
     </div>
     <div class="tab-pane fade" id="six" role="tabpanel" aria-labelledby="6-band">
-        <div>
-            <input id="resistance-6"/>
-            <input id="tolerance-6"/>
-            <input id="minimum-6"/>
-            <input id="maximum-6"/>
-            <input id="tempcoef-6"/>
+        <div class="resistor-values mt-3">
+            <input id="resistance-6" class="form-control mb-2" placeholder="Съпротивление (Ω)" />
+
+            <input id="tolerance-6" class="form-control mb-2" placeholder="Толеранс (%)" />
+
+            <input id="minimum-6" class="form-control mb-2" placeholder="Минимална стойност (Ω)" />
+
+            <input id="maximum-6" class="form-control mb-2" placeholder="Максимална стойност (Ω)" />
+
+            <input id="tempcoef-6" class="form-control mb-2" placeholder="Темп. коефициент (ppm/°C)" />
         </div>
+
         <table class="table table-bordered">
             <thead>
             <tr>
@@ -200,14 +223,14 @@
                 <th>Трета</th>
                 <th>x &#8486;</th>
                 <th>Толеранс</th>
-                <th>Темп. коеф.(10<sup>-6</sup>/K)</th>
+                <th>Темп. коеф.(ppm/°C)</th>
             </tr>
             </thead>
             <tbody>
             @foreach (var color in Model)
             {
                 <tr>
-                    <td>@color.Color</td>
+                    <td class="@color.Class">@color.Color</td>
                     @if (color.FirstDigit != null)
                     {
                         <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
@@ -232,10 +255,14 @@
                     {
                         <td></td>
                     }
-                    <td><button value="@color.Multiplier">x @color.Multiplier</button></td>
+                    @{
+                        var exponent = (int)Math.Log10(color.Multiplier.Value);
+                        var displayMultiplier = $"10<sup>{exponent}</sup>";
+                        <td><button value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button></td>
+                    }
                     @if (color.Tolerance != null)
                     {
-                        <td><button value="@color.Tolerance">&#177;@color.Tolerance%</button></td>
+                        <td><button onclick="setTolerance(this, 6)" value="@color.Tolerance%">&#177;@color.Tolerance%</button></td>
                     }
                     else
                     {
@@ -243,7 +270,7 @@
                     }
                     @if (color.TempCoefficient != null)
                     {
-                        <td><button value="@color.TempCoefficient">&#177;@color.TempCoefficient</button></td>
+                        <td><button class="tempCoefficient" onclick="setTempCoef(this)" value="&#177;@color.TempCoefficient">&#177;@color.TempCoefficient</button></td>
                     }
                     else
                     {
@@ -255,3 +282,137 @@
         </table>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        function setTolerance(button, index){
+            let input = document.getElementById(`tolerance-${index}`);
+            input.value = button.value;
+            document.querySelectorAll(`#tolerance-${index}`).forEach(button => {
+                button.classList.remove('active')
+            })
+            button.classList.add('active');
+        }
+        function setTempCoef(button){
+            let input = document.getElementById(`tempcoef-6`);
+            input.value = button.value;
+            document.querySelectorAll('.tempCoefficient').forEach(button => {
+                button.classList.remove('active')
+            })
+            button.classList.add('active');
+        }
+
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Attach click handler to all tables
+            ['#three', '#four', '#five', '#six'].forEach((tabId, i) => {
+                const tabContent = document.querySelector(tabId);
+                const table = tabContent.querySelector('table');
+
+                table.addEventListener('click', function (e) {
+                    const button = e.target.closest("button");
+                    if (!button) return;
+
+                    // Remove active from any other button in the same cell (column-wise)
+                    const td = button.closest("td");
+                    const cellIndex = Array.from(td.parentNode.children).indexOf(td);
+
+                    table.querySelectorAll(`tbody tr td:nth-child(${cellIndex + 1}) button.active`)
+                        .forEach(btn => btn.classList.remove("active"));
+
+                    button.classList.add("active");
+
+                    // Calculate resistance after selection
+                    const index = i + 3; // maps to 3, 4, 5, 6
+                    updateResistanceFromTable(tabContent, index);
+                });
+            });
+
+            function updateResistanceFromTable(tabContent, index) {
+                const resistanceInput = document.getElementById(`resistance-${index}`);
+                const minInput = document.getElementById(`minimum-${index}`);
+                const maxInput = document.getElementById(`maximum-${index}`);
+                const tolInput = document.getElementById(`tolerance-${index}`);
+
+                let tolerance = tolInput?.value ? parseFloat(tolInput.value) : null;
+                if(index === 3){
+                    tolerance = 20;
+                }
+
+                const columnIndexes = index >= 5 ? [1, 2, 3, 4] : [1, 2, 3];
+                const activeButtons = getActiveButtonsByColumn(tabContent, columnIndexes);
+
+                const isFiveOrSixBand = index >= 5;
+
+                // Not enough data yet
+                if ((!isFiveOrSixBand && activeButtons.length < 3) ||
+                    (isFiveOrSixBand && activeButtons.length < 4)) {
+                    resistanceInput.value = '';
+                    minInput.value = '';
+                    maxInput.value = '';
+                    return;
+                }
+
+                const digits = Array.from(activeButtons)
+                    .slice(0, isFiveOrSixBand ? 3 : 2)
+                    .map(btn => btn.value)
+                    .join('');
+
+                const multiplier = parseFloat(activeButtons[isFiveOrSixBand ? 3 : 2].value);
+                const resistance = parseInt(digits) * multiplier;
+
+                resistanceInput.value = formatResistance(resistance);
+
+                if (tolerance != null && !isNaN(tolerance)) {
+                    const min = resistance * (1 - tolerance / 100.00);
+                    const max = resistance * (1 + tolerance / 100.00);
+                    minInput.value = formatResistance(min);
+                    maxInput.value = formatResistance(max);
+                } else {
+                    minInput.value = '';
+                    maxInput.value = '';
+                }
+            }
+
+            function formatResistance(value) {
+                let formatted = '';
+                if (value >= 1_000_000_000) {
+                    formatted = (value / 1_000_000_000).toFixed(2) + ' GΩ';
+                } else if (value >= 1_000_000) {
+                    formatted = (value / 1_000_000).toFixed(2) + ' MΩ';
+                } else if (value >= 1_000) {
+                    formatted = (value / 1_000).toFixed(2) + ' kΩ';
+                } else {
+                    formatted = value.toFixed(2) + ' Ω';
+                }
+
+                // Replace dot with comma for Bulgarian-style decimal separator
+                return formatted.replace('.', ',');
+            }
+
+
+            function getActiveButtonsByColumn(tabContent, columnIndexes) {
+                const activeButtons = [];
+
+                columnIndexes.forEach(index => {
+                    const rows = tabContent.querySelectorAll('tbody tr');
+                    for (let row of rows) {
+                        const cell = row.querySelectorAll('td')[index];
+                        if (!cell) continue;
+                        const btn = cell.querySelector('button.active');
+                        if (btn) {
+                            activeButtons.push(btn);
+                            break; // take only the first active button in this column
+                        }
+                    }
+                });
+
+                return activeButtons;
+            }
+
+        });
+    </script>
+
+}
