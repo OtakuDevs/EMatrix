@@ -39,7 +39,7 @@ public class InventoryController : Controller
         });
     }
 
-    public async Task<IActionResult> UpdateInventoryItem(string id, string nameAlias, string descriptionAlias)
+    public async Task<IActionResult> UpdateInventoryItem(string id, string? nameAlias, string? descriptionAlias)
     {
         try
         {

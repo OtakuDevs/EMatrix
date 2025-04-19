@@ -6,11 +6,7 @@
     <!-- Tabs -->
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <a class="tab-link active" id="3-band" data-bs-toggle="tab" href="#three" role="tab"
-               aria-controls="three" aria-selected="true">3 ленти</a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="tab-link" id="4-band" data-bs-toggle="tab" href="#four" role="tab"
+            <a class="tab-link active" id="4-band" data-bs-toggle="tab" href="#four" role="tab"
                aria-controls="four" aria-selected="false">4 ленти</a>
         </li>
         <li class="nav-item" role="presentation">
@@ -26,21 +22,66 @@
 </div>
 <!-- Tab Content -->
 <div class="tab-content">
-    <div class="tab-pane fade show active" id="three" role="tabpanel" aria-labelledby="3-band">
-        <div class="resistor-values mt-3">
-            <input id="resistance-3" class="form-control mb-2" placeholder="Съпротивление (Ω)" />
-
-            <input id="minimum-3" class="form-control mb-2" placeholder="Минимална стойност (Ω)" />
-
-            <input id="maximum-3" class="form-control mb-2" placeholder="Максимална стойност (Ω)" />
+    <div class="tab-pane fade show active" id="four" role="tabpanel" aria-labelledby="4-band">
+        <div class="header">
+            <div class="resistor-values mt-3">
+                <div class="form-floating">
+                    <input id="resistance-4" class="form-control" placeholder="Съпротивление (Ω)"/>
+                    <label for="resistance-4" class="form-label">Съпротивление (Ω)</label>
+                </div>
+                <div class="form-floating">
+                    <input id="tolerance-4" class="form-control" placeholder="Толеранс (%)"/>
+                    <label for="tolerance-4" class="form-label">Толеранс (%)</label>
+                </div>
+                <div class="form-floating">
+                    <input id="minimum-4" class="form-control" placeholder="Минимална стойност (Ω)"/>
+                    <label for="minimum-4" class="form-label">Минимална стойност (Ω)</label>
+                </div>
+                <div class="form-floating">
+                    <input id="maximum-4" class="form-control" placeholder="Максимална стойност (Ω)"/>
+                    <label for="maximum-4" class="form-label">Максимална стойност (Ω)</label>
+                </div>
+            </div>
+            <div class="text-center mt-3 align-content-center">
+                <svg id="resistor" class="resistor four-band" viewBox="0 0 2120.2 561.31"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path class="wire" d="m0 253.72 332.37-3e-5 1e-5 51.99-332.37 2e-5 -1e-5 -51.99"></path>
+                    <path class="wire" d="m2120.2 253.72-332.37-2e-5v51.99l332.37 3e-5v-51.99"></path>
+                    <path class="bg-shadow" d="m227.47 253.72h104.91l2e-5 51.99h-104.91l-1e-5 -51.99"></path>
+                    <path class="bg-shadow" d="m1892.8 253.72h-104.91l-1e-4 51.99h104.91v-51.99"></path>
+                    <path class="bg-shadow"
+                          d="m1063.8 486.94c-87.741 7.1e-4 -175.48 10.288-225.89 30.861-122.21 49.879-147.9 43.21-228.36 43.211-153.87-7e-4 -279.76-127.38-279.76-281.25 0 0-7e-4 -7.1e-4 -7e-4 -7.1e-4 -7.1e-4 -153.87 125.89-279.76 279.76-279.76 109.79-7.1e-4 127.63 17.99 262.81 52.835 51.077 13.169 121.26 19.752 191.44 19.752 70.18 0 140.36-6.5832 191.44-19.752 135.18-34.844 153.02-52.836 262.81-52.835 153.87 7e-4 279.76 125.89 279.76 279.76l-8e-4 7.1e-4c0 153.87-125.89 281.25-279.76 281.25-80.455 0-106.15 6.6687-228.36-43.211-50.405-20.573-138.15-30.86-225.89-30.861v7e-4"></path>
+                    <path class="bg"
+                          d="m1797.8 280.65h-1468c0.4872-153.47 126.19-280.36 279.76-280.36 80.455 7.1e-4 106.15-6.668 228.36 43.211 50.405 20.574 138.15 30.86 225.89 30.861 87.741-7.1e-4 175.48-10.288 225.89-30.86 122.21-49.879 147.9-43.211 228.36-43.211 153.57 1e-3 279.27 126.89 279.76 280.36v3e-3"></path>
+                    <path id="band-41" fill="transparent"
+                          d="m630.77 558.7c-50.677 2.7256-82.168-6.0818-120-18.233v-519.52c40.726-15.03 76.888-19.865 119.9-18.076"
+                          class="band-1" style="fill: rgb(111, 76, 66);"></path>
+                    <path id="band-42" fill="transparent"
+                          d="m836.24 514.66c-50.824 20.859-73.898 28.465-119.8 39.328l-0.19741-547.19c41.4 10.178 82.573 21.482 119.88 39.169"
+                          class="band-2" style="fill: rgb(0, 0, 0);"></path>
+                    <path id="band-43" fill="transparent"
+                          d="m1041.1 484.78c-39.23-1.317-77.402 4.3294-119.39 8.6549l0.20203-427.29c39.242 3.4816 78.29 9.0387 119.8 8.3637"
+                          class="band-multiplier" style="fill: rgb(0, 0, 0);"></path>
+                    <path id="band-44" fill="transparent"
+                          d="m1127.2 73.833c41.917-3.578 84.064-7.0925 119.8-16.083l0.2041 443.94c-38.112-7.6271-73.308-12.975-119.8-15.989"
+                          class=""></path>
+                    <path id="band-45" fill="transparent"
+                          d="m1367.2 19.053c48.003-16.084 93.446-16.76 149.48-15.176l-0.2543 553.98c-68.741 1.7022-90.386 0.7517-149.75-15.784"
+                          class="band-tolerance" style="fill: rgb(111, 76, 66);"></path>
+                    <path id="band-46" fill="transparent"
+                          d="m1568.5 7.2581c46.565 5.4942 94.348 35.467 119.59 53.244l-0.2034 439.1c-30.947 25.336-83.104 49.876-119.8 54.704"
+                          class="band-tcr"></path>
+                </svg>
+            </div>
         </div>
         <table class="table table-bordered">
             <thead>
             <tr>
                 <th>Цвят</th>
-                <th>Първа</th>
-                <th>Втора</th>
-                <th>x &#8486;</th>
+                <th>Първи цвят</th>
+                <th>Втори цвят</th>
+                <th>Трети цвят</th>
+                <th>Четвърти цвят</th>
             </tr>
             </thead>
             <tbody>
@@ -50,83 +91,45 @@
                     <td class="@color.Class">@color.Color</td>
                     @if (color.FirstDigit != null)
                     {
-                        <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 41)"
+                                    value="@color.FirstDigit">@color.FirstDigit</button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                     @if (color.SecondDigit != null)
                     {
-                        <td><button value="@color.SecondDigit">@color.SecondDigit</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 42)"
+                                    value="@color.SecondDigit">@color.SecondDigit</button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                     @{
                         var exponent = (int)Math.Log10(color.Multiplier.Value);
                         var displayMultiplier = $"10<sup>{exponent}</sup>";
-                        <td><button value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button></td>
-                    }
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-    <div class="tab-pane fade" id="four" role="tabpanel" aria-labelledby="4-band">
-        <div class="resistor-values mt-3">
-            <input id="resistance-4" class="form-control mb-2" placeholder="Съпротивление (Ω)" />
-
-            <input id="tolerance-4" class="form-control mb-2" placeholder="Толеранс (%)" />
-
-            <input id="minimum-4" class="form-control mb-2" placeholder="Минимална стойност (Ω)" />
-
-            <input id="maximum-4" class="form-control mb-2" placeholder="Максимална стойност (Ω)" />
-        </div>
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Цвят</th>
-                <th>Първа</th>
-                <th>Втора</th>
-                <th>x &#8486;</th>
-                <th>Толеранс</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var color in Model)
-            {
-                <tr>
-                    <td class="@color.Class">@color.Color</td>
-                    @if (color.FirstDigit != null)
-                    {
-                        <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                    @if (color.SecondDigit != null)
-                    {
-                        <td><button value="@color.SecondDigit">@color.SecondDigit</button></td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                    @{
-                        var exponent = (int)Math.Log10(color.Multiplier.Value);
-                        var displayMultiplier = $"10<sup>{exponent}</sup>";
-                        <td><button value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 43)"
+                                    value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button>
+                        </td>
                     }
                     @if (color.Tolerance != null)
                     {
-                        <td><button onclick="setTolerance(this, 4)" value="@color.Tolerance%">&#177;@color.Tolerance%</button></td>
+                        <td>
+                            <button onclick="setTolerance(this, 4); updateBandColor('@color.Class', 45)"
+                                    value="@color.Tolerance%">&#177;@color.Tolerance%
+                            </button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                 </tr>
             }
@@ -134,24 +137,67 @@
         </table>
     </div>
     <div class="tab-pane fade" id="five" role="tabpanel" aria-labelledby="5-band">
-        <div class="resistor-values mt-3">
-            <input id="resistance-5" class="form-control mb-2" placeholder="Съпротивление (Ω)" />
-
-            <input id="tolerance-5" class="form-control mb-2" placeholder="Толеранс (%)" />
-
-            <input id="minimum-5" class="form-control mb-2" placeholder="Минимална стойност (Ω)" />
-
-            <input id="maximum-5" class="form-control mb-2" placeholder="Максимална стойност (Ω)" />
+        <div class="header">
+            <div class="resistor-values mt-3">
+                <div class="form-floating">
+                    <input id="resistance-5" class="form-control" placeholder="Съпротивление (Ω)"/>
+                    <label for="resistance-5" class="form-label">Съпротивление (Ω)</label>
+                </div>
+                <div class="form-floating">
+                    <input id="tolerance-5" class="form-control" placeholder="Толеранс (%)"/>
+                    <label for="tolerance-5" class="form-label">Толеранс (%)</label>
+                </div>
+                <div class="form-floating">
+                    <input id="minimum-5" class="form-control" placeholder="Минимална стойност (Ω)"/>
+                    <label for="minimum-5" class="form-label">Минимална стойност (Ω)</label>
+                </div>
+                <div class="form-floating">
+                    <input id="maximum-5" class="form-control" placeholder="Максимална стойност (Ω)"/>
+                    <label for="maximum-5" class="form-label">Максимална стойност (Ω)</label>
+                </div>
+            </div>
+            <div class="text-center mt-3 align-content-center">
+                <svg class="resistor five-band" viewBox="0 0 2120.2 561.31"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path class="wire" d="m0 253.72 332.37-3e-5 1e-5 51.99-332.37 2e-5 -1e-5 -51.99"></path>
+                    <path class="wire" d="m2120.2 253.72-332.37-2e-5v51.99l332.37 3e-5v-51.99"></path>
+                    <path class="bg-shadow" d="m227.47 253.72h104.91l2e-5 51.99h-104.91l-1e-5 -51.99"></path>
+                    <path class="bg-shadow" d="m1892.8 253.72h-104.91l-1e-4 51.99h104.91v-51.99"></path>
+                    <path class="bg-shadow"
+                          d="m1063.8 486.94c-87.741 7.1e-4 -175.48 10.288-225.89 30.861-122.21 49.879-147.9 43.21-228.36 43.211-153.87-7e-4 -279.76-127.38-279.76-281.25 0 0-7e-4 -7.1e-4 -7e-4 -7.1e-4 -7.1e-4 -153.87 125.89-279.76 279.76-279.76 109.79-7.1e-4 127.63 17.99 262.81 52.835 51.077 13.169 121.26 19.752 191.44 19.752 70.18 0 140.36-6.5832 191.44-19.752 135.18-34.844 153.02-52.836 262.81-52.835 153.87 7e-4 279.76 125.89 279.76 279.76l-8e-4 7.1e-4c0 153.87-125.89 281.25-279.76 281.25-80.455 0-106.15 6.6687-228.36-43.211-50.405-20.573-138.15-30.86-225.89-30.861v7e-4"></path>
+                    <path class="bg"
+                          d="m1797.8 280.65h-1468c0.4872-153.47 126.19-280.36 279.76-280.36 80.455 7.1e-4 106.15-6.668 228.36 43.211 50.405 20.574 138.15 30.86 225.89 30.861 87.741-7.1e-4 175.48-10.288 225.89-30.86 122.21-49.879 147.9-43.211 228.36-43.211 153.57 1e-3 279.27 126.89 279.76 280.36v3e-3"></path>
+                    <path id="band-51" fill="transparent"
+                          d="m630.77 558.7c-50.677 2.7256-82.168-6.0818-120-18.233v-519.52c40.726-15.03 76.888-19.865 119.9-18.076"
+                          class="band-1" style="fill: rgb(111, 76, 66);"></path>
+                    <path id="band-52" fill="transparent"
+                          d="m836.24 514.66c-50.824 20.859-73.898 28.465-119.8 39.328l-0.19741-547.19c41.4 10.178 82.573 21.482 119.88 39.169"
+                          class="band-2" style="fill: rgb(0, 0, 0);"></path>
+                    <path id="band-53" fill="transparent"
+                          d="m1041.1 484.78c-39.23-1.317-77.402 4.3294-119.39 8.6549l0.20203-427.29c39.242 3.4816 78.29 9.0387 119.8 8.3637"
+                          class="band-multiplier" style="fill: rgb(0, 0, 0);"></path>
+                    <path id="band-54" fill="transparent"
+                          d="m1127.2 73.833c41.917-3.578 84.064-7.0925 119.8-16.083l0.2041 443.94c-38.112-7.6271-73.308-12.975-119.8-15.989"
+                          class="" style="fill: rgb(0, 0, 0);"></path>
+                    <path id="band-55" fill="transparent"
+                          d="m1367.2 19.053c48.003-16.084 93.446-16.76 149.48-15.176l-0.2543 553.98c-68.741 1.7022-90.386 0.7517-149.75-15.784"
+                          class="band-tolerance" style="fill: rgb(111, 76, 66);"></path>
+                    <path id="band-56" fill="transparent"
+                          d="m1568.5 7.2581c46.565 5.4942 94.348 35.467 119.59 53.244l-0.2034 439.1c-30.947 25.336-83.104 49.876-119.8 54.704"
+                          class="band-tcr"></path>
+                </svg>
+            </div>
         </div>
+
         <table class="table table-bordered">
             <thead>
             <tr>
                 <th>Цвят</th>
-                <th>Първа</th>
-                <th>Втора</th>
-                <th>Трета</th>
-                <th>x &#8486;</th>
-                <th>Толеранс</th>
+                <th>Първи цвят</th>
+                <th>Втори цвят</th>
+                <th>Трети цвят</th>
+                <th>Четвърти цвят</th>
+                <th>Пети цвят</th>
             </tr>
             </thead>
             <tbody>
@@ -161,40 +207,56 @@
                     <td class="@color.Class">@color.Color</td>
                     @if (color.FirstDigit != null)
                     {
-                        <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 51)"
+                                    value="@color.FirstDigit">@color.FirstDigit</button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                     @if (color.SecondDigit != null)
                     {
-                        <td><button value="@color.SecondDigit">@color.SecondDigit</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 52)"
+                                    value="@color.SecondDigit">@color.SecondDigit</button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                     @if (color.ThirdDigit != null)
                     {
-                        <td><button value="@color.ThirdDigit">@color.ThirdDigit</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 53)"
+                                    value="@color.ThirdDigit">@color.ThirdDigit</button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                     @{
                         var exponent = (int)Math.Log10(color.Multiplier.Value);
                         var displayMultiplier = $"10<sup>{exponent}</sup>";
-                        <td><button value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 54)"
+                                    value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button>
+                        </td>
                     }
                     @if (color.Tolerance != null)
                     {
-                        <td><button onclick="setTolerance(this, 5)" value="@color.Tolerance%">&#177;@color.Tolerance%</button></td>
+                        <td>
+                            <button onclick="setTolerance(this, 5) ; updateBandColor('@color.Class', 55)"
+                                    value="@color.Tolerance%">&#177;@color.Tolerance%
+                            </button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                 </tr>
             }
@@ -202,28 +264,73 @@
         </table>
     </div>
     <div class="tab-pane fade" id="six" role="tabpanel" aria-labelledby="6-band">
-        <div class="resistor-values mt-3">
-            <input id="resistance-6" class="form-control mb-2" placeholder="Съпротивление (Ω)" />
-
-            <input id="tolerance-6" class="form-control mb-2" placeholder="Толеранс (%)" />
-
-            <input id="minimum-6" class="form-control mb-2" placeholder="Минимална стойност (Ω)" />
-
-            <input id="maximum-6" class="form-control mb-2" placeholder="Максимална стойност (Ω)" />
-
-            <input id="tempcoef-6" class="form-control mb-2" placeholder="Темп. коефициент (ppm/°C)" />
+        <div class="header">
+            <div class="resistor-values mt-3">
+                <div class="form-floating">
+                    <input id="resistance-6" class="form-control" placeholder="Съпротивление (Ω)"/>
+                    <label for="resistance-6" class="form-label">Съпротивление (Ω)</label>
+                </div>
+                <div class="form-floating">
+                    <input id="tolerance-6" class="form-control" placeholder="Толеранс (%)"/>
+                    <label for="tolerance-6" class="form-label">Толеранс (%)</label>
+                </div>
+                <div class="form-floating">
+                    <input id="minimum-6" class="form-control" placeholder="Минимална стойност (Ω)"/>
+                    <label for="minimum-6" class="form-label">Минимална стойност (Ω)</label>
+                </div>
+                <div class="form-floating">
+                    <input id="maximum-6" class="form-control" placeholder="Максимална стойност (Ω)"/>
+                    <label for="maximum-6" class="form-label">Максимална стойност (Ω)</label>
+                </div>
+                <div class="form-floating">
+                    <input id="tempcoef-6" class="form-control" placeholder="Темп. коефициент (ppm/°C)"/>
+                    <label for="tempcoef-6" class="form-label">Темп. коефициент (ppm/°C)</label>
+                </div>
+            </div>
+            <div class="text-center mt-3 align-content-center">
+                <svg class="resistor five-band" viewBox="0 0 2120.2 561.31"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path class="wire" d="m0 253.72 332.37-3e-5 1e-5 51.99-332.37 2e-5 -1e-5 -51.99"></path>
+                    <path class="wire" d="m2120.2 253.72-332.37-2e-5v51.99l332.37 3e-5v-51.99"></path>
+                    <path class="bg-shadow" d="m227.47 253.72h104.91l2e-5 51.99h-104.91l-1e-5 -51.99"></path>
+                    <path class="bg-shadow" d="m1892.8 253.72h-104.91l-1e-4 51.99h104.91v-51.99"></path>
+                    <path class="bg-shadow"
+                          d="m1063.8 486.94c-87.741 7.1e-4 -175.48 10.288-225.89 30.861-122.21 49.879-147.9 43.21-228.36 43.211-153.87-7e-4 -279.76-127.38-279.76-281.25 0 0-7e-4 -7.1e-4 -7e-4 -7.1e-4 -7.1e-4 -153.87 125.89-279.76 279.76-279.76 109.79-7.1e-4 127.63 17.99 262.81 52.835 51.077 13.169 121.26 19.752 191.44 19.752 70.18 0 140.36-6.5832 191.44-19.752 135.18-34.844 153.02-52.836 262.81-52.835 153.87 7e-4 279.76 125.89 279.76 279.76l-8e-4 7.1e-4c0 153.87-125.89 281.25-279.76 281.25-80.455 0-106.15 6.6687-228.36-43.211-50.405-20.573-138.15-30.86-225.89-30.861v7e-4"></path>
+                    <path class="bg"
+                          d="m1797.8 280.65h-1468c0.4872-153.47 126.19-280.36 279.76-280.36 80.455 7.1e-4 106.15-6.668 228.36 43.211 50.405 20.574 138.15 30.86 225.89 30.861 87.741-7.1e-4 175.48-10.288 225.89-30.86 122.21-49.879 147.9-43.211 228.36-43.211 153.57 1e-3 279.27 126.89 279.76 280.36v3e-3"></path>
+                    <path id="band-61" fill="transparent"
+                          d="m630.77 558.7c-50.677 2.7256-82.168-6.0818-120-18.233v-519.52c40.726-15.03 76.888-19.865 119.9-18.076"
+                          class="band-1" style="fill: rgb(111, 76, 66);"></path>
+                    <path id="band-62" fill="transparent"
+                          d="m836.24 514.66c-50.824 20.859-73.898 28.465-119.8 39.328l-0.19741-547.19c41.4 10.178 82.573 21.482 119.88 39.169"
+                          class="band-2" style="fill: rgb(0, 0, 0);"></path>
+                    <path id="band-63" fill="transparent"
+                          d="m1041.1 484.78c-39.23-1.317-77.402 4.3294-119.39 8.6549l0.20203-427.29c39.242 3.4816 78.29 9.0387 119.8 8.3637"
+                          class="band-multiplier" style="fill: rgb(0, 0, 0);"></path>
+                    <path id="band-64" fill="transparent"
+                          d="m1127.2 73.833c41.917-3.578 84.064-7.0925 119.8-16.083l0.2041 443.94c-38.112-7.6271-73.308-12.975-119.8-15.989"
+                          class="" style="fill: rgb(0, 0, 0);"></path>
+                    <path id="band-65" fill="transparent"
+                          d="m1367.2 19.053c48.003-16.084 93.446-16.76 149.48-15.176l-0.2543 553.98c-68.741 1.7022-90.386 0.7517-149.75-15.784"
+                          class="band-tolerance" style="fill: rgb(111, 76, 66);"></path>
+                    <path id="band-66" fill="transparent"
+                          d="m1568.5 7.2581c46.565 5.4942 94.348 35.467 119.59 53.244l-0.2034 439.1c-30.947 25.336-83.104 49.876-119.8 54.704"
+                          class="band-tcr" style="fill: rgb(111, 76, 66);"></path>
+                </svg>
+            </div>
         </div>
+
 
         <table class="table table-bordered">
             <thead>
             <tr>
                 <th>Цвят</th>
-                <th>Първа</th>
-                <th>Втора</th>
-                <th>Трета</th>
-                <th>x &#8486;</th>
-                <th>Толеранс</th>
-                <th>Темп. коеф.(ppm/°C)</th>
+                <th>Първи цвят</th>
+                <th>Втори цвят</th>
+                <th>Трети цвят</th>
+                <th>Четвърти цвят</th>
+                <th>Пети цвят</th>
+                <th>Шести цвят</th>
             </tr>
             </thead>
             <tbody>
@@ -233,48 +340,68 @@
                     <td class="@color.Class">@color.Color</td>
                     @if (color.FirstDigit != null)
                     {
-                        <td><button value="@color.FirstDigit">@color.FirstDigit</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 61)"
+                                    value="@color.FirstDigit">@color.FirstDigit</button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                     @if (color.SecondDigit != null)
                     {
-                        <td><button value="@color.SecondDigit">@color.SecondDigit</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 62)"
+                                    value="@color.SecondDigit">@color.SecondDigit</button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                     @if (color.ThirdDigit != null)
                     {
-                        <td><button value="@color.ThirdDigit">@color.ThirdDigit</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 63)"
+                                    value="@color.ThirdDigit">@color.ThirdDigit</button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                     @{
                         var exponent = (int)Math.Log10(color.Multiplier.Value);
                         var displayMultiplier = $"10<sup>{exponent}</sup>";
-                        <td><button value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button></td>
+                        <td>
+                            <button onclick="updateBandColor('@color.Class', 64)"
+                                    value="@color.Multiplier">x @Html.Raw(displayMultiplier)</button>
+                        </td>
                     }
                     @if (color.Tolerance != null)
                     {
-                        <td><button onclick="setTolerance(this, 6)" value="@color.Tolerance%">&#177;@color.Tolerance%</button></td>
+                        <td>
+                            <button onclick="setTolerance(this, 6) ; updateBandColor('@color.Class', 65)"
+                                    value="@color.Tolerance%">&#177;@color.Tolerance%
+                            </button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                     @if (color.TempCoefficient != null)
                     {
-                        <td><button class="tempCoefficient" onclick="setTempCoef(this)" value="&#177;@color.TempCoefficient">&#177;@color.TempCoefficient</button></td>
+                        <td>
+                            <button class="tempCoefficient"
+                                    onclick="setTempCoef(this) ; updateBandColor('@color.Class', 66)"
+                                    value="&#177;@color.TempCoefficient">&#177;@color.TempCoefficient</button>
+                        </td>
                     }
                     else
                     {
-                        <td></td>
+                        <td class="disabled"></td>
                     }
                 </tr>
             }
@@ -286,7 +413,7 @@
 @section Scripts
 {
     <script>
-        function setTolerance(button, index){
+        function setTolerance(button, index) {
             let input = document.getElementById(`tolerance-${index}`);
             input.value = button.value;
             document.querySelectorAll(`#tolerance-${index}`).forEach(button => {
@@ -294,7 +421,8 @@
             })
             button.classList.add('active');
         }
-        function setTempCoef(button){
+
+        function setTempCoef(button) {
             let input = document.getElementById(`tempcoef-6`);
             input.value = button.value;
             document.querySelectorAll('.tempCoefficient').forEach(button => {
@@ -303,11 +431,17 @@
             button.classList.add('active');
         }
 
+        function updateBandColor(color, index) {
+            const band = document.getElementById(`band-${index}`);
+            band.setAttribute("class", `band-${index} ${color}-band`);
+        }
+
+
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Attach click handler to all tables
-            ['#three', '#four', '#five', '#six'].forEach((tabId, i) => {
+            ['#four', '#five', '#six'].forEach((tabId, i) => {
                 const tabContent = document.querySelector(tabId);
                 const table = tabContent.querySelector('table');
 
@@ -325,7 +459,7 @@
                     button.classList.add("active");
 
                     // Calculate resistance after selection
-                    const index = i + 3; // maps to 3, 4, 5, 6
+                    const index = i + 4; //4, 5, 6
                     updateResistanceFromTable(tabContent, index);
                 });
             });
@@ -335,15 +469,10 @@
                 const minInput = document.getElementById(`minimum-${index}`);
                 const maxInput = document.getElementById(`maximum-${index}`);
                 const tolInput = document.getElementById(`tolerance-${index}`);
-
                 let tolerance = tolInput?.value ? parseFloat(tolInput.value) : null;
-                if(index === 3){
-                    tolerance = 20;
-                }
 
                 const columnIndexes = index >= 5 ? [1, 2, 3, 4] : [1, 2, 3];
                 const activeButtons = getActiveButtonsByColumn(tabContent, columnIndexes);
-
                 const isFiveOrSixBand = index >= 5;
 
                 // Not enough data yet
