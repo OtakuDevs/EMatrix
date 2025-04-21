@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EMatrix.Database.Migrations
 {
     [DbContext(typeof(EMatrixDbContext))]
-    [Migration("20250413192608_Menu-menu item-relation")]
-    partial class Menumenuitemrelation
+    [Migration("20250421150858_menu-item-updates")]
+    partial class menuitemupdates
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,6 +181,10 @@ namespace EMatrix.Database.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("MenuId")
                         .HasColumnType("integer");

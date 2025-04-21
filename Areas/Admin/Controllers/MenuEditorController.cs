@@ -104,4 +104,20 @@ public class MenuEditorController : Controller
         TempData["Success"] = "Успешна промяна на групи и подгрупи за дадената категория.";
         return RedirectToAction("GetMenuManagement");
     }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateCategoryImage(int menuItemId)
+    {
+        var form = Request.Form;
+        try
+        {
+            await _menuManageService.UpdateMenuItemImageAsync(menuItemId, form);
+            TempData["Success"] = "Успешна промяна на снимка за категория.";
+        }
+        catch (Exception e)
+        {
+            TempData["Error"] = "Неуспешна промяна на снимка за категория." + e.Message;
+        }
+        return RedirectToAction("GetMenuManagement");
+    }
 }

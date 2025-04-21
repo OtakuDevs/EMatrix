@@ -41,6 +41,10 @@
     font-size: 1.1rem;
 }
 
+.spinner-container {
+    padding: 0.45rem;
+}
+
 /* Section Update Menu Item */
 .update-menu-item {
     display: grid;

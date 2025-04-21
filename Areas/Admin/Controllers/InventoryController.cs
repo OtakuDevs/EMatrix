@@ -21,6 +21,11 @@ public class InventoryController : Controller
         return View(model);
     }
 
+    public async Task<IActionResult> GetGroupsTable()
+    {
+        return View("GetGroupsTable");
+    }
+
     public async Task<JsonResult> GetInventoryItemDetails(string id)
     {
         if (string.IsNullOrEmpty(id))
@@ -39,19 +44,19 @@ public class InventoryController : Controller
         });
     }
 
-    public async Task<IActionResult> UpdateInventoryItem(string id, string? nameAlias, string? descriptionAlias)
+    public async Task<IActionResult> UpdateInventoryItem(string id, string? nameAlias, string? descriptionAlias, float quantity, float price)
     {
         try
         {
-            await _adminInventoryService.UpdateInventoryItemAsync(id, nameAlias, descriptionAlias);
+            await _adminInventoryService.UpdateInventoryItemAsync(id, nameAlias, descriptionAlias, quantity, price);
         }
         catch (Exception)
         {
-            TempData["Error"] = "Възникна грешка при промяната на име/описание. Моля опитайте отново.";
+            TempData["Error"] = "Възникна грешка при промяната на артикул. Моля опитайте отново.";
             return RedirectToAction("GetAllInventoryItems", "Inventory");
         }
 
-        TempData["Success"] = "Успешна промяна на име/описание.";
+        TempData["Success"] = "Успешна промяна на артикул.";
         return RedirectToAction("GetAllInventoryItems", "Inventory");
     }
 }

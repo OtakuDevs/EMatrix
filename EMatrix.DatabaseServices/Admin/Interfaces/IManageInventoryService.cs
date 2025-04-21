@@ -9,5 +9,5 @@ public interface IManageInventoryService
 
     Task<JsonObject?>GetInventoryItemByIdAsync(string id);
 
-    Task UpdateInventoryItemAsync(string id, string? nameAlias, string? descriptionAlias);
+    Task UpdateInventoryItemAsync(string id, string? nameAlias, string? descriptionAlias, float quantity, float price);
 }

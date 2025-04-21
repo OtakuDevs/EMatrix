@@ -3,6 +3,7 @@ using EMatrix.Database;
 using EMatrix.DatabaseServices.Admin.Interfaces;
 using EMatrix.DataModels;
 using EMatrix.ViewModels.Admin;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 // ReSharper disable ConvertToPrimaryConstructor
@@ -27,7 +28,7 @@ public class MenuManageService : IMenuManageService
 
         var model = new MenuAdminViewModel()
         {
-            MenuItems = menu.MenuItems.ToDictionary(mi => mi.Id, mi => mi.Name),
+            MenuItems = menu.MenuItems.OrderBy(r => r.Name).ToDictionary(mi => mi.Id, mi => mi.Name),
         };
         return model;
     }
@@ -131,6 +132,46 @@ public class MenuManageService : IMenuManageService
         _context.MenuItemSubCategories.RemoveRange(menuItem.MenuItemSubCategories);
         _context.MenuItemCategories.AddRange(newCategories);
         _context.MenuItemSubCategories.AddRange(newSubCategories);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateMenuItemImageAsync(int menuItemId, IFormCollection form)
+    {
+        if(form.Files.Count == 0)
+            throw new KeyNotFoundException("Моля изберете файл.");
+        var file = form.Files["imageFile"];
+        if(file == null)
+            throw new KeyNotFoundException("Моля изберете файл.");
+        var fileExtension = Path.GetExtension(file.FileName);
+        if(fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
+            throw new ArgumentException("Само файлове с разширение .jpg, .jpeg, .png са разрешени!");
+
+        var menuItem = _context.MenuItems.FirstOrDefault(m => m.Id == menuItemId);
+        if(menuItem == null)
+            throw new KeyNotFoundException("Категорията не е открита.");
+        if (!string.IsNullOrEmpty(menuItem.Icon))
+        {
+            // Convert relative path to absolute path
+            var iconPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", menuItem.Icon.TrimStart('/'));
+
+            if (File.Exists(iconPath))
+            {
+                File.Delete(iconPath);
+            }
+
+            // Clear the icon field
+            menuItem.Icon = string.Empty;
+        }
+        var fileName = Path.GetFileName(file.FileName);
+        var relativePath = Path.Combine("/images/menu-categories", fileName);
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath.TrimStart('/'));
+
+        await using (var stream = new FileStream(path, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+        menuItem.Icon = relativePath;
+        _context.MenuItems.Update(menuItem);
         await _context.SaveChangesAsync();
     }
 }

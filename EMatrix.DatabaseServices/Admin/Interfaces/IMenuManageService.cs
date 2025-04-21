@@ -1,4 +1,5 @@
 using EMatrix.ViewModels.Admin;
+using Microsoft.AspNetCore.Http;
 
 namespace EMatrix.DatabaseServices.Admin.Interfaces;
 
@@ -15,4 +16,6 @@ public interface IMenuManageService
     Task<MenuItemAdminViewModel> GetMenuItemModelAsync(int id);
 
     Task UpdateMenuItemAssignmentsAsync(int menuItemId, string[] selectedCategories, string[] selectedSubCategories);
+
+    Task UpdateMenuItemImageAsync(int menuItemId, IFormCollection form);
 }

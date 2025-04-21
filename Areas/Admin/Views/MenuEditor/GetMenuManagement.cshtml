@@ -59,6 +59,22 @@
                            data-tooltip="Редактиране на елементи в категория">
                             <i class="bi bi-stack me-2"></i>Редакция
                         </a>
+
+                        <form asp-action="UpdateCategoryImage" method="post" enctype="multipart/form-data" class="d-inline-block">
+                            <input type="hidden" name="menuItemId" value="@item.Key" />
+
+                            <label id="upload-label-@item.Key" class="btn btn-outline-secondary me-1" data-tooltip="Обновяване на снимка">
+                                <i class="bi bi-image me-2"></i>Избери файл
+                                <input type="file" name="imageFile" accept="image/*" hidden onchange="handleFileSelect(this, @item.Key)" />
+                            </label>
+
+                            <!-- Small spinner (initially hidden) -->
+                            <div id="upload-spinner-@item.Key" class="btn btn-outline-secondary me-1 d-none spinner-container">
+                                <i class="me-2 spinner-border spinner-border-sm"></i> Обновяване...
+                            </div>
+
+                        </form>
+
                         <button
                             type="button"
                             class="btn btn-outline-secondary btn-delete"
@@ -184,4 +200,20 @@
             deleteModal.querySelector('#deleteMenuItemId').value = id;
         })
     </script>
+    <script>
+        function handleFileSelect(input, key) {
+            const label = document.getElementById(`upload-label-${key}`);
+            const spinner = document.getElementById(`upload-spinner-${key}`);
+
+            if (label && spinner) {
+                label.classList.add('d-none');
+                spinner.classList.remove('d-none');
+            }
+
+            setTimeout(() => {
+                input.form.submit();
+            }, 2000); // 2 second delay
+        }
+    </script>
+
 }

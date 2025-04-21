@@ -179,6 +179,10 @@ namespace EMatrix.Database.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("MenuId")
                         .HasColumnType("integer");
 

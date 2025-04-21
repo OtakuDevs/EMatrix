@@ -99,13 +99,15 @@ public class ManageInventoryService : IManageInventoryService
         return data;
     }
 
-    public async Task UpdateInventoryItemAsync(string id, string? nameAlias, string? descriptionAlias)
+    public async Task UpdateInventoryItemAsync(string id, string? nameAlias, string? descriptionAlias, float quantity, float price)
     {
         var item = await _context.InventoryItems.FirstOrDefaultAsync(i => i.Id == id);
         if (item == null)
             throw new KeyNotFoundException();
         item.NameAlias = string.IsNullOrEmpty(nameAlias) ? item.NameAlias : nameAlias;
         item.Description = string.IsNullOrEmpty(descriptionAlias) ? item.Description : descriptionAlias;
+        item.Quantity = quantity;
+        item.Price = price;
         _context.InventoryItems.Update(item);
         await _context.SaveChangesAsync();
     }

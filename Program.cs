@@ -1,6 +1,8 @@
 using EMatrix.Database;
 using EMatrix.DatabaseServices.Admin;
 using EMatrix.DatabaseServices.Admin.Interfaces;
+using EMatrix.DatabaseServices.Public;
+using EMatrix.DatabaseServices.Public.Interfaces;
 using EMatrix.DataModels;
 using EMatrix.UtilityServices;
 using EMatrix.UtilityServices.Interfaces;
@@ -40,6 +42,7 @@ public class Program
         builder.Services.AddScoped<IMenuManageService, MenuManageService>();
         builder.Services.AddScoped<IManageInventoryService, ManageInventoryService>();
         builder.Services.AddScoped<IToolsService, ToolsService>();
+        builder.Services.AddScoped<IProductsService, ProductsService>();
 
         var app = builder.Build();
 

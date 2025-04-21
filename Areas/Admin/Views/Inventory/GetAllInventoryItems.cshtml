@@ -1,6 +1,6 @@
 @model EMatrix.ViewModels.Admin.InventoryIndexViewModel
 
-<link rel="stylesheet" href="~/css/admin-panel-invetory-customization.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/admin-panel-inventory-customization.css" asp-append-version="true"/>
 
 @{
     ViewData["Title"] = "Склад";
@@ -23,7 +23,10 @@
             <div class="alert alert-danger">@TempData["Error"]</div>
         }
 
-        <h2>Складови наличности</h2>
+        <div class="d-flex mb-3">
+            <h2>Складови наличности</h2>
+            <a class="btn btn-secondary ms-auto h-75" asp-action="GetGroupsTable">Режим Групи</a>
+        </div>
         <div class="search-bar">
             <input type="text" class="form-control"
                    name="search"
@@ -89,9 +92,12 @@
                             class="btn btn-outline-secondary me-1 btn-update"
                             data-bs-toggle="modal"
                             data-bs-target="#updateModal"
+                            data-item-id="@item.Id"
                             data-item-name="@item.NameAlias"
                             data-item-description="@item.DescriptionAlias"
-                            data-tooltip="Промяна на име/описание">
+                            data-item-quantity="@item.Quantity"
+                            data-item-price="@item.Price"
+                            data-tooltip="Промяна на артикул">
                             <i class="bi bi-pencil me-2"></i>Промяна
                         </button>
                         <button class="btn btn-outline-secondary">Продажби</button>
@@ -174,7 +180,7 @@
         <form method="post" asp-action="UpdateInventoryItem">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updateModalLabel">Промяна на публично име/описание за артикул.</h5>
+                    <h5 class="modal-title" id="updateModalLabel">Промяна на данни за артикул.</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
                 </div>
                 <div class="modal-body">
@@ -194,6 +200,17 @@
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="newItemDescriptionAlias" name="descriptionAlias"/>
                         <label for="newItemDescriptionAlias">Ново описание (Публично)</label>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="item-quantity" name="quantity" step="any" />
+                            <label for="item-quantity">Количество</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="item-price" name="price" step="any" />
+                            <label for="item-price">Цена</label>
+                        </div>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -242,11 +259,17 @@
         const updateModal = document.getElementById('updateModal');
         updateModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
+            const id = button.getAttribute('data-item-id');
             const name = button.getAttribute('data-item-name');
             const description = button.getAttribute('data-item-description');
+            const quantity = button.getAttribute('data-item-quantity');
+            const price = button.getAttribute('data-item-price');
 
             updateModal.querySelector('#oldItemNameAlias').value = name;
             updateModal.querySelector('#oldItemDescriptionAlias').value = description;
+            updateModal.querySelector('#renameMenuItemId').value = id;
+            updateModal.querySelector('#item-quantity').value = quantity;
+            updateModal.querySelector('#item-price').value = parseFloat(price).toFixed(2);
         });
     </script>
     <script>

@@ -85,4 +85,8 @@
       <ProjectReference Include="EMatrix.ViewModels\EMatrix.ViewModels.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\images\menu-categories\" />
+    </ItemGroup>
+
 </Project>
