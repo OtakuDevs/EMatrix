@@ -3,6 +3,7 @@ using System;
 using EMatrix.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EMatrix.Database.Migrations
 {
     [DbContext(typeof(EMatrixDbContext))]
-    partial class EMatrixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422180304_menu-item-subgroup-set2")]
+    partial class menuitemsubgroupset2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -260,9 +263,8 @@ namespace EMatrix.Database.Migrations
                     b.Property<int>("MenuItemSubGroupSetId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("SubCategoryId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("SubCategoryId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("SubCategoryName")
                         .IsRequired()

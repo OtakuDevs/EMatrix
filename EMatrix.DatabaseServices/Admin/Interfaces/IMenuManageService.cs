@@ -15,7 +15,7 @@ public interface IMenuManageService
 
     Task<MenuItemAdminViewModel> GetMenuItemModelAsync(int id);
 
-    Task UpdateMenuItemAssignmentsAsync(int menuItemId, string[] selectedCategories, string[] selectedSubCategories);
+    Task UpdateMenuItemAssignmentsAsync(int menuItemId, string[] selectedCategories, string[] selectedSubCategories, string groupedSubCategoriesJson);
 
     Task UpdateMenuItemImageAsync(int menuItemId, IFormCollection form);
 }

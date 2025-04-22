@@ -25,6 +25,10 @@ public class EMatrixDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<MenuItemSubCategory> MenuItemSubCategories { get; set; }
 
+    public DbSet<MenuItemSubGroupSet> MenuItemSubGroupSets { get; set; }
+
+    public DbSet<MenuItemSubGroupSetEntry> MenuItemSubGroupSetEntries { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         var entityRelations = new EntityRelations();

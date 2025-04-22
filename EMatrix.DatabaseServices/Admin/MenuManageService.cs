@@ -1,7 +1,9 @@
+using System.Text.Json;
 using EMatrix.Constants;
 using EMatrix.Database;
 using EMatrix.DatabaseServices.Admin.Interfaces;
 using EMatrix.DataModels;
+using EMatrix.DataModels.DTOs;
 using EMatrix.ViewModels.Admin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -96,6 +98,7 @@ public class MenuManageService : IMenuManageService
         var menuItem = await _context.MenuItems
             .Include(m => m.MenuItemCategories).ThenInclude(mc => mc.Category)
             .Include(m => m.MenuItemSubCategories).ThenInclude(msc => msc.SubCategory)
+            .Include(m => m.SubGroupSets).ThenInclude(e => e.Entries)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (menuItem == null)
@@ -107,6 +110,7 @@ public class MenuManageService : IMenuManageService
             Name = menuItem.Name,
             Categories = menuItem.MenuItemCategories.ToDictionary(mc => mc.CategoryId, mc => mc.Category.Name),
             SubCategories = menuItem.MenuItemSubCategories.ToDictionary(msc => msc.SubCategoryId, msc => msc.SubCategory.Name),
+            GroupedSubCategories = menuItem.SubGroupSets.ToDictionary(r => r.Name, r => r.Entries.ToDictionary(c => c.SubCategoryId, c => c.SubCategoryName)),
             AvailableCategories = availableCategories,
             AvailableSubCategories = availableSubCategories
         };
@@ -114,26 +118,68 @@ public class MenuManageService : IMenuManageService
         return model;
     }
 
-    public async  Task UpdateMenuItemAssignmentsAsync(int menuItemId, string[] selectedCategories, string[] selectedSubCategories)
+    public async Task UpdateMenuItemAssignmentsAsync(
+        int menuItemId,
+        string[] selectedCategories,
+        string[] selectedSubCategories,
+        string groupedSubCategoriesJson)
     {
         var menuItem = await _context.MenuItems
             .Include(c => c.MenuItemCategories)
             .Include(c => c.MenuItemSubCategories)
+            .Include(c => c.SubGroupSets)
+            .ThenInclude(s => s.Entries)
             .FirstOrDefaultAsync(m => m.Id == menuItemId);
-        if(menuItem == null)
+
+        if (menuItem == null)
             throw new KeyNotFoundException();
 
+        // Prepare new entries
         var newCategories = selectedCategories
-            .Select(cat => new MenuItemCategory() { MenuItemId = menuItemId, CategoryId = cat }).ToList();
-        var newSubCategories = selectedSubCategories
-            .Select(scat => new MenuItemSubCategory() { MenuItemId = menuItemId, SubCategoryId = scat }).ToList();
+            .Select(cat => new MenuItemCategory { MenuItemId = menuItemId, CategoryId = cat })
+            .ToList();
 
+        var newSubCategories = selectedSubCategories
+            .Select(scat => new MenuItemSubCategory { MenuItemId = menuItemId, SubCategoryId = scat })
+            .ToList();
+
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        var groupedSubCategories = JsonSerializer.Deserialize<Dictionary<string, List<SubGroupEntryDto>>>(groupedSubCategoriesJson ?? "{}", options);
+
+        // Remove old entries
         _context.MenuItemCategories.RemoveRange(menuItem.MenuItemCategories);
         _context.MenuItemSubCategories.RemoveRange(menuItem.MenuItemSubCategories);
+        _context.MenuItemSubGroupSets.RemoveRange(menuItem.SubGroupSets);
+
+        // Add new standard category/subcategory links
         _context.MenuItemCategories.AddRange(newCategories);
         _context.MenuItemSubCategories.AddRange(newSubCategories);
+
+        foreach (var group in groupedSubCategories)
+        {
+            var set = new MenuItemSubGroupSet
+            {
+                MenuItemId = menuItemId,
+                Name = group.Key,
+                Entries = group.Value
+                    .GroupBy(e => e.Id) // remove duplicates by ID
+                    .Select(g => new MenuItemSubGroupSetEntry
+                    {
+                        SubCategoryId = g.Key,
+                        SubCategoryName = g.First().Name
+                    }).ToList()
+            };
+
+            _context.MenuItemSubGroupSets.Add(set);
+        }
+
         await _context.SaveChangesAsync();
     }
+
 
     public async Task UpdateMenuItemImageAsync(int menuItemId, IFormCollection form)
     {

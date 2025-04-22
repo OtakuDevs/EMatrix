@@ -12,6 +12,8 @@ public class MenuItemAdminViewModel
 
     public Dictionary<string, string> SubCategories { get; set; } = new Dictionary<string, string>();
 
+    public Dictionary<string, Dictionary<string,string>> GroupedSubCategories { get; set; } = new();
+
     public List<SelectListItem> AvailableCategories { get; set; } = new List<SelectListItem>();
 
     public List<SelectListItem> AvailableSubCategories { get; set; } = new List<SelectListItem>();

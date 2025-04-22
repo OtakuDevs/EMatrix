@@ -27,6 +27,23 @@ public class InventoryController : Controller
         return View(model);
     }
 
+    [HttpPost]
+    public async Task<IActionResult> UpdateGroup(string id, string type, string nameAlias)
+    {
+        try
+        {
+            await _adminInventoryService.UpdateGroupAsync(id, type,nameAlias);
+        }
+        catch (Exception)
+        {
+            TempData["Error"] = "Неуспешна промяна на публично име. Моля опитайте отново.";
+            return RedirectToAction("GetGroupsTable");
+        }
+
+        TempData["Success"] = "Успешна промяна на публично име.";
+        return RedirectToAction("GetGroupsTable");
+    }
+
     public async Task<JsonResult> GetInventoryItemDetails(string id)
     {
         if (string.IsNullOrEmpty(id))

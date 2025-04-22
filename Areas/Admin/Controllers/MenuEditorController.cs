@@ -90,11 +90,12 @@ public class MenuEditorController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateMenuItemAssignments(int menuItemId, string[] selectedCategories, string[] selectedSubCategories)
+    public async Task<IActionResult> UpdateMenuItemAssignments(int menuItemId,
+        string[] selectedCategories, string[] selectedSubCategories, string groupedSubCategoriesJson)
     {
         try
         {
-            await _menuManageService.UpdateMenuItemAssignmentsAsync(menuItemId, selectedCategories, selectedSubCategories);
+            await _menuManageService.UpdateMenuItemAssignmentsAsync(menuItemId, selectedCategories, selectedSubCategories, groupedSubCategoriesJson);
         }
         catch (Exception)
         {

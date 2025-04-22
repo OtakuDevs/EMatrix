@@ -9,6 +9,8 @@ public interface IManageInventoryService
 
     Task<InventoryGroupsViewModel> GetGroupsIndexAsync();
 
+    Task UpdateGroupAsync(string id, string type, string nameAlias);
+
     Task<JsonObject?>GetInventoryItemByIdAsync(string id);
 
     Task UpdateInventoryItemAsync(string id, string? nameAlias, string? descriptionAlias, float quantity, float price);

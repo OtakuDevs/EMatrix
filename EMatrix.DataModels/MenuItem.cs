@@ -19,4 +19,7 @@ public class MenuItem
     public ICollection<MenuItemCategory> MenuItemCategories { get; set; } = new List<MenuItemCategory>();
 
     public ICollection<MenuItemSubCategory> MenuItemSubCategories { get; set; } = new List<MenuItemSubCategory>();
+
+    public ICollection<MenuItemSubGroupSet> SubGroupSets { get; set; } = new List<MenuItemSubGroupSet>();
+
 }

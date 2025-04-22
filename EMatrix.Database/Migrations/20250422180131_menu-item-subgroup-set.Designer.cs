@@ -3,6 +3,7 @@ using System;
 using EMatrix.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EMatrix.Database.Migrations
 {
     [DbContext(typeof(EMatrixDbContext))]
-    partial class EMatrixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422180131_menu-item-subgroup-set")]
+    partial class menuitemsubgroupset
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,7 +249,7 @@ namespace EMatrix.Database.Migrations
 
                     b.HasIndex("MenuItemId");
 
-                    b.ToTable("MenuItemSubGroupSets");
+                    b.ToTable("MenuItemSubGroupSet");
                 });
 
             modelBuilder.Entity("EMatrix.DataModels.MenuItemSubGroupSetEntry", b =>
@@ -260,9 +263,8 @@ namespace EMatrix.Database.Migrations
                     b.Property<int>("MenuItemSubGroupSetId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("SubCategoryId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("SubCategoryId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("SubCategoryName")
                         .IsRequired()
@@ -272,7 +274,7 @@ namespace EMatrix.Database.Migrations
 
                     b.HasIndex("MenuItemSubGroupSetId");
 
-                    b.ToTable("MenuItemSubGroupSetEntries");
+                    b.ToTable("MenuItemSubGroupSetEntry");
                 });
 
             modelBuilder.Entity("EMatrix.DataModels.SubCategory", b =>

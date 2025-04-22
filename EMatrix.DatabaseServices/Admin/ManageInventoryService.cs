@@ -97,6 +97,31 @@ public class ManageInventoryService : IManageInventoryService
         return model;
     }
 
+    public async Task UpdateGroupAsync(string id, string type, string nameAlias)
+    {
+        switch (type)
+        {
+            case "group":
+            {
+                var category = await _context.Categories.FindAsync(id);
+                if (category == null)
+                    throw new KeyNotFoundException();
+                category.Alias = nameAlias;
+                break;
+            }
+            case "subgroup":
+            {
+                var subCategory = await _context.SubCategories.FindAsync(id);
+                if (subCategory == null)
+                    throw new KeyNotFoundException();
+                subCategory.Alias = nameAlias;
+                break;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<JsonObject?> GetInventoryItemByIdAsync(string id)
     {
         var item = await _context.InventoryItems
