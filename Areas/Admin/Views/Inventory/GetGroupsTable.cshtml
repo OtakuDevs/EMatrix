@@ -1,0 +1,153 @@
+@model EMatrix.ViewModels.Admin.InventoryGroupsViewModel
+
+<link rel="stylesheet" href="~/css/admin-panel-inventory-customization.css" asp-append-version="true"/>
+
+@{
+    ViewData["Title"] = "Склад";
+    ViewData["ActiveTab"] = "Inventory";
+}
+
+<div class="container">
+    <!-- Tabs -->
+    @await Html.PartialAsync("_AdminPanelTabsPartial")
+
+    <div class="content-wrapper groups-table">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <div class="d-flex mb-3">
+            <h2>Редактор групи/подгрупи</h2>
+            <a class="btn btn-secondary ms-auto h-75" asp-action="GetAllInventoryItems">Режим Склад</a>
+        </div>
+        <table class="table">
+            <colgroup>
+                <col style="width: 5%">
+                <col style="width: 40%">
+                <col style="width: 40%">
+                <col style="width: 15%">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>Код</th>
+                <th>Название (Датабаза)</th>
+                <th>Название (Публично)</th>
+                <th>Опции</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var group in Model.Groups)
+            {
+                var collapseId = $"subgroup-{group.Id}";
+                <tr class="table-light toggle-row expandable-row" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId" style="cursor:pointer;">
+                    <td>@group.Id</td>
+                    <td>@group.Name</td>
+                    <td>@group.Alias</td>
+                    <td class="text-center">
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary me-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#updateModal"
+                            data-tooltip="Промяна публично название."
+                            data-id="@group.Id"
+                            data-alias="@group.Alias"
+                            data-type="group">
+                            <i class="bi bi-pencil me-2"></i>Промяна
+                        </button>
+                    </td>
+                </tr>
+                <tr class="no-border">
+                    <td colspan="4" class="p-0">
+                        <div id="@collapseId" class="collapse transition-height">
+                            <table class="table table-sm mb-0">
+                                <colgroup>
+                                    <col style="width: 5%">
+                                    <col style="width: 40%">
+                                    <col style="width: 40%">
+                                    <col style="width: 15%">
+                                </colgroup>
+                                @foreach (var sub in group.SubGroups)
+                                {
+                                    <tr class="table-secondary">
+                                        <td>@sub.Id</td>
+                                        <td>@sub.Name</td>
+                                        <td>@sub.Alias</td>
+                                        <td class="text-center">
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-secondary me-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#updateModal"
+                                                data-tooltip="Промяна публично название."
+                                                data-id="@group.Id"
+                                                data-alias="@group.Alias"
+                                                data-type="subgroup">
+                                                <i class="bi bi-pencil me-2"></i>Промяна
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" asp-action="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Промяна на название (Публично).</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="renameGroupId"/>
+                    <input type="hidden" name="type" id="renameGroupType"/>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="oldNameAlias" readonly disabled/>
+                        <label for="oldNameAlias">Текущо име (Публично)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="newItemNameAlias" name="nameAlias"/>
+                        <label for="newItemNameAlias">Ново име (Публично)</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Отказ</button>
+                    <button type="submit" class="btn btn-success">Запази</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        const updateModal = document.getElementById('updateModal');
+        updateModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const alias = button.getAttribute('data-alias');
+            const type = button.getAttribute('data-type');
+
+            updateModal.querySelector('#oldNameAlias').value = alias;
+            updateModal.querySelector('#renameGroupType').value = type;
+            updateModal.querySelector('#renameGroupId').value = id;
+        });
+    </script>
+}

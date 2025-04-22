@@ -7,6 +7,8 @@ public interface IManageInventoryService
 {
     Task<InventoryIndexViewModel> GetInventoryIndexAsync(int page = 1, string search = "", string category = "", string subCategory = "");
 
+    Task<InventoryGroupsViewModel> GetGroupsIndexAsync();
+
     Task<JsonObject?>GetInventoryItemByIdAsync(string id);
 
     Task UpdateInventoryItemAsync(string id, string? nameAlias, string? descriptionAlias, float quantity, float price);

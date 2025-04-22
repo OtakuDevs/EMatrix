@@ -74,6 +74,29 @@ public class ManageInventoryService : IManageInventoryService
         return model;
     }
 
+    public async Task<InventoryGroupsViewModel> GetGroupsIndexAsync()
+    {
+        var groups = await _context.Categories
+            .Include(c => c.SubCategories)
+            .ToListAsync();
+        var model = new InventoryGroupsViewModel()
+        {
+            Groups = groups.Select(g => new GroupViewModel()
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Alias = g.Alias,
+                SubGroups = g.SubCategories.Select(s => new SubGroupViewModel()
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Alias = s.Alias,
+                }).ToList(),
+            }).ToList()
+        };
+        return model;
+    }
+
     public async Task<JsonObject?> GetInventoryItemByIdAsync(string id)
     {
         var item = await _context.InventoryItems

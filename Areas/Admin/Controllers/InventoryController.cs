@@ -23,7 +23,8 @@ public class InventoryController : Controller
 
     public async Task<IActionResult> GetGroupsTable()
     {
-        return View("GetGroupsTable");
+        var model = await _adminInventoryService.GetGroupsIndexAsync();
+        return View(model);
     }
 
     public async Task<JsonResult> GetInventoryItemDetails(string id)
