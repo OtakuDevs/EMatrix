@@ -10,4 +10,6 @@ public class MenuItemViewModel
 
     public Dictionary<string, string> SubCategories { get; set; } = new Dictionary<string, string>();
 
+    public Dictionary<int, string> SubGroupSets { get; set; } = new Dictionary<int, string>();
+
 }

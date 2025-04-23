@@ -17,11 +17,17 @@ public class ProductsService : IProductsService
     public async Task<ProductsIndexViewModel> GetProductsAsync(int id)
     {
         var menu = await _context.Menus
-            .Include(r => r.MenuItems)
-            .ThenInclude(r => r.MenuItemCategories).ThenInclude(c => c.Category)
-            .Include(c => c.MenuItems).ThenInclude(c => c.MenuItemSubCategories)
-            .ThenInclude(c => c.SubCategory)
-            .FirstOrDefaultAsync(r => r.Id == id);
+            .Include(m => m.MenuItems)
+            .ThenInclude(mi => mi.MenuItemCategories)
+            .ThenInclude(mic => mic.Category)
+            .Include(m => m.MenuItems)
+            .ThenInclude(mi => mi.MenuItemSubCategories)
+            .ThenInclude(misc => misc.SubCategory)
+            .Include(m => m.MenuItems)
+            .ThenInclude(mi => mi.SubGroupSets)
+            .ThenInclude(sgs => sgs.Entries)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
         var model = new ProductsIndexViewModel();
         foreach (var menuItem in menu.MenuItems)
         {
@@ -31,6 +37,7 @@ public class ProductsService : IProductsService
                 Name = menuItem.Name,
                 Categories = menuItem.MenuItemCategories.ToDictionary(c => c.CategoryId, c => c.Category.Alias),
                 SubCategories = menuItem.MenuItemSubCategories.ToDictionary(c => c.SubCategoryId, c => c.SubCategory.Alias),
+                SubGroupSets = menuItem.SubGroupSets.ToDictionary(r => r.Id, r => r.Name)
             });
             model.MenuItemsGrid.Add(new MenuItemPreviewModel()
             {

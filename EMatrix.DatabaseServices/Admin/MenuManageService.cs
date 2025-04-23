@@ -71,6 +71,19 @@ public class MenuManageService : IMenuManageService
         var menuItem = _context.MenuItems.FirstOrDefault(m => m.Id == id);
         if(menuItem == null)
             throw new KeyNotFoundException();
+        if (!string.IsNullOrEmpty(menuItem.Icon))
+        {
+            // Convert relative path to absolute path
+            var iconPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", menuItem.Icon.TrimStart('/'));
+
+            if (File.Exists(iconPath))
+            {
+                File.Delete(iconPath);
+            }
+
+            // Clear the icon field
+            menuItem.Icon = string.Empty;
+        }
         _context.MenuItems.Remove(menuItem);
         await _context.SaveChangesAsync();
     }

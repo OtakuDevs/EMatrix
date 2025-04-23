@@ -6,7 +6,7 @@
     ViewData["Title"] = "Продукти";
 }
 
-<div class="container">
+<div class="container-fluid mt-3 products-container">
     <div class="products-preview">
         <div class="accordion" id="menuAccordion">
             @for (int i = 0; i < Model.Menu.Count; i++)
@@ -43,6 +43,17 @@
                                         <a class="nav-link" asp-area="" asp-controller="Products" asp-action="GetProducts"
                                            asp-route-categoryId="@subCategory.Key">
                                             @subCategory.Value
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                            <ul class="navbar-nav">
+                                @foreach (var set in menuItem.SubGroupSets)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="" asp-controller="Products" asp-action="GetProducts"
+                                           asp-route-categoryId="@set.Key">
+                                            @set.Value
                                         </a>
                                     </li>
                                 }
