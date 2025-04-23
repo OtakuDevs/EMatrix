@@ -7,8 +7,13 @@
 }
 
 <div class="container-fluid mt-3 products-container">
-    <div class="products-preview">
+    <div class="products-header">
+        <div class="search-bar">
+            <input class="form-control" id="search" name="search" placeholder="Търси продукти.."/>
+            <button type="submit" class="btn btn-info text-light">Търси</button>
+        </div>
         <div class="accordion" id="menuAccordion">
+            <h4>Категории продукти</h4>
             @for (int i = 0; i < Model.Menu.Count; i++)
             {
                 var menuItem = Model.Menu[i];
@@ -29,7 +34,8 @@
                                 @foreach (var category in menuItem.Categories)
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-area="" asp-controller="Products" asp-action="GetProducts"
+                                        <a class="nav-link" asp-area="" asp-controller="Products"
+                                           asp-action="GetProducts"
                                            asp-route-categoryId="@category.Key">
                                             @category.Value
                                         </a>
@@ -40,7 +46,8 @@
                                 @foreach (var subCategory in menuItem.SubCategories)
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-area="" asp-controller="Products" asp-action="GetProducts"
+                                        <a class="nav-link" asp-area="" asp-controller="Products"
+                                           asp-action="GetProducts"
                                            asp-route-categoryId="@subCategory.Key">
                                             @subCategory.Value
                                         </a>
@@ -51,7 +58,8 @@
                                 @foreach (var set in menuItem.SubGroupSets)
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-area="" asp-controller="Products" asp-action="GetProducts"
+                                        <a class="nav-link" asp-area="" asp-controller="Products"
+                                           asp-action="GetProducts"
                                            asp-route-categoryId="@set.Key">
                                             @set.Value
                                         </a>
@@ -63,15 +71,15 @@
                 </div>
             }
         </div>
-        <div class="menu-as-grid">
-            @foreach (var cat in Model.MenuItemsGrid)
-            {
-                <div>
-                    <img src="@Url.Content(cat.Icon)" alt="icon"/>
-                    <p>@cat.Name</p>
-                </div>
-            }
-        </div>
+    </div>
+    <div class="menu-as-grid">
+        @foreach (var cat in Model.MenuItemsGrid)
+        {
+            <div>
+                <img src="@Url.Content(cat.Icon)" alt="icon"/>
+                <p>@cat.Name</p>
+            </div>
+        }
     </div>
 </div>
 
