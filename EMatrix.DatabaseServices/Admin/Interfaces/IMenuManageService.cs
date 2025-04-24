@@ -7,7 +7,7 @@ public interface IMenuManageService
 {
     Task<MenuAdminViewModel> GetMenu(int id);
 
-    Task<bool> AddMenuItemAsync(string name);
+    Task<bool> AddMenuItemAsync(string name, int position);
 
     Task RenameMenuItemAsync(int id, string name);
 

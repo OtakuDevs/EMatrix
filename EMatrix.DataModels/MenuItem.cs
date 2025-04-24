@@ -9,6 +9,8 @@ public class MenuItem
     [Required]
     public string Name { get; set; }
 
+    public int Order { get; set; }
+
     public int MenuId { get; set; }
 
     [Required]

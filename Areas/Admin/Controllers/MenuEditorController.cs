@@ -29,9 +29,9 @@ public class MenuEditorController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddMenuItem(string name)
+    public async Task<IActionResult> AddMenuItem(string name, int position)
     {
-        var result = await _menuManageService.AddMenuItemAsync(name);
+        var result = await _menuManageService.AddMenuItemAsync(name, position);
         if (!result)
             TempData["Error"] = $"Неуспешно добавяне на категория: {name}";
         else

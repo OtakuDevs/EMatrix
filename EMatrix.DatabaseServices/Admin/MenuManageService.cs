@@ -35,13 +35,14 @@ public class MenuManageService : IMenuManageService
         return model;
     }
 
-    public async Task<bool> AddMenuItemAsync(string name)
+    public async Task<bool> AddMenuItemAsync(string name, int position)
     {
         try
         {
             var menuItem = new MenuItem()
             {
                 Name = name,
+                Order = position,
                 MenuId = ConfigurationConstants.MenuId,
                 MenuItemCategories = new List<MenuItemCategory>(),
                 MenuItemSubCategories = new List<MenuItemSubCategory>(),

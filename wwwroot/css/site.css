@@ -21,7 +21,9 @@
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 16px;
-
+  --color-background: #b8b6a6;
+  --color-highlight: rgba(150, 101, 0, 1);
+  --font-color: rgba(69, 66, 35, 1);
 }
 
 /* === CSS Reset & Normalize === */
@@ -66,6 +68,7 @@ html {
   position: relative;
   height: 100%;
   min-height: 100%;
+  color: var(--font-color);
 }
 
 @media (min-width: 768px) {
@@ -76,7 +79,7 @@ html {
 
 body {
   margin-bottom: 60px;
-  background: rgba(0, 0, 0, .01);
+  background-color: #b8b6a6;
   height: 100%;
   min-height: 100%;
   display: flex;
@@ -85,6 +88,12 @@ body {
 
 .container, main {
   flex: 1;
+}
+
+.navbar {
+  background-color: #b8b6a6;
+  border-bottom: 1px solid rgba(150, 101, 0, 1);
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -102,6 +111,15 @@ body {
   flex-direction: column;
   border-radius: 0.5rem;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.btn-main {
+  background: rgba(150, 101, 0, 1);
+  border: none;
+  transition: background-color 0.2s ease;
+}
+.btn-main:hover {
+  background: rgba(150, 101, 0, 0.8);
 }
 
 /* Custom tooltip */

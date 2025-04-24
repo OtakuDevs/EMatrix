@@ -29,7 +29,7 @@ public class ProductsService : IProductsService
             .FirstOrDefaultAsync(m => m.Id == id);
 
         var model = new ProductsIndexViewModel();
-        foreach (var menuItem in menu.MenuItems)
+        foreach (var menuItem in menu.MenuItems.OrderBy(m => m.Order))
         {
             model.Menu.Add(new MenuItemViewModel()
             {
