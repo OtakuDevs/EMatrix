@@ -92,8 +92,8 @@ body {
 
 .navbar {
   background-color: #b8b6a6;
-  border-bottom: 1px solid rgba(150, 101, 0, 1);
-  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  border-bottom: 2px solid rgba(150, 101, 0, 1);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -103,6 +103,8 @@ body {
 /* Wrapper for each section inside the container */
 
 .content-wrapper {
+  background-color: #d8d6c7;
+  border: 1px solid #a9a796;
   max-width: 90vw;
   width: 100%;
   padding: 1rem;
