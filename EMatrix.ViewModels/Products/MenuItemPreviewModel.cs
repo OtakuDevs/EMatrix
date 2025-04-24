@@ -8,4 +8,5 @@ public class MenuItemPreviewModel
 
     public string Icon { get; set; } = null!;
 
+    public ICollection<string> Items { get; set; } = new List<string>();
 }

@@ -34,6 +34,7 @@
             <thead>
             <tr>
                 <th>Категория</th>
+                <th>Позиция</th>
                 <th>Опции</th>
             </tr>
             </thead>
@@ -41,35 +42,37 @@
             @foreach (var item in Model.MenuItems)
             {
                 <tr>
-                    <td>@item.Value</td>
+                    <td>@item.Name</td>
+                    <td>@item.Position</td>
                     <td>
                         <button
                             type="button"
                             class="btn btn-outline-secondary me-1 btn-rename"
                             data-bs-toggle="modal"
                             data-bs-target="#renameModal"
-                            data-menu-item-id="@item.Key"
-                            data-menu-item-name="@item.Value"
-                            data-tooltip="Редактиране име на категория">
-                            <i class="bi bi-pencil me-2"></i>Преименуване
+                            data-menu-item-id="@item.Id"
+                            data-menu-item-name="@item.Name"
+                            data-menu-item-position="@item.Position"
+                            data-tooltip="Редактиране име или позиция на категория">
+                            <i class="bi bi-pencil me-2"></i>Промяна
                         </button>
 
-                        <a href="@Url.Action("UpdateMenuItemCategories", new { menuItemId = item.Key })"
+                        <a href="@Url.Action("UpdateMenuItemCategories", new { menuItemId = item.Id })"
                            class="btn btn-outline-secondary me-1"
                            data-tooltip="Редактиране на елементи в категория">
                             <i class="bi bi-stack me-2"></i>Редакция
                         </a>
 
                         <form asp-action="UpdateCategoryImage" method="post" enctype="multipart/form-data" class="d-inline-block">
-                            <input type="hidden" name="menuItemId" value="@item.Key" />
+                            <input type="hidden" name="menuItemId" value="@item.Id" />
 
-                            <label id="upload-label-@item.Key" class="btn btn-outline-secondary me-1" data-tooltip="Обновяване на снимка">
+                            <label id="upload-label-@item.Id" class="btn btn-outline-secondary me-1" data-tooltip="Обновяване на снимка">
                                 <i class="bi bi-image me-2"></i>Избери файл
-                                <input type="file" name="imageFile" accept="image/*" hidden onchange="handleFileSelect(this, @item.Key)" />
+                                <input type="file" name="imageFile" accept="image/*" hidden onchange="handleFileSelect(this, @item.Id)" />
                             </label>
 
                             <!-- Small spinner (initially hidden) -->
-                            <div id="upload-spinner-@item.Key" class="btn btn-outline-secondary me-1 d-none spinner-container">
+                            <div id="upload-spinner-@item.Id" class="btn btn-outline-secondary me-1 d-none spinner-container">
                                 <i class="me-2 spinner-border spinner-border-sm"></i> Обновяване...
                             </div>
 
@@ -80,7 +83,7 @@
                             class="btn btn-outline-secondary btn-delete"
                             data-bs-toggle="modal"
                             data-bs-target="#deleteModal"
-                            data-menu-item-id="@item.Key"
+                            data-menu-item-id="@item.Id"
                             data-tooltip="Изтриване на категория">
                             <i class="bi bi-trash me-2"></i>Изтриване
                         </button>
@@ -135,8 +138,16 @@
                         <label for="oldMenuItemName">Текущо име</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="renameMenuItemName" name="name" required />
+                        <input type="text" class="form-control" id="renameMenuItemName" name="name" />
                         <label for="renameMenuItemName">Ново име</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="oldMenuItemPosition" readonly disabled/>
+                        <label for="oldMenuItemName">Текущa позиция</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="newMenuItemPosition" name="position" />
+                        <label for="renameMenuItemName">Нова позиция</label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -192,9 +203,11 @@
             const button = event.relatedTarget;
             const id = button.getAttribute('data-menu-item-id');
             const name = button.getAttribute('data-menu-item-name');
+            const position = button.getAttribute('data-menu-item-position');
 
             renameModal.querySelector('#renameMenuItemId').value = id;
             renameModal.querySelector('#oldMenuItemName').value = name;
+            renameModal.querySelector('#oldMenuItemPosition').value = position;
         });
 
         const deleteModal = document.getElementById('deleteModal');

@@ -30,7 +30,13 @@ public class MenuManageService : IMenuManageService
 
         var model = new MenuAdminViewModel()
         {
-            MenuItems = menu.MenuItems.OrderBy(r => r.Name).ToDictionary(mi => mi.Id, mi => mi.Name),
+            MenuItems = menu.MenuItems.OrderBy(r => r.Name).Select(r => new MenuItemRowModel()
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Position = r.Order
+            })
+            .ToList(),
         };
         return model;
     }
@@ -57,12 +63,13 @@ public class MenuManageService : IMenuManageService
         return true;
     }
 
-    public async Task RenameMenuItemAsync(int id, string name)
+    public async Task RenameMenuItemAsync(int id, string? name, int position = 0)
     {
         var menuItem = _context.MenuItems.FirstOrDefault(m => m.Id == id);
         if(menuItem == null)
             throw new KeyNotFoundException();
-        menuItem.Name = name;
+        menuItem.Name = string.IsNullOrEmpty(name) ? menuItem.Name : name;
+        menuItem.Order = position > 0 ? position : menuItem.Order;
         _context.MenuItems.Update(menuItem);
         await _context.SaveChangesAsync();
     }

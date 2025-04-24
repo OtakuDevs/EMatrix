@@ -9,7 +9,7 @@ public interface IMenuManageService
 
     Task<bool> AddMenuItemAsync(string name, int position);
 
-    Task RenameMenuItemAsync(int id, string name);
+    Task RenameMenuItemAsync(int id, string? name, int position = 0);
 
     Task DeleteMenuItemAsync(int id);
 

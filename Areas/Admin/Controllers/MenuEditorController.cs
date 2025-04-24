@@ -41,19 +41,19 @@ public class MenuEditorController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> RenameMenuItem(int id, string name)
+    public async Task<IActionResult> RenameMenuItem(int id, string? name, int position = 0)
     {
         try
         {
-            await _menuManageService.RenameMenuItemAsync(id, name);
+            await _menuManageService.RenameMenuItemAsync(id, name, position);
         }
         catch (Exception)
         {
-            TempData["Error"] = "Неуспешно преименуване на категория.";
+            TempData["Error"] = "Неуспешно промяна име / позиция на категория.";
             return RedirectToAction("GetMenuManagement");
         }
 
-        TempData["Success"] = "Успешно преименуване на категория.";
+        TempData["Success"] = "Успешно промяна име / позиция на категория.";
         return RedirectToAction("GetMenuManagement");
     }
 

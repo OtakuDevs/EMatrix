@@ -43,7 +43,12 @@ public class ProductsService : IProductsService
             {
                 Id = menuItem.Id,
                 Name = menuItem.Name,
-                Icon = $"{menuItem.Icon}"
+                Icon = $"{menuItem.Icon}",
+                Items = menuItem.MenuItemCategories
+                    .Select(c => c.Category.Alias)
+                    .Concat(menuItem.MenuItemSubCategories.Select(c => c.SubCategory.Alias))
+                    .Concat(menuItem.SubGroupSets.Select(r => r.Name))
+                    .ToList()
             });
         }
         return model;

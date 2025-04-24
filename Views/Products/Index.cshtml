@@ -78,15 +78,56 @@
                 }
             </div>
         </div>
-        <div class="menu-as-grid">
-            @foreach (var cat in Model.MenuItemsGrid)
-            {
-                <div>
-                    <img src="@Url.Content(cat.Icon)" alt="icon"/>
-                    <p>@cat.Name</p>
-                </div>
-            }
+        <div class="products-body">
+            <div class="grid-header">
+                <button id="gridViewBtn" class="btn btn-outline-secondary btn-sm me-2">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                </button>
+                <button id="listViewBtn" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+            <div id="menuView" class="menu-as-grid grid-view">
+                @foreach (var cat in Model.MenuItemsGrid)
+                {
+                    <div class="menu-card">
+                        <img src="@Url.Content(cat.Icon)" alt="icon"/>
+                        <div class="menu-content">
+                            <p class="menu-title">@cat.Name</p>
+                            <ul class="menu-preview-items">
+                                @foreach (var item in cat.Items)
+                                {
+                                    <li>@item</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+            </div>
+
+
         </div>
     </div>
 </div>
 
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const menuView = document.getElementById("menuView");
+            const gridViewBtn = document.getElementById("gridViewBtn");
+            const listViewBtn = document.getElementById("listViewBtn");
+
+            gridViewBtn.addEventListener("click", function () {
+                menuView.classList.add("menu-as-grid");
+                menuView.classList.remove("menu-as-list");
+            });
+
+            listViewBtn.addEventListener("click", function () {
+                menuView.classList.add("menu-as-list");
+                menuView.classList.remove("menu-as-grid");
+            });
+        });
+    </script>
+
+}
