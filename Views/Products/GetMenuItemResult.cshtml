@@ -1,0 +1,21 @@
+@model EMatrix.ViewModels.Products.MenuItemOptionViewModel
+
+
+<div class="simple-view-card">
+    <img src="@Url.Content(Model.Icon)" alt="icon" class="simple-view-icon" />
+    <h2 class="simple-view-title">@Model.Name</h2>
+
+    @if (Model.Options.Any())
+    {
+        <ul class="simple-view-options">
+            @foreach (var option in Model.Options)
+            {
+                <li><strong>@option.Key:</strong> @option.Value</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="simple-view-no-options">Няма налични опции.</p>
+    }
+</div>

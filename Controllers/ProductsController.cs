@@ -18,4 +18,10 @@ public class ProductsController : Controller
         var model = await _productsService.GetProductsAsync(1);
         return View(model);
     }
+
+    public async Task<IActionResult> GetMenuItemResult(string? categoryId, string? subCategoryId, int subGroupSetId = 0)
+    {
+        var model = await _productsService.GetMenuItemResultAsync(categoryId, subCategoryId, subGroupSetId);
+        return View(model);
+    }
 }

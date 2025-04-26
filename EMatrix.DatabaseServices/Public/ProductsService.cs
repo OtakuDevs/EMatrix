@@ -53,4 +53,42 @@ public class ProductsService : IProductsService
         }
         return model;
     }
+
+    public async Task<MenuItemOptionViewModel> GetMenuItemResultAsync(string? categoryId, string? subCategoryId, int subGroupSetId = 0)
+    {
+        var model = new MenuItemOptionViewModel();
+        if (categoryId != null)
+        {
+            var category = await _context.Categories
+                .Include(c => c.SubCategories)
+                .FirstOrDefaultAsync(c => c.Id == categoryId);
+            if (category == null)
+                throw new KeyNotFoundException($"Category with id {categoryId} not found");
+            model.Name = category.Name;
+            model.Options = category.SubCategories.ToDictionary(sc => sc.Id, sc => sc.Alias);
+            return model;
+        }
+
+        if (subCategoryId != null)
+        {
+            var subCategory = await _context.SubCategories.FirstOrDefaultAsync(s => s.Id == subCategoryId);
+            if (subCategory == null)
+                throw new KeyNotFoundException($"Category with id {subCategoryId} not found");
+            model.Name = subCategory.Name;
+            return model;
+        }
+
+        if (subGroupSetId != 0)
+        {
+            var set = await _context.MenuItemSubGroupSets
+                .Include(sgs => sgs.Entries)
+                .FirstOrDefaultAsync(s => s.Id == subGroupSetId);
+            if(set == null)
+                throw new KeyNotFoundException($"Sub group set with id {subGroupSetId} not found");
+            model.Name = set.Name;
+            model.Options = set.Entries.ToDictionary(s => s.SubCategoryId, s => s.SubCategoryName);
+            return model;
+        }
+        throw new KeyNotFoundException($"Category with id {categoryId} not found");
+    }
 }
