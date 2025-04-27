@@ -14,7 +14,7 @@ public class ProductsService : IProductsService
         _context = context;
     }
 
-    public async Task<ProductsIndexViewModel> GetProductsAsync(int id)
+    public async Task<ProductsPrimaryViewModel> GetPrimaryViewAsync(int id)
     {
         var menu = await _context.Menus
             .Include(m => m.MenuItems)
@@ -28,7 +28,7 @@ public class ProductsService : IProductsService
             .ThenInclude(sgs => sgs.Entries)
             .FirstOrDefaultAsync(m => m.Id == id);
 
-        var model = new ProductsIndexViewModel();
+        var model = new ProductsPrimaryViewModel();
         foreach (var menuItem in menu.MenuItems.OrderBy(m => m.Order))
         {
             model.Menu.Add(new MenuItemViewModel()
@@ -54,41 +54,64 @@ public class ProductsService : IProductsService
         return model;
     }
 
-    public async Task<MenuItemOptionViewModel> GetMenuItemResultAsync(string? categoryId, string? subCategoryId, int subGroupSetId = 0)
+    public async Task<ProductsSecondaryViewModel> GetSecondaryViewByMenuItemId(int id)
     {
-        var model = new MenuItemOptionViewModel();
-        if (categoryId != null)
-        {
-            var category = await _context.Categories
-                .Include(c => c.SubCategories)
-                .FirstOrDefaultAsync(c => c.Id == categoryId);
-            if (category == null)
-                throw new KeyNotFoundException($"Category with id {categoryId} not found");
-            model.Name = category.Name;
-            model.Options = category.SubCategories.ToDictionary(sc => sc.Id, sc => sc.Alias);
-            return model;
-        }
+       var menuItem = await _context.MenuItems
+           .Include(c => c.MenuItemCategories)
+           .ThenInclude(mic => mic.Category)
+           .Include(sc => sc.MenuItemSubCategories)
+           .ThenInclude(sm => sm.SubCategory)
+           .Include(st => st.SubGroupSets)
+           .ThenInclude(sgs => sgs.Entries)
+           .FirstOrDefaultAsync(m => m.Id == id);
+       var model = new ProductsSecondaryViewModel()
+       {
+           Title = menuItem.Name,
+           Categories = menuItem.MenuItemCategories.ToDictionary(c => c.CategoryId, c => c.Category.Alias),
+           SubCategories = menuItem.MenuItemSubCategories.ToDictionary(c => c.SubCategoryId, c => c.SubCategory.Alias),
+           Sets = menuItem.SubGroupSets.ToDictionary(r => r.Id.ToString(), r => r.Name),
+           Mode = SecondaryViewMode.MenuItem
+       };
+       return model;
+    }
 
-        if (subCategoryId != null)
+    public async Task<ProductsSecondaryViewModel> GetSecondaryViewByCategoryId(string id)
+    {
+        var category = await _context.Categories
+            .Include(c => c.SubCategories)
+            .FirstOrDefaultAsync(c => c.Id == id);
+        var model = new ProductsSecondaryViewModel()
         {
-            var subCategory = await _context.SubCategories.FirstOrDefaultAsync(s => s.Id == subCategoryId);
-            if (subCategory == null)
-                throw new KeyNotFoundException($"Category with id {subCategoryId} not found");
-            model.Name = subCategory.Name;
-            return model;
-        }
+            Title = category.Name,
+            SubCategories = category.SubCategories.ToDictionary(c => c.Id, c => c.Alias),
+            Mode = SecondaryViewMode.Category
+        };
+        return model;
+    }
 
-        if (subGroupSetId != 0)
+    public async Task<ProductsSecondaryViewModel> GetSecondaryViewBySubCategoryId(string id)
+    {
+        var subCategory = await _context.SubCategories
+            .FirstOrDefaultAsync(c => c.Id == id);
+        var model = new ProductsSecondaryViewModel()
         {
-            var set = await _context.MenuItemSubGroupSets
-                .Include(sgs => sgs.Entries)
-                .FirstOrDefaultAsync(s => s.Id == subGroupSetId);
-            if(set == null)
-                throw new KeyNotFoundException($"Sub group set with id {subGroupSetId} not found");
-            model.Name = set.Name;
-            model.Options = set.Entries.ToDictionary(s => s.SubCategoryId, s => s.SubCategoryName);
-            return model;
-        }
-        throw new KeyNotFoundException($"Category with id {categoryId} not found");
+            Title = subCategory.Name,
+            Mode = SecondaryViewMode.SubCategory
+        };
+        return model;
+    }
+
+    public async Task<ProductsSecondaryViewModel> GetSecondaryViewBySubGroupSetId(int id)
+    {
+        var set = await _context.MenuItemSubGroupSets
+            .Include(s => s.Entries)
+            .FirstOrDefaultAsync(s => s.Id == id);
+        var model = new ProductsSecondaryViewModel()
+        {
+            Title = set.Name,
+            Sets = set.Entries.ToDictionary(s => s.SubCategoryId, s => s.SubCategoryName),
+            Mode = SecondaryViewMode.Set
+        };
+        return model;
     }
 }

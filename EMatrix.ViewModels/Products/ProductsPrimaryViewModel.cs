@@ -1,6 +1,6 @@
 namespace EMatrix.ViewModels.Products;
 
-public class ProductsIndexViewModel
+public class ProductsPrimaryViewModel
 {
     public List<MenuItemViewModel> Menu { get; set; } = new List<MenuItemViewModel>();
 

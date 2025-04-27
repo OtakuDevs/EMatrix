@@ -1,21 +1,184 @@
-@model EMatrix.ViewModels.Products.MenuItemOptionViewModel
+@using EMatrix.ViewModels.Products
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model EMatrix.ViewModels.Products.ProductsSecondaryViewModel
 
+<link rel="stylesheet" href="~/css/products-secondary-customization.css" asp-append-version="true"/>
 
-<div class="simple-view-card">
-    <img src="@Url.Content(Model.Icon)" alt="icon" class="simple-view-icon" />
-    <h2 class="simple-view-title">@Model.Name</h2>
+@{
+    ViewData["Title"] = Model.Title;
+}
 
-    @if (Model.Options.Any())
-    {
-        <ul class="simple-view-options">
-            @foreach (var option in Model.Options)
-            {
-                <li><strong>@option.Key:</strong> @option.Value</li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p class="simple-view-no-options">Няма налични опции.</p>
-    }
+<div class="container-fluid mt-3 products-container">
+    <ul class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
+        <span><i class="bi bi-chevron-right"></i></span>
+        <li><a href="@Url.Action("Index", "Products")">Продукти</a></li>
+        <span><i class="bi bi-chevron-right"></i></span>
+        <li>@Model.Title</li>
+    </ul>
+
+    <div class="products-preview">
+        <div class="products-header">
+            <h2>@Model.Title</h2>
+        </div>
+
+        <div class="products-body">
+            @* LEFT: ACCORDION *@
+            <div class="accordion" id="secondaryAccordion">
+                @switch (Model.Mode)
+                {
+                    case SecondaryViewMode.MenuItem:
+                        <h4>Категории</h4>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="cat-@category.Key">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-cat-@category.Key">
+                                        @category.Value
+                                    </button>
+                                </h2>
+                                <div id="collapse-cat-@category.Key" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <!-- maybe list subcategories later -->
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <h4>Подкатегории</h4>
+                        @foreach (var sub in Model.SubCategories)
+                        {
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="sub-@sub.Key">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-sub-@sub.Key">
+                                        @sub.Value
+                                    </button>
+                                </h2>
+                                <div id="collapse-sub-@sub.Key" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <!-- maybe show products under subcategory later -->
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <h4>Комплекти</h4>
+                        @foreach (var set in Model.Sets)
+                        {
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="set-@set.Key">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-set-@set.Key">
+                                        @set.Value
+                                    </button>
+                                </h2>
+                                <div id="collapse-set-@set.Key" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <!-- maybe grouped entries later -->
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        break;
+
+                    case SecondaryViewMode.Category:
+                        <h4>Подкатегории</h4>
+                        @foreach (var sub in Model.SubCategories)
+                        {
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="subcat-@sub.Key">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-subcat-@sub.Key">
+                                        @sub.Value
+                                    </button>
+                                </h2>
+                                <div id="collapse-subcat-@sub.Key" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <!-- maybe list products under subcategory later -->
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        break;
+
+                    case SecondaryViewMode.SubCategory:
+                        <h4>Продукти</h4>
+                        <p>Тук ще се заредят продуктите от подкатегорията <strong>@Model.Title</strong>.</p>
+                        break;
+
+                    case SecondaryViewMode.Set:
+                        <h4>Подкатегории в комплекта</h4>
+                        @foreach (var setEntry in Model.Sets)
+                        {
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="entry-@setEntry.Key">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-entry-@setEntry.Key">
+                                        @setEntry.Value
+                                    </button>
+                                </h2>
+                                <div id="collapse-entry-@setEntry.Key" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        <!-- maybe products under subcategory here -->
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        break;
+                }
+            </div>
+
+            @* RIGHT: PREVIEW GRID (or List) *@
+            <div class="menu-as-grid grid-view" id="secondaryPreview">
+                @switch (Model.Mode)
+                {
+                    case SecondaryViewMode.MenuItem:
+                        @foreach (var sub in Model.SubCategories)
+                        {
+                            <div class="menu-card">
+                                <div class="menu-content">
+                                    <p class="menu-title">@sub.Value</p>
+                                </div>
+                            </div>
+                        }
+                        @foreach (var set in Model.Sets)
+                        {
+                            <div class="menu-card">
+                                <div class="menu-content">
+                                    <p class="menu-title">@set.Value</p>
+                                </div>
+                            </div>
+                        }
+                        break;
+
+                    case SecondaryViewMode.Category:
+                        @foreach (var sub in Model.SubCategories)
+                        {
+                            <div class="menu-card">
+                                <div class="menu-content">
+                                    <p class="menu-title">@sub.Value</p>
+                                </div>
+                            </div>
+                        }
+                        break;
+
+                    case SecondaryViewMode.SubCategory:
+                        <div class="menu-card">
+                            <div class="menu-content">
+                                <p class="menu-title">Тук ще се заредят продуктите.</p>
+                            </div>
+                        </div>
+                        break;
+
+                    case SecondaryViewMode.Set:
+                        @foreach (var entry in Model.Sets)
+                        {
+                            <div class="menu-card">
+                                <div class="menu-content">
+                                    <p class="menu-title">@entry.Value</p>
+                                </div>
+                            </div>
+                        }
+                        break;
+                }
+            </div>
+        </div>
+    </div>
 </div>

@@ -4,7 +4,13 @@ namespace EMatrix.DatabaseServices.Public.Interfaces;
 
 public interface IProductsService
 {
-    Task<ProductsIndexViewModel> GetProductsAsync(int id);
+    Task<ProductsPrimaryViewModel> GetPrimaryViewAsync(int id);
 
-    Task<MenuItemOptionViewModel> GetMenuItemResultAsync(string? categoryId, string? subCategoryId, int subGroupSetId = 0);
+    Task<ProductsSecondaryViewModel> GetSecondaryViewByMenuItemId(int id);
+
+    Task<ProductsSecondaryViewModel> GetSecondaryViewByCategoryId(string id);
+
+    Task<ProductsSecondaryViewModel> GetSecondaryViewBySubCategoryId(string id);
+
+    Task<ProductsSecondaryViewModel> GetSecondaryViewBySubGroupSetId(int id);
 }

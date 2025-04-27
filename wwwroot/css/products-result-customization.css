@@ -1,0 +1,69 @@
+
+/* Accordion styling */
+.products-body .accordion h4 {
+    font-size: 1.1rem;
+    color: rgba(69, 66, 35, 1);
+}
+
+.products-body .accordion {
+    background-color: #b8b6a6;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+}
+
+/* Spacing between items */
+.products-body .accordion .accordion-item {
+    margin-top: 0.5rem;
+    background-color: transparent;
+    border: none;
+}
+
+/* Accordion button */
+.products-body .accordion .accordion-button {
+    background-color: transparent;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    color: rgba(69, 66, 35, 1);
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.products-body .accordion .accordion-button:hover {
+    color: #b36920;
+    text-decoration: underline;
+}
+
+/* Accordion body */
+.products-body .accordion .accordion-body {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    background-color: transparent;
+    border-top: 1px solid rgba(69, 66, 35, 1);
+    border-bottom: 1px solid rgba(69, 66, 35, 1);
+}
+
+/* Nav links (same tone as button) */
+.products-body .accordion .nav-link {
+    color: rgba(69, 66, 35, 1);
+    padding: 0.25rem 0;
+    display: block;
+    transition: color 0.2s ease-in-out;
+}
+
+.products-body .accordion .nav-link:hover {
+    color: #b36920;
+    text-decoration: underline;
+}
+
+/* Chevron (using Bootstrap default but tinting via filter) */
+.products-body .accordion-button::after {
+    filter: brightness(0.7) sepia(1) hue-rotate(10deg) saturate(5);
+}
+
+/* When accordion is open */
+.products-body .accordion-button:not(.collapsed) {
+    color: #b36920;
+    font-weight: 600;
+}

@@ -1,4 +1,4 @@
-@model EMatrix.ViewModels.Products.ProductsIndexViewModel
+@model EMatrix.ViewModels.Products.ProductsPrimaryViewModel
 
 <link rel="stylesheet" href="~/css/products-preview-customization.css" asp-append-version="true"/>
 
@@ -112,7 +112,7 @@
             <div id="menuView" class="menu-as-grid grid-view">
                 @foreach (var cat in Model.MenuItemsGrid)
                 {
-                    <div class="menu-card">
+                    <a href="@Url.Action("GetMenuItemResult", new { menuItemId = cat.Id})" class="menu-card">
                         <img src="@Url.Content(cat.Icon)" alt="icon"/>
                         <div class="menu-content">
                             <p class="menu-title">@cat.Name</p>
@@ -123,7 +123,7 @@
                                 }
                             </ul>
                         </div>
-                    </div>
+                    </a>
                 }
             </div>
         </div>
