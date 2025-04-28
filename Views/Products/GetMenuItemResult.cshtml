@@ -1,11 +1,10 @@
 @using EMatrix.ViewModels.Products
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model EMatrix.ViewModels.Products.ProductsSecondaryViewModel
 
-<link rel="stylesheet" href="~/css/products-secondary-customization.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/products-result-customization.css" asp-append-version="true"/>
 
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = "Продукти";
 }
 
 <div class="container-fluid mt-3 products-container">
@@ -14,13 +13,47 @@
         <span><i class="bi bi-chevron-right"></i></span>
         <li><a href="@Url.Action("Index", "Products")">Продукти</a></li>
         <span><i class="bi bi-chevron-right"></i></span>
-        <li>@Model.Title</li>
+        <li><a href="">@Model.Title</a></li>
     </ul>
 
     <div class="products-preview">
         <div class="products-header">
-            <h2>@Model.Title</h2>
+            <div class="search-bar">
+                <input class="form-control" id="search" name="search" placeholder="Търси продукти.."/>
+                <button type="submit" class="btn btn-main text-light">Търси</button>
+            </div>
+            <div class="grid-header">
+                <button data-tooltip="Решетка" id="gridViewBtn" class="btn btn-outline-secondary">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                </button>
+                <button data-tooltip="Списък" id="listViewBtn" class="btn btn-outline-secondary">
+                    <i class="bi bi-list"></i>
+                </button>
+                <a href="@Url.Action("Privacy", "Home")" id="help" class="btn btn-outline-secondary">
+                    <i class="bi bi-question-circle"></i>
+                    Помощ
+                </a>
+                <div class="cart-wrapper">
+                    <div id="cart" class="dropdown">
+                        <a class="dropdown-toggle cart-heading" href="#" aria-expanded="false">
+                            <span id="cart-total">0 продукт(а) - 0.00лв.</span>
+                            <div class="icon-wrapper">
+                                <i class="bi bi-cart3"></i>
+                                <span id="cart-items" class="count-badge count-zero">0</span>
+                            </div>
+                        </a>
+                        <div id="cart-content" class="dropdown-menu cart-content j-dropdown">
+                            <ul>
+                                <li>
+                                    <p class="text-center cart-empty">Вашата количка е празна!</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
 
         <div class="products-body">
             @* LEFT: ACCORDION *@
@@ -28,99 +61,47 @@
                 @switch (Model.Mode)
                 {
                     case SecondaryViewMode.MenuItem:
-                        <h4>Категории</h4>
-                        @foreach (var category in Model.Categories)
-                        {
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="cat-@category.Key">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-cat-@category.Key">
-                                        @category.Value
-                                    </button>
-                                </h2>
-                                <div id="collapse-cat-@category.Key" class="accordion-collapse collapse">
-                                    <div class="accordion-body">
-                                        <!-- maybe list subcategories later -->
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
-                        <h4>Подкатегории</h4>
-                        @foreach (var sub in Model.SubCategories)
-                        {
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="sub-@sub.Key">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-sub-@sub.Key">
-                                        @sub.Value
-                                    </button>
-                                </h2>
-                                <div id="collapse-sub-@sub.Key" class="accordion-collapse collapse">
-                                    <div class="accordion-body">
-                                        <!-- maybe show products under subcategory later -->
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
-                        <h4>Комплекти</h4>
-                        @foreach (var set in Model.Sets)
-                        {
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="set-@set.Key">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-set-@set.Key">
-                                        @set.Value
-                                    </button>
-                                </h2>
-                                <div id="collapse-set-@set.Key" class="accordion-collapse collapse">
-                                    <div class="accordion-body">
-                                        <!-- maybe grouped entries later -->
-                                    </div>
-                                </div>
-                            </div>
-                        }
                         break;
 
                     case SecondaryViewMode.Category:
-                        <h4>Подкатегории</h4>
-                        @foreach (var sub in Model.SubCategories)
-                        {
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="subcat-@sub.Key">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-subcat-@sub.Key">
-                                        @sub.Value
-                                    </button>
-                                </h2>
-                                <div id="collapse-subcat-@sub.Key" class="accordion-collapse collapse">
-                                    <div class="accordion-body">
-                                        <!-- maybe list products under subcategory later -->
-                                    </div>
+                        <h4>Категории продукти</h4>
+
+                        var headingId = $"heading-category-mode";
+                        var collapseId = $"collapse-category-mode";
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="@headingId">
+                                <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#@collapseId" aria-expanded="false"
+                                        aria-controls="@collapseId">
+                                    @Model.Title
+                                </button>
+                            </h2>
+                            <div id="@collapseId" class="accordion-collapse collapse show"
+                                 aria-labelledby="@headingId" data-bs-parent="#secondaryAccordion">
+                                <div class="accordion-body">
+                                    <ul class="navbar-nav">
+                                        @foreach (var entry in Model.SubGroups)
+                                        {
+                                            <li class="nav-item">
+                                                <a class="nav-link" asp-area="" asp-controller="Products"
+                                                   asp-action="GetSecondaryViewBySubGroupId"
+                                                   asp-route-id="@entry.Id">
+                                                    @entry.Name
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
                                 </div>
                             </div>
-                        }
+                        </div>
                         break;
 
                     case SecondaryViewMode.SubCategory:
-                        <h4>Продукти</h4>
-                        <p>Тук ще се заредят продуктите от подкатегорията <strong>@Model.Title</strong>.</p>
                         break;
 
                     case SecondaryViewMode.Set:
-                        <h4>Подкатегории в комплекта</h4>
-                        @foreach (var setEntry in Model.Sets)
-                        {
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="entry-@setEntry.Key">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-entry-@setEntry.Key">
-                                        @setEntry.Value
-                                    </button>
-                                </h2>
-                                <div id="collapse-entry-@setEntry.Key" class="accordion-collapse collapse">
-                                    <div class="accordion-body">
-                                        <!-- maybe products under subcategory here -->
-                                    </div>
-                                </div>
-                            </div>
-                        }
                         break;
                 }
             </div>
@@ -130,55 +111,41 @@
                 @switch (Model.Mode)
                 {
                     case SecondaryViewMode.MenuItem:
-                        @foreach (var sub in Model.SubCategories)
-                        {
-                            <div class="menu-card">
-                                <div class="menu-content">
-                                    <p class="menu-title">@sub.Value</p>
-                                </div>
-                            </div>
-                        }
-                        @foreach (var set in Model.Sets)
-                        {
-                            <div class="menu-card">
-                                <div class="menu-content">
-                                    <p class="menu-title">@set.Value</p>
-                                </div>
-                            </div>
-                        }
                         break;
 
                     case SecondaryViewMode.Category:
-                        @foreach (var sub in Model.SubCategories)
-                        {
-                            <div class="menu-card">
-                                <div class="menu-content">
-                                    <p class="menu-title">@sub.Value</p>
-                                </div>
-                            </div>
-                        }
+
                         break;
 
                     case SecondaryViewMode.SubCategory:
-                        <div class="menu-card">
-                            <div class="menu-content">
-                                <p class="menu-title">Тук ще се заредят продуктите.</p>
-                            </div>
-                        </div>
                         break;
 
                     case SecondaryViewMode.Set:
-                        @foreach (var entry in Model.Sets)
-                        {
-                            <div class="menu-card">
-                                <div class="menu-content">
-                                    <p class="menu-title">@entry.Value</p>
-                                </div>
-                            </div>
-                        }
-                        break;
+                            break;
                 }
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const menuView = document.getElementById("secondaryPreview");
+            const gridViewBtn = document.getElementById("gridViewBtn");
+            const listViewBtn = document.getElementById("listViewBtn");
+
+            gridViewBtn.addEventListener("click", function () {
+                menuView.classList.add("menu-as-grid");
+                menuView.classList.remove("menu-as-list");
+            });
+
+            listViewBtn.addEventListener("click", function () {
+                menuView.classList.add("menu-as-list");
+                menuView.classList.remove("menu-as-grid");
+            });
+        });
+    </script>
+
+}

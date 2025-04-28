@@ -66,11 +66,7 @@ public class ProductsService : IProductsService
            .FirstOrDefaultAsync(m => m.Id == id);
        var model = new ProductsSecondaryViewModel()
        {
-           Title = menuItem.Name,
-           Categories = menuItem.MenuItemCategories.ToDictionary(c => c.CategoryId, c => c.Category.Alias),
-           SubCategories = menuItem.MenuItemSubCategories.ToDictionary(c => c.SubCategoryId, c => c.SubCategory.Alias),
-           Sets = menuItem.SubGroupSets.ToDictionary(r => r.Id.ToString(), r => r.Name),
-           Mode = SecondaryViewMode.MenuItem
+
        };
        return model;
     }
@@ -80,38 +76,70 @@ public class ProductsService : IProductsService
         var category = await _context.Categories
             .Include(c => c.SubCategories)
             .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (category == null)
+            throw new KeyNotFoundException();
+        // Create the final model
         var model = new ProductsSecondaryViewModel()
         {
             Title = category.Name,
-            SubCategories = category.SubCategories.ToDictionary(c => c.Id, c => c.Alias),
             Mode = SecondaryViewMode.Category
         };
+        // Group subcategories dynamically by prefix (first part of the name)
+        var groupedSubCategories = category.SubCategories
+            .GroupBy(sub => sub.Alias)
+            .ToDictionary(g => g.Key, g => g.ToList());
+        foreach (var gsc in groupedSubCategories)
+        {
+            if(gsc.Value.Count == 1)
+                model.SubGroups.Add(new OptionViewModel()
+                {
+                    Name = gsc.Key,
+                    Id = gsc.Value.First().Id,
+                });
+            else
+            {
+                model.SubGroups.Add(new OptionViewModel()
+                {
+                    Name = gsc.Key,
+                    Entries = gsc.Value.Select(c => c.Id).ToList()
+                });
+            }
+        }
+        model.SubGroups = model.SubGroups.OrderBy(g => g.Name).ToList();
+
         return model;
     }
 
     public async Task<ProductsSecondaryViewModel> GetSecondaryViewBySubCategoryId(string id)
     {
-        var subCategory = await _context.SubCategories
-            .FirstOrDefaultAsync(c => c.Id == id);
+
         var model = new ProductsSecondaryViewModel()
         {
-            Title = subCategory.Name,
-            Mode = SecondaryViewMode.SubCategory
         };
         return model;
     }
 
     public async Task<ProductsSecondaryViewModel> GetSecondaryViewBySubGroupSetId(int id)
     {
-        var set = await _context.MenuItemSubGroupSets
-            .Include(s => s.Entries)
-            .FirstOrDefaultAsync(s => s.Id == id);
+
         var model = new ProductsSecondaryViewModel()
         {
-            Title = set.Name,
-            Sets = set.Entries.ToDictionary(s => s.SubCategoryId, s => s.SubCategoryName),
-            Mode = SecondaryViewMode.Set
+
         };
+
         return model;
     }
+
+    // Helper function to extract the group key (i.e., prefix before first space)
+    private string GetGroupKey(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return "";
+
+        // Split the name by space and take the first part (this is our dynamic prefix)
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length > 0 ? parts[0].ToUpper() : name.ToUpper();
+    }
+
+
 }
