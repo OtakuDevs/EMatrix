@@ -18,14 +18,6 @@ public class ProductsService : IProductsService
     {
         var menu = await _context.Menus
             .Include(m => m.MenuItems)
-            .ThenInclude(mi => mi.MenuItemCategories)
-            .ThenInclude(mic => mic.Category)
-            .Include(m => m.MenuItems)
-            .ThenInclude(mi => mi.MenuItemSubCategories)
-            .ThenInclude(misc => misc.SubCategory)
-            .Include(m => m.MenuItems)
-            .ThenInclude(mi => mi.SubGroupSets)
-            .ThenInclude(sgs => sgs.Entries)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         var model = new ProductsPrimaryViewModel();
@@ -35,20 +27,13 @@ public class ProductsService : IProductsService
             {
                 Id = menuItem.Id,
                 Name = menuItem.Name,
-                Categories = menuItem.MenuItemCategories.ToDictionary(c => c.CategoryId, c => c.Category.Alias),
-                SubCategories = menuItem.MenuItemSubCategories.ToDictionary(c => c.SubCategoryId, c => c.SubCategory.Alias),
-                SubGroupSets = menuItem.SubGroupSets.ToDictionary(r => r.Id, r => r.Name)
-            });
+                });
             model.MenuItemsGrid.Add(new MenuItemPreviewModel()
             {
                 Id = menuItem.Id,
                 Name = menuItem.Name,
                 Icon = $"{menuItem.Icon}",
-                Items = menuItem.MenuItemCategories
-                    .Select(c => c.Category.Alias)
-                    .Concat(menuItem.MenuItemSubCategories.Select(c => c.SubCategory.Alias))
-                    .Concat(menuItem.SubGroupSets.Select(r => r.Name))
-                    .ToList()
+
             });
         }
         return model;
@@ -57,12 +42,6 @@ public class ProductsService : IProductsService
     public async Task<ProductsSecondaryViewModel> GetSecondaryViewByMenuItemId(int id)
     {
        var menuItem = await _context.MenuItems
-           .Include(c => c.MenuItemCategories)
-           .ThenInclude(mic => mic.Category)
-           .Include(sc => sc.MenuItemSubCategories)
-           .ThenInclude(sm => sm.SubCategory)
-           .Include(st => st.SubGroupSets)
-           .ThenInclude(sgs => sgs.Entries)
            .FirstOrDefaultAsync(m => m.Id == id);
        var model = new ProductsSecondaryViewModel()
        {

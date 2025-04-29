@@ -12,5 +12,4 @@ public class Category
     
     public ICollection<SubCategory> SubCategories { get; set; }
 
-    public ICollection<MenuItemCategory> MenuItemLinks { get; set; } = new List<MenuItemCategory>();
 }

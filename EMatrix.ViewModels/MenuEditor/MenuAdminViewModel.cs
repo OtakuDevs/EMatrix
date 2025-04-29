@@ -1,4 +1,4 @@
-namespace EMatrix.ViewModels.Admin;
+namespace EMatrix.ViewModels.MenuEditor;
 
 public class MenuAdminViewModel
 {

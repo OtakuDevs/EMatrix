@@ -5,6 +5,6 @@ namespace EMatrix.DataModels;
 public class Menu
 {
     public int Id { get; set; }
-
-    public List<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
+    public string Name { get; set; } = null!;
+    public List<MenuItem> MenuItems { get; set; } = new();
 }

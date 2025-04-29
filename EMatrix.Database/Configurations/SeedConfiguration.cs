@@ -9,6 +9,6 @@ public class SeedConfiguration : IEntityTypeConfiguration<Menu>
 {
     public void Configure(EntityTypeBuilder<Menu> builder)
     {
-        builder.HasData(new Menu() { Id = 1, });
+        builder.HasData(new Menu() { Id = 1, Name = "Products menu" });
     }
 }

@@ -1,6 +1,8 @@
 using EMatrix.DatabaseServices.Admin.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using EMatrix.Constants;
+using EMatrix.ViewModels.MenuEditor;
+using EMatrix.ViewModels.Products;
 
 namespace EMatrix.Areas.Admin.Controllers;
 
@@ -90,12 +92,11 @@ public class MenuEditorController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateMenuItemAssignments(int menuItemId,
-        string[] selectedCategories, string[] selectedSubCategories, string groupedSubCategoriesJson)
+    public async Task<IActionResult> UpdateMenuItemAssignments(MenuItemAdminViewModel model)
     {
         try
         {
-            await _menuManageService.UpdateMenuItemAssignmentsAsync(menuItemId, selectedCategories, selectedSubCategories, groupedSubCategoriesJson);
+            await _menuManageService.UpdateMenuItemAssignmentsAsync(model);
         }
         catch (Exception)
         {

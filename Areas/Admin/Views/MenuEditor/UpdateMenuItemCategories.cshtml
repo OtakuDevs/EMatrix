@@ -1,263 +1,224 @@
-@model EMatrix.ViewModels.Admin.MenuItemAdminViewModel
-
-<link rel="stylesheet" href="~/css/admin-panel-menu-customization.css" asp-append-version="true"/>
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model EMatrix.ViewModels.MenuEditor.MenuItemAdminViewModel
 
 @{
-    ViewData["ActiveTab"] = "Menu";
-    ViewData["Title"] = "Редактор категория";
+    ViewData["Title"] = "Редактиране на меню елемент";
 }
 
-<div class="container mt-3">
-    <!-- Tabs -->
-    @await Html.PartialAsync("_AdminPanelTabsPartial")
+<h2>@ViewData["Title"]</h2>
 
-    <h2 class="mt-4">Редактиране на групи и подгрупи за меню категория</h2>
+<form asp-action="UpdateMenuItemAssignments" method="post">
+    <input type="hidden" asp-for="Id"/>
+
+    <div class="form-group">
+        <label asp-for="Name">Име на меню елемент</label>
+        <input asp-for="Name" class="form-control" readonly/>
+    </div>
+
+    <div class="form-floating mb-3">
+        <select class="form-select" id="categorySelect">
+            <option value="">-- Избери група --</option>
+            @foreach (var cat in Model.AvailableCategories)
+            {
+                <option value="@cat.Value">@cat.Value - @cat.Text</option>
+            }
+        </select>
+        <label for="categorySelect">Групи</label>
+    </div>
+    <div class="form-floating mb-3">
+        <select class="form-select" id="subcategorySelect">
+            <option value="">-- Избери подгрупа --</option>
+            @foreach (var sub in Model.AvailableSubCategories)
+            {
+                <option value="@sub.Value"
+                        data-cat="@sub.Value.Substring(0, 2)">@sub.Value - @sub.Text</option>
+            }
+        </select>
+        <label for="subcategorySelect">Подгрупи</label>
+    </div>
+
     <hr/>
-    <form asp-action="UpdateMenuItemAssignments" method="post">
-        <input type="hidden" name="menuItemId" value="@Model.Id"/>
 
-        <div class="content-wrapper update-menu-item">
-            <div class="select-section">
-                <div class="d-flex mb-3">
-                    <h4 class="m-0 align-content-center">Добави нова категория</h4>
-                    <a href="@Url.Action("GetMenuManagement")" class="btn btn-secondary ms-auto">Назад</a>
+    <div id="menuOptionsContainer">
+        @for (int i = 0; i < Model.Options.Count; i++)
+        {
+            var option = Model.Options[i];
+            <div id="option_@i" class="menu-option" data-index="@i" data-child-count="@option.Children?.Count ?? 0">
+                <div class="form-group">
+                    <label>Име на опция</label>
+                    <input type="text" name="Options[@i].Name" value="@option.Name" class="form-control" />
                 </div>
-                <div class="form-floating mb-3">
-                    <input id="menu-item-title" class="form-control" placeholder="" value="@Model.Name" readonly/>
-                    <label for="menu-item-title">Категория</label>
+                <div class="form-group">
+                    <label>Ред</label>
+                    <input type="number" name="Options[@i].Order" value="@option.Order" class="form-control" />
                 </div>
-                <div class="form-floating mb-3">
-                    <select class="form-select" id="categorySelect">
-                        <option value="">-- Избери група --</option>
-                        @foreach (var cat in Model.AvailableCategories)
+                <div class="form-group">
+                    <button type="button" class="btn btn-secondary" onclick="addSubcategory(@i)">Добави подгрупа</button>
+                    <button type="button" class="btn btn-secondary" onclick="addSet(@i)">Добави комплект</button>
+                </div>
+                <div class="children-container">
+                    @if (option.Children != null)
+                    {
+                        for (int j = 0; j < option.Children.Count; j++)
                         {
-                            <option value="@cat.Value">@cat.Value - @cat.Text</option>
-                        }
-                    </select>
-                    <label for="categorySelect">Групи</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <select class="form-select" id="subcategorySelect">
-                        <option value="">-- Избери подгрупа --</option>
-                        @foreach (var sub in Model.AvailableSubCategories)
-                        {
-                            <option value="@sub.Value"
-                                    data-cat="@sub.Value.Substring(0, 2)">@sub.Value - @sub.Text</option>
-                        }
-                    </select>
-                    <label for="subcategorySelect">Подгрупи</label>
-                </div>
-
-                <div class="mt-3 border-top border-bottom pt-3 pb-3">
-                    <h5>Създай комплект (Съставна група)</h5>
-                    <div class="mb-2">
-                        <label for="groupNameInput">Име на комплект:</label>
-                        <input type="text" id="groupNameInput" class="form-control" placeholder="напр. ДИОДИ ЦЕНЕРОВИ"/>
-                    </div>
-
-                </div>
-
-                <div class="select-section-buttons flex-wrap">
-                    <button type="button" class="btn btn-success" onclick="addGroup()">Добави група
-                    </button>
-                    <button type="button" class="btn btn-success" onclick="addSubGroup()">Добави подгрупа
-                    </button>
-                    <button type="button" class="btn btn-success" onclick="addToGrouped()">Добави към комплект</button>
-                </div>
-                <fieldset class="border rounded p-3 mb-3 mt-3">
-                    <legend>Редактиране на категории</legend>
-                    <ul class="mb-0">
-                        <li>Изберете <strong>група</strong> от падащия списък и натиснете <em>„Добави група“</em>.</li>
-                        <li>Изберете <strong>подгрупа</strong> от падащия списък и натиснете <em>„Добави подгрупа“</em>.
-                        </li>
-                        <li>Създайте <strong>комплект</strong> като въведете име, изберете елемент от падащия списък и
-                            натиснете <em>„Добави към комплект“</em>.
-                        </li>
-                        <li>Редактирайте <strong>комплект</strong> като въведете името на комплекта, изберете елемент от
-                            падащия списък и натиснете <em>„Добави към комплект“</em>.
-                        </li>
-                        <li>Премахнете асоциация с бутона <strong>Х</strong>.</li>
-                        <li>Натиснете <strong>„Запази промените“</strong>, за да запишете.</li>
-                    </ul>
-                </fieldset>
-            </div>
-
-            <div id="categoriesContainer">
-                <div class="d-flex mb-3">
-                    <h4 class="m-0 align-content-center">Съществуващи категории</h4>
-                    <button type="submit" class="btn btn-primary ms-auto">Запази промените</button>
-                </div>
-                <div>
-                    <strong>Групи:</strong>
-                    <div id="groupsContainer">
-                        @foreach (var c in Model.Categories)
-                        {
-                            <div class="mb-2" data-value="@c.Key">
-                                <input type="hidden" name="selectedCategories" value="@c.Key"/>
-                                <input type="text" class="form-control d-inline-block w-auto" value="@c.Value"
-                                       readonly/>
-                                <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div>
-                    <strong>Подгрупи:</strong>
-                    <div id="subGroupsContainer">
-                        @foreach (var sc in Model.SubCategories)
-                        {
-                            <div class="mb-2" data-value="@sc.Key">
-                                <input type="hidden" name="selectedSubCategories" value="@sc.Key"/>
-                                <input type="text" class="form-control d-inline-block w-auto" value="@sc.Value"
-                                       readonly/>
-                                <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <strong>Комплекти (Съставни групи):</strong>
-                    <div class="accordion" id="groupedSubGroupsContainer">
-                        @foreach (var group in Model.GroupedSubCategories)
-                        {
-                            var collapseId = $"collapse_{group.Key.GetHashCode()}";
-                            <div class="accordion-item grouped-set" data-group-name="@group.Key">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#@collapseId" aria-expanded="false"
-                                            aria-controls="@collapseId">
-                                        @group.Key
-                                    </button>
-                                </h2>
-                                <div id="@collapseId" class="accordion-collapse collapse">
-                                    <div class="accordion-body">
-                                        <ul class="list-group">
-                                            @foreach (var sub in group.Value)
-                                            {
-                                                <li class="list-group-item d-flex justify-content-between align-items-center"
-                                                    data-sub-id="@sub.Key">
-                                                    <span>@sub.Key - @sub.Value</span>
-                                                    <button type="button" class="btn-close" aria-label="Remove"
-                                                            onclick="removeGrouped('@group.Key', '@sub.Key')"></button>
-                                                </li>
-                                            }
-                                        </ul>
-                                    </div>
+                            var child = option.Children[j];
+                            if (child.Type == "SubGroup")
+                            {
+                                <div class="menu-option-child">
+                                    <input type="hidden" name="Options[@i].Children[@j].Type" value="SubGroup" />
+                                    <input type="hidden" name="Options[@i].Children[@j].ReferenceId" value="@child.ReferenceId" />
+                                    <span>@child.DisplayName</span>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">Премахни</button>
                                 </div>
-                            </div>
+                            }
+                            else if (child.Type == "SubGroupSet")
+                            {
+                                var setId = $"set_{i}_{j}";
+                                var setId_items = setId + "_items";
+                                <div class="menu-option-set" id="@setId">
+                                    <input type="hidden" name="Options[@i].Children[@j].Type" value="SubGroupSet" />
+                                    <input type="hidden" name="Options[@i].Children[@j].DisplayName" value="@child.DisplayName" />
+                                    <div><strong>@child.DisplayName</strong></div>
+                                    <div class="set-items" id="@setId_items">
+                                        @if (child.SubGroupSetItems != null)
+                                        {
+                                            for (int k = 0; k < child.SubGroupSetItems.Count; k++)
+                                            {
+                                                var item = child.SubGroupSetItems[k];
+                                                <div class="set-item">
+                                                    <input type="hidden" name="Options[@i].Children[@j].SubGroupSetItems[@k].Id" value="@item.Id" />
+                                                    <span>@item.Alias</span>
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">Премахни</button>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="addSubcategoryToSet(@i, @j, '@setId_items')">Добави подгрупа към комплекта</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">Премахни комплект</button>
+                                    <hr/>
+                                </div>
+                            }
                         }
-                    </div>
-
-                    <input type="hidden" name="groupedSubCategoriesJson" id="groupedSubCategoriesJson"/>
+                    }
                 </div>
-
+                <hr />
             </div>
-        </div>
-    </form>
-</div>
+        }
+
+    </div>
+
+    <button type="button" class="btn btn-primary" onclick="addMenuOption()">Добави опция</button>
+
+    <hr/>
+
+    <button type="submit" class="btn btn-success">Запази промените</button>
+</form>
 
 @section Scripts {
-
     <script>
-        const groupedData = @Html.Raw(Json.Serialize(Model.GroupedSubCategories));
+        let optionIndex = @Model.Options.Count;
 
-        // 🔄 Normalize backend dictionary structure into list of DTOs (id + name)
-        for (const group in groupedData) {
-            if (!Array.isArray(groupedData[group])) {
-                groupedData[group] = Object.entries(groupedData[group]).map(([id, name]) => ({
-                    id,
-                    name
-                }));
-            }
+        function addMenuOption() {
+            const container = document.getElementById('menuOptionsContainer');
+            const currentIndex = optionIndex++;
+            const optionDiv = document.createElement('div');
+            optionDiv.id = `option_${currentIndex}`;
+            optionDiv.dataset.index = currentIndex;
+            optionDiv.dataset.childCount = 0;
+            optionDiv.classList.add('menu-option');
+
+            optionDiv.innerHTML = `
+            <div class="form-group">
+                <label>Име на опция</label>
+                <input type="text" name="Options[${currentIndex}].Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Ред</label>
+                <input type="number" name="Options[${currentIndex}].Order" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-secondary" onclick="addSubcategory(${currentIndex})">Добави подгрупа</button>
+                <button type="button" class="btn btn-secondary" onclick="addSet(${currentIndex})">Добави комплект</button>
+            </div>
+            <div class="children-container"></div>
+            <hr />
+        `;
+
+            container.appendChild(optionDiv);
         }
 
-        function addToGrouped() {
-            const groupName = document.getElementById("groupNameInput").value.trim();
-            const subSelect = document.getElementById("subcategorySelect");
-            const selectedSubId = subSelect.value;
-            const selectedSubText = subSelect.options[subSelect.selectedIndex]?.text.split(" - ").slice(1).join(" - ").trim();
+        function addSubcategory(optionIdx) {
+            const optionDiv = document.getElementById(`option_${optionIdx}`);
+            const childrenContainer = optionDiv.querySelector('.children-container');
+            let childIdx = parseInt(optionDiv.dataset.childCount || "0");
+            const subcategorySelect = document.getElementById('subcategorySelect');
+            const selectedOption = subcategorySelect.options[subcategorySelect.selectedIndex];
 
-            if (!groupName || !selectedSubId) {
-                alert("Моля въведете име на комплект и изберете елемент.");
-                return;
-            }
+            if (selectedOption && selectedOption.value) {
+                const childDiv = document.createElement('div');
+                childDiv.classList.add('menu-option-child');
 
-            if (!groupedData[groupName]) {
-                groupedData[groupName] = [];
-            }
-
-            const alreadyExists = groupedData[groupName].some(e => e.id === selectedSubId);
-            if (!alreadyExists) {
-                groupedData[groupName].push({id: selectedSubId, name: selectedSubText});
-            }
-
-            renderGrouped();
-        }
-
-        function removeGrouped(groupName, subId) {
-            groupedData[groupName] = groupedData[groupName].filter(e => e.id !== subId);
-            if (groupedData[groupName].length === 0) {
-                delete groupedData[groupName];
-            }
-            renderGrouped();
-        }
-
-        function renderGrouped() {
-            const container = document.getElementById("groupedSubGroupsContainer");
-            container.innerHTML = "";
-
-            for (const [groupName, entries] of Object.entries(groupedData)) {
-                const collapseId = "collapse_" + groupName.hashCode();
-
-                const header = `<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}">${groupName}</button>`;
-
-                const listItems = entries.map(entry =>
-                    `<li class="list-group-item d-flex justify-content-between align-items-center">
-                    ${entry.id} - ${entry.name}
-                    <button type="button" class="btn-close" onclick="removeGrouped('${groupName}', '${entry.id}')"></button>
-                </li>`
-                ).join("");
-
-                container.innerHTML += `
-                <div class="accordion-item grouped-set" data-group-name="${groupName}">
-                    <h2 class="accordion-header">${header}</h2>
-                    <div id="${collapseId}" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <ul class="list-group">${listItems}</ul>
-                        </div>
-                    </div>
-                </div>
+                childDiv.innerHTML = `
+                <input type="hidden" name="Options[${optionIdx}].Children[${childIdx}].Type" value="SubGroup" />
+                <input type="hidden" name="Options[${optionIdx}].Children[${childIdx}].ReferenceId" value="${selectedOption.value}" />
+                <span>${selectedOption.text}</span>
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">Премахни</button>
             `;
-            }
 
-            updateGroupedJson();
+                childrenContainer.appendChild(childDiv);
+                optionDiv.dataset.childCount = ++childIdx;
+            }
         }
 
-        function updateGroupedJson() {
-            document.getElementById("groupedSubCategoriesJson").value = JSON.stringify(groupedData);
+        function addSet(optionIdx) {
+            const optionDiv = document.getElementById(`option_${optionIdx}`);
+            const childrenContainer = optionDiv.querySelector('.children-container');
+            let childIdx = parseInt(optionDiv.dataset.childCount || "0");
+            const setName = prompt("Въведете име на комплекта:");
+
+            if (setName) {
+                const setId = `set_${optionIdx}_${childIdx}`;
+                const setDiv = document.createElement('div');
+                setDiv.classList.add('menu-option-set');
+                setDiv.id = setId;
+
+                setDiv.innerHTML = `
+            <input type="hidden" name="Options[${optionIdx}].Children[${childIdx}].Type" value="SubGroupSet" />
+            <input type="hidden" name="Options[${optionIdx}].Children[${childIdx}].DisplayName" value="${setName}" />
+            <div><strong>${setName}</strong></div>
+            <div class="set-items" id="${setId}_items"></div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addSubcategoryToSet(${optionIdx}, ${childIdx}, '${setId}_items')">Добави подгрупа към комплекта</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">Премахни комплект</button>
+            <hr/>
+        `;
+
+                childrenContainer.appendChild(setDiv);
+                optionDiv.dataset.childCount = ++childIdx;
+            }
+
+
         }
 
-        String.prototype.hashCode = function () {
-            let hash = 0;
-            for (let i = 0; i < this.length; i++) {
-                const chr = this.charCodeAt(i);
-                hash = ((hash << 5) - hash) + chr;
-                hash |= 0;
+        function addSubcategoryToSet(optionIdx, childIdx, setItemsContainerId) {
+            const setItemsContainer = document.getElementById(setItemsContainerId);
+            const subcategorySelect = document.getElementById('subcategorySelect');
+            const selectedOption = subcategorySelect.options[subcategorySelect.selectedIndex];
+
+            if (selectedOption && selectedOption.value) {
+                const itemCount = setItemsContainer.children.length;
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('set-item');
+
+                itemDiv.innerHTML = `
+            <input type="hidden" name="Options[${optionIdx}].Children[${childIdx}].SubGroupSetItems[${itemCount}].Id" value="${selectedOption.value}" />
+            <span>${selectedOption.text}</span>
+            <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">Премахни</button>
+        `;
+
+                setItemsContainer.appendChild(itemDiv);
             }
-            return hash;
-        };
-
-        // Form submit hook
-        document.querySelector("form").addEventListener("submit", () => {
-            updateGroupedJson();
-        });
-
-        // Initial render
-        renderGrouped();
+}
     </script>
-
-
-
 
     <script>
         document.getElementById("categorySelect").addEventListener("change", function () {
@@ -270,71 +231,5 @@
 
             subcategorySelect.value = "";
         });
-    </script>
-    <script>
-        function addGroup() {
-            let dropdown = document.getElementById("categorySelect");
-            let selectedOption = dropdown.options[dropdown.selectedIndex];
-
-            if (!selectedOption || selectedOption.value === "") {
-                return; // Skip if no group selected
-            }
-
-            let rawText = selectedOption.text;
-            let selectedText = rawText.substring(5);
-            let selectedValue = selectedOption.value;
-
-            let container = document.getElementById("groupsContainer");
-
-            // Check for duplicates
-            if ([...container.children].some(div => div.dataset.value === selectedValue)) {
-                return;
-            }
-
-            let div = document.createElement('div');
-            div.dataset.value = selectedValue;
-            div.classList.add('mb-2'); // optional, adds spacing
-
-            div.innerHTML = `
-        <input type="hidden" name="selectedCategories" value="${selectedValue}" />
-        <input type="text" class="form-control d-inline-block w-auto" value="${selectedText}" readonly />
-        <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
-    `;
-
-            container.appendChild(div);
-        }
-
-        function addSubGroup() {
-            let dropdown = document.getElementById("subcategorySelect");
-            let selectedOption = dropdown.options[dropdown.selectedIndex];
-
-            if (!selectedOption || selectedOption.value === "") {
-                return;
-            }
-
-            let rawText = selectedOption.text;
-            let selectedText = rawText.substring(7); // Trim "XX - "
-            let selectedValue = selectedOption.value;
-
-            let container = document.getElementById("subGroupsContainer");
-
-            if ([...container.children].some(div => div.dataset.value === selectedValue)) {
-                return;
-            }
-
-            let div = document.createElement('div');
-            div.classList.add('mb-2');
-            div.dataset.value = selectedValue;
-            div.innerHTML = `
-        <input type="hidden" name="selectedSubCategories" value="${selectedValue}" />
-        <input type="text" class="form-control d-inline-block w-auto" value="${selectedText}" readonly />
-        <button type="button" class="btn btn-danger" onclick="removeAssignment(this)">X</button>
-    `;
-            container.appendChild(div);
-        }
-
-        function removeAssignment(button) {
-            button.parentElement.remove();
-        }
     </script>
 }

@@ -5,6 +5,7 @@ using EMatrix.DatabaseServices.Admin.Interfaces;
 using EMatrix.DataModels;
 using EMatrix.DataModels.DTOs;
 using EMatrix.ViewModels.Admin;
+using EMatrix.ViewModels.MenuEditor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -49,9 +50,6 @@ public class MenuManageService : IMenuManageService
             {
                 Name = name,
                 Order = position,
-                MenuId = ConfigurationConstants.MenuId,
-                MenuItemCategories = new List<MenuItemCategory>(),
-                MenuItemSubCategories = new List<MenuItemSubCategory>(),
             };
             _context.MenuItems.Add(menuItem);
             await _context.SaveChangesAsync();
@@ -96,108 +94,149 @@ public class MenuManageService : IMenuManageService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<MenuItemAdminViewModel> GetMenuItemModelAsync(int id)
+   public async Task<MenuItemAdminViewModel> GetMenuItemModelAsync(int id)
+{
+    var menuItem = await _context.MenuItems
+        .Include(m => m.Options)
+            .ThenInclude(o => o.Children)
+                .ThenInclude(c => c.SubGroup)
+        .Include(m => m.Options)
+            .ThenInclude(o => o.Children)
+                .ThenInclude(c => c.SubGroupSet)
+                    .ThenInclude(s => s.Items)
+                        .ThenInclude(i => i.SubGroup)
+        .FirstOrDefaultAsync(m => m.Id == id);
+
+    if (menuItem == null)
+        throw new KeyNotFoundException();
+
+    // Build model
+    var model = new MenuItemAdminViewModel
     {
-        var availableCategories = await _context.Categories
+        Id = menuItem.Id,
+        Name = menuItem.Name,
+        Options = menuItem.Options.Select(option => new MenuOptionAdminViewModel
+        {
+            Id = option.Id,
+            Name = option.Name,
+            Order = option.Order,
+            Children = option.Children.Select(child =>
+            {
+                if (child.SubGroup != null)
+                {
+                    return new MenuOptionChildAdminViewModel
+                    {
+                        Id = child.Id,
+                        DisplayName = child.DisplayName ?? child.SubGroup.Alias,
+                        Type = "SubGroup",
+                        ReferenceId = child.SubGroupId
+                    };
+                }
+                else if (child.SubGroupSet != null)
+                {
+                    return new MenuOptionChildAdminViewModel
+                    {
+                        Id = child.Id,
+                        DisplayName = child.DisplayName ?? child.SubGroupSet.Name,
+                        Type = "SubGroupSet",
+                        ReferenceId = child.SubGroupSetId.ToString(),
+                        SubGroupSetItems = child.SubGroupSet.Items
+                            .Select(i => new SubGroupBasicViewModel
+                            {
+                                Id = i.SubGroup.Id,
+                                Alias = i.SubGroup.Alias
+                            }).ToList()
+                    };
+                }
+
+                return null!;
+            }).Where(c => c != null).ToList()
+        }).ToList(),
+
+        // Optional: populate for creation UI
+        AvailableCategories = await _context.Categories
+            .OrderBy(c => c.Id)
             .Select(c => new SelectListItem
             {
                 Text = c.Alias,
-                Value = c.Id
+                Value = c.Id.ToString()
             })
-            .OrderBy(c => c.Value)
-            .ToListAsync();
+            .ToListAsync(),
 
-        var availableSubCategories = await _context.SubCategories
+        AvailableSubCategories = await _context.SubCategories
+            .OrderBy(sc => sc.Id)
             .Select(sc => new SelectListItem
             {
                 Text = sc.Alias,
-                Value = sc.Id
+                Value = sc.Id.ToString()
             })
-            .OrderBy(sc => sc.Value) // assuming Value = XXNN format
-            .ToListAsync();
+            .ToListAsync()
+    };
 
-        var menuItem = await _context.MenuItems
-            .Include(m => m.MenuItemCategories).ThenInclude(mc => mc.Category)
-            .Include(m => m.MenuItemSubCategories).ThenInclude(msc => msc.SubCategory)
-            .Include(m => m.SubGroupSets).ThenInclude(e => e.Entries)
-            .FirstOrDefaultAsync(m => m.Id == id);
+    return model;
+}
 
-        if (menuItem == null)
-            throw new KeyNotFoundException();
 
-        var model = new MenuItemAdminViewModel
-        {
-            Id = menuItem.Id,
-            Name = menuItem.Name,
-            Categories = menuItem.MenuItemCategories.ToDictionary(mc => mc.CategoryId, mc => mc.Category.Name),
-            SubCategories = menuItem.MenuItemSubCategories.ToDictionary(msc => msc.SubCategoryId, msc => msc.SubCategory.Name),
-            GroupedSubCategories = menuItem.SubGroupSets.ToDictionary(r => r.Name, r => r.Entries.ToDictionary(c => c.SubCategoryId, c => c.SubCategoryName)),
-            AvailableCategories = availableCategories,
-            AvailableSubCategories = availableSubCategories
-        };
-
-        return model;
-    }
-
-    public async Task UpdateMenuItemAssignmentsAsync(
-        int menuItemId,
-        string[] selectedCategories,
-        string[] selectedSubCategories,
-        string groupedSubCategoriesJson)
+    public async Task UpdateMenuItemAssignmentsAsync(MenuItemAdminViewModel model)
     {
         var menuItem = await _context.MenuItems
-            .Include(c => c.MenuItemCategories)
-            .Include(c => c.MenuItemSubCategories)
-            .Include(c => c.SubGroupSets)
-            .ThenInclude(s => s.Entries)
-            .FirstOrDefaultAsync(m => m.Id == menuItemId);
+            .Include(m => m.Options)
+            .ThenInclude(o => o.Children)
+            .ThenInclude(s => s.SubGroupSet)
+            .FirstOrDefaultAsync(m => m.Id == model.Id);
 
-        if (menuItem == null)
+        if(menuItem == null)
             throw new KeyNotFoundException();
+        _context.MenuOptionChildren.RemoveRange(menuItem.Options.SelectMany(o => o.Children));
+        _context.MenuOptions.RemoveRange(menuItem.Options);
+        menuItem.Options.Clear();
 
-        // Prepare new entries
-        var newCategories = selectedCategories
-            .Select(cat => new MenuItemCategory { MenuItemId = menuItemId, CategoryId = cat })
-            .ToList();
-
-        var newSubCategories = selectedSubCategories
-            .Select(scat => new MenuItemSubCategory { MenuItemId = menuItemId, SubCategoryId = scat })
-            .ToList();
-
-        var options = new JsonSerializerOptions
+        foreach (var option in model.Options)
         {
-            PropertyNameCaseInsensitive = true
-        };
-
-        var groupedSubCategories = JsonSerializer.Deserialize<Dictionary<string, List<SubGroupEntryDto>>>(groupedSubCategoriesJson ?? "{}", options);
-
-        // Remove old entries
-        _context.MenuItemCategories.RemoveRange(menuItem.MenuItemCategories);
-        _context.MenuItemSubCategories.RemoveRange(menuItem.MenuItemSubCategories);
-        _context.MenuItemSubGroupSets.RemoveRange(menuItem.SubGroupSets);
-
-        // Add new standard category/subcategory links
-        _context.MenuItemCategories.AddRange(newCategories);
-        _context.MenuItemSubCategories.AddRange(newSubCategories);
-
-        foreach (var group in groupedSubCategories)
-        {
-            var set = new MenuItemSubGroupSet
+            var newOption = new MenuOption
             {
-                MenuItemId = menuItemId,
-                Name = group.Key,
-                Entries = group.Value
-                    .GroupBy(e => e.Id) // remove duplicates by ID
-                    .Select(g => new MenuItemSubGroupSetEntry
-                    {
-                        SubCategoryId = g.Key,
-                        SubCategoryName = g.First().Name
-                    }).ToList()
+                Name = option.Name,
+                Icon = "test",
+                Order = option.Order,
+                MenuItemId = menuItem.Id,
+                Children = new List<MenuOptionChild>()
             };
 
-            _context.MenuItemSubGroupSets.Add(set);
-        }
+            foreach (var child in option.Children)
+            {
+                var optionChild = new MenuOptionChild
+                {
+                    Order = 0 // or assign if you have order
+                };
 
+                switch (child.Type)
+                {
+                    case "SubGroup":
+                        optionChild.SubGroupId = child.ReferenceId;
+                        break;
+
+                    case "SubGroupSet":
+                        if (child.SubGroupSetItems != null && child.SubGroupSetItems.Any())
+                        {
+                            var subGroupSet = new SubGroupSet
+                            {
+                                Name = child.DisplayName,
+                                Items = child.SubGroupSetItems
+                                    .Select(item => new SubGroupSetItem
+                                    {
+                                        SubGroupId = item.Id,
+                                    }).ToList()
+                            };
+
+                            optionChild.SubGroupSet = subGroupSet;
+                        }
+                        break;
+                }
+
+                newOption.Children.Add(optionChild);
+            }
+            menuItem.Options.Add(newOption);
+        }
         await _context.SaveChangesAsync();
     }
 
