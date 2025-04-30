@@ -6,7 +6,6 @@ public class MenuOption
     public string Name { get; set; } = null!;
 
     public string Icon { get; set; }
-    public int Order { get; set; }
 
     public int MenuItemId { get; set; }
     public MenuItem MenuItem { get; set; } = null!;

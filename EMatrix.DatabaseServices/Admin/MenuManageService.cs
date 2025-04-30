@@ -119,7 +119,6 @@ public class MenuManageService : IMenuManageService
         {
             Id = option.Id,
             Name = option.Name,
-            Order = option.Order,
             Children = option.Children.Select(child =>
             {
                 if (child.SubGroup != null)
@@ -197,17 +196,13 @@ public class MenuManageService : IMenuManageService
             {
                 Name = option.Name,
                 Icon = "test",
-                Order = option.Order,
                 MenuItemId = menuItem.Id,
                 Children = new List<MenuOptionChild>()
             };
 
             foreach (var child in option.Children)
             {
-                var optionChild = new MenuOptionChild
-                {
-                    Order = 0 // or assign if you have order
-                };
+                var optionChild = new MenuOptionChild();
 
                 switch (child.Type)
                 {

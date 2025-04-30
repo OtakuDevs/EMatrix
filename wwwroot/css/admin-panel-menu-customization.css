@@ -46,61 +46,17 @@
 }
 
 /* Section Update Menu Item */
+
 .update-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    padding: 1rem 2rem;
+}
+
+.update-item-body {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-gap: 2rem;
     padding: 1rem;
-}
-
-.update-menu-item .select-section {
-    display: flex;
-    flex-direction: column;
-}
-
-.update-menu-item .select-section-buttons {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-}
-
-.update-menu-item fieldset legend {
-    font-size: 1.3rem;
-    font-weight: 400;
-    border-bottom: 1px solid #ced4da;
-}
-
-.update-menu-item fieldset ul {
-    padding-left: 0.75rem;
-    list-style-position: inside; /* brings bullet points inside the padding */
-}
-
-.update-menu-item fieldset ul li {
-    padding-left: 0; /* remove extra padding from li */
-    list-style-type: disc;
-    font-size: 0.9rem;
-}
-
-
-.update-menu-item #categoriesContainer {
-    display: flex;
-    flex-direction: column;
-    border-left: 1px solid #ced4da;
-    padding-left: 1rem;
-}
-
-#groupsContainer, #subGroupsContainer {
-    margin-bottom: 1rem;
-    & div {
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
-
-        & input {
-            flex-grow: 1;
-        }
-    }
 }

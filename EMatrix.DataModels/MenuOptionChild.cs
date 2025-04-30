@@ -4,8 +4,6 @@ public class MenuOptionChild
 {
     public int Id { get; set; }
 
-    public int Order { get; set; }
-
     public int MenuOptionId { get; set; }
 
     public MenuOption MenuOption { get; set; } = null!;
