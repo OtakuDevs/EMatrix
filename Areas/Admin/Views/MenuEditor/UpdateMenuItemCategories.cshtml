@@ -16,10 +16,11 @@
             <h2 class="mt-4">Редактиране на меню категория</h2>
             <hr/>
         </div>
-        <div class="update-item-body">
-            <!-- Left Controls -->
-            <div class="controls-section">
-                <form asp-action="UpdateMenuItemAssignments" method="post">
+        <form asp-action="UpdateMenuItemAssignments" method="post">
+            <div class="update-item-body">
+                <!-- Left Controls -->
+                <div class="controls-section">
+
                     <input type="hidden" asp-for="Id"/>
 
                     <div class="form-floating mb-3">
@@ -91,98 +92,70 @@
                     </div>
 
                     <button type="submit" class="btn btn-success mt-3">Запази промените</button>
-                </form>
-            </div>
-            <!-- Right Preview -->
-            <div class="preview-section">
-                <div class="accordion" id="optionsPreview">
-                    @for (int i = 0; i < Model.Options.Count; i++)
-                    {
-                        var option = Model.Options[i];
-                        <div class="accordion-item" id="optionPreview_@i">
-                            <h2 class="accordion-header" id="heading_@i">
-                                <button class="accordion-button" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#collapse_@i"
-                                        aria-expanded="false" aria-controls="collapse_@i">
-                                    @option.Name
-                                </button>
-                            </h2>
-                            <div id="collapse_@i" class="accordion-collapse collapse"
-                                 aria-labelledby="heading_@i" data-bs-parent="#optionsPreview">
-                                <div class="accordion-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <strong class="text-primary">Опция: @option.Name</strong>
-                                        <button type="button" class="btn btn-outline-danger btn-sm"
-                                                onclick="removeOption(@i)">Премахни опцията</button>
-                                    </div>
+
+                </div>
+                <!-- Right Preview -->
+                <div class="preview-section">
+                    <ul class="menu-list">
+                        @for (int i = 0; i < Model.Options.Count; i++)
+                        {
+                            var option = Model.Options[i];
+
+                            <li>
+                                <details>
+                                    <summary><strong>📁 @option.Name</strong></summary>
+                                    <input type="hidden" asp-for="Options[i].Id" />
+                                    <input type="hidden" asp-for="Options[i].Name" />
 
                                     @if (option.Children != null && option.Children.Any())
                                     {
-                                        <div class="list-group">
-                                            @foreach (var child in option.Children)
+                                        <ul class="child-list">
+                                            @for (int j = 0; j < option.Children.Count; j++)
                                             {
-                                                if (child.Type == "SubGroup")
+                                                var child = option.Children[j];
+
+                                                @if (child.Type == "SubGroup")
                                                 {
-                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                                        <span><i class="bi bi-arrow-return-right"></i> @child.DisplayName</span>
-                                                        <button type="button" class="btn btn-sm btn-outline-danger"
-                                                                onclick="removeChild('@i', '@child.ReferenceId')">
-                                                            <i class="bi bi-x-circle"></i>
-                                                        </button>
-                                                    </div>
+                                                    <li class="list-group-item">
+                                                        <span>📌 @child.DisplayName</span>
+                                                        <input type="hidden" asp-for="Options[i].Children[j].Id" />
+                                                        <input type="hidden" asp-for="Options[i].Children[j].DisplayName" />
+                                                    </li>
                                                 }
-                                                else if (child.Type == "SubGroupSet")
+                                                else if (child.Type == "SubGroupSet" && child.SubGroupSetItems != null)
                                                 {
-                                                    string setId = $"setItems_{i}_{child.DisplayName.Replace(" ", "_")}";
-                                                    <div class="list-group-item">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <i class="bi bi-folder2-open me-1"></i>
-                                                                <strong>@child.DisplayName</strong>
-                                                            </div>
-                                                            <div class="d-flex">
-                                                                <button class="btn btn-sm btn-outline-secondary me-2"
-                                                                        type="button" data-bs-toggle="collapse"
-                                                                        data-bs-target="#@setId" aria-expanded="false"
-                                                                        aria-controls="@setId">
-                                                                    Покажи/Скрий елементите
-                                                                </button>
-                                                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                                                        onclick="removeSet('@i', '@child.DisplayName')">
-                                                                    <i class="bi bi-x-circle"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="collapse ms-3 mt-2" id="@setId">
-                                                            @foreach (var item in child.SubGroupSetItems)
+                                                    <details>
+                                                        <summary><strong>📂 @child.DisplayName</strong></summary>
+                                                        <ul class="set-list">
+                                                            @for (int k = 0; k < child.SubGroupSetItems.Count; k++)
                                                             {
-                                                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                                                    <span><i class="bi bi-chevron-right"></i> @item.Alias</span>
-                                                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                                                            onclick="removeSetItem('@i', '@child.DisplayName', '@item.Id')">
-                                                                        <i class="bi bi-x-circle"></i>
-                                                                    </button>
-                                                                </div>
+                                                                var setItem = child.SubGroupSetItems[k];
+
+                                                                <li>
+                                                                    <span>🔹 @setItem.Alias</span>
+                                                                    <input type="hidden" asp-for="Options[i].Children[j].SubGroupSetItems[k].Id" />
+                                                                    <input type="hidden" asp-for="Options[i].Children[j].SubGroupSetItems[k].Alias" />
+                                                                </li>
                                                             }
-                                                        </div>
-                                                    </div>
+                                                        </ul>
+                                                    </details>
                                                 }
                                             }
-                                        </div>
+                                        </ul>
                                     }
                                     else
                                     {
-                                        <div class="text-muted fst-italic">Няма добавени подопции</div>
+                                        <p class="text-muted fst-italic">Няма добавени подопции</p>
                                     }
-                                </div>
-                            </div>
-                        </div>
-                    }
+                                </details>
+                            </li>
+                        }
+                    </ul>
                 </div>
+
+
             </div>
-
-
-        </div>
+        </form>
     </div>
 </div>
 
@@ -190,16 +163,6 @@
     <script src="~/js/menu-item-update.js" asp-append-version="true"></script>
     <script>
 
-        function addMenuOption() {
-            const name = document.getElementById('newOptionInput').value;
-            if (!name) return;
-
-            // Add new option logic here (JS + optionally update preview dynamically)
-            alert('Нова опция добавена: ' + name);
-            document.getElementById('newOptionInput').classList.add('d-none');
-            document.getElementById('saveOptionBtn').classList.add('d-none');
-            document.getElementById('newOptionInput').value = '';
-        }
 
         function addSubcategoryToSelectedOption() {
             const selectedOptionIdx = document.getElementById('optionSelect').value;
@@ -236,15 +199,6 @@
             alert(`Премахване на елемент ${itemId} от комплект '${setName}' в опция ${optionIdx}`);
         }
 
-        document.getElementById("categorySelect").addEventListener("change", function () {
-            var selectedPrefix = this.value;
-            var subcategorySelect = document.getElementById("subcategorySelect");
 
-            Array.from(subcategorySelect.options).forEach(opt => {
-                opt.hidden = opt.value !== "" && !opt.dataset.cat?.startsWith(selectedPrefix);
-            });
-
-            subcategorySelect.value = "";
-        });
     </script>
 }

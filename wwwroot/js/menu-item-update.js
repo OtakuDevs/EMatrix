@@ -1,4 +1,17 @@
 
+/* Linked select options */
+document.getElementById("categorySelect").addEventListener("change", function () {
+    var selectedPrefix = this.value;
+    var subcategorySelect = document.getElementById("subcategorySelect");
+
+    Array.from(subcategorySelect.options).forEach(opt => {
+        opt.hidden = opt.value !== "" && !opt.dataset.cat?.startsWith(selectedPrefix);
+    });
+
+    subcategorySelect.value = "";
+});
+
+/* Toggler for the add menu option */
 function toggleAddOptionInput() {
     const container = document.getElementById("newOptionContainer");
     const button = document.getElementById("toggleOptionInputBtn")

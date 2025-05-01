@@ -192,6 +192,7 @@ public class MenuManageService : IMenuManageService
 
         foreach (var option in model.Options)
         {
+
             var newOption = new MenuOption
             {
                 Name = option.Name,
