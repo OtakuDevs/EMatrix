@@ -79,7 +79,61 @@ function addMenuOption() {
     // Add to menu list
     document.querySelector(".menu-list").appendChild(li);
 
+    // ✅ Update the dropdown with the new option
+    const newOption = document.createElement("option");
+    newOption.value = index;
+    newOption.textContent = name;
+    document.getElementById("optionSelect").appendChild(newOption);
+
     // Clear input fields
     document.getElementById("newOptionInput").value = "";
     document.getElementById("newOptionOrder").value = "";
+
+    document.getElementById("no-options").style.display = "none";
 }
+
+function addSubcategoryToSelectedOption() {
+    let selectedOptionIndex = document.getElementById("optionSelect").value;
+    let subgroupSelect = document.getElementById("subcategorySelect");
+    let selectedSubgroupValue = subgroupSelect.value;
+    let selectedSubgroupText = subgroupSelect.options[subgroupSelect.selectedIndex].text;
+
+    if (selectedOptionIndex === "" || selectedSubgroupValue === "") {
+        alert("Please select an option and a subgroup!");
+        return;
+    }
+
+    // Find the corresponding menu option in the list
+    let optionDetails = document.querySelectorAll(".menu-list details")[selectedOptionIndex];
+    let childList = optionDetails.querySelector("ul.child-list");
+
+    // If child list doesn't exist, create it
+    if (!childList) {
+        childList = document.createElement("ul");
+        childList.classList.add("child-list");
+        optionDetails.appendChild(childList);
+    }
+
+    // Create a new subgroup item
+    let childLi = document.createElement("li");
+    childLi.classList.add("list-group-item");
+    childLi.innerHTML = `<span>📌 ${selectedSubgroupText}</span>`;
+
+    // Hidden input for model binding
+    let hiddenChildId = document.createElement("input");
+    hiddenChildId.type = "hidden";
+    hiddenChildId.name = `Options[${selectedOptionIndex}].Children[${childList.childElementCount}].Id`;
+    hiddenChildId.value = selectedSubgroupValue;
+
+    let hiddenChildDisplayName = document.createElement("input");
+    hiddenChildDisplayName.type = "hidden";
+    hiddenChildDisplayName.name = `Options[${selectedOptionIndex}].Children[${childList.childElementCount}].DisplayName`;
+    hiddenChildDisplayName.value = selectedSubgroupText;
+
+    childLi.appendChild(hiddenChildId);
+    childLi.appendChild(hiddenChildDisplayName);
+    childList.appendChild(childLi);
+
+    document.getElementById("no-option-children").style.display = "none";
+}
+

@@ -101,7 +101,7 @@
                     <ul class="menu-list">
                         @if (!Model.Options.Any())
                         {
-                            <p class="text-muted fst-italic">Няма добавени опции</p>
+                            <p id="no-options" class="text-muted fst-italic">Няма добавени опции</p>
                         }
                         else
                         {
@@ -157,7 +157,7 @@
                                         }
                                         else
                                         {
-                                            <p class="text-muted fst-italic">Няма добавени подопции</p>
+                                            <p id="no-option-children" class="text-muted fst-italic">Няма добавени подопции</p>
                                         }
                                     </details>
                                 </li>
@@ -165,8 +165,6 @@
                         }
                     </ul>
                 </div>
-
-
             </div>
         </form>
     </div>
@@ -177,14 +175,6 @@
     <script>
 
 
-        function addSubcategoryToSelectedOption() {
-            const selectedOptionIdx = document.getElementById('optionSelect').value;
-            const subcategorySelect = document.getElementById('subcategorySelect');
-            const selectedSub = subcategorySelect.options[subcategorySelect.selectedIndex];
-            if (!selectedOptionIdx || !selectedSub.value) return;
-
-            alert(`Добави подгрупа ${selectedSub.text} към опция ${selectedOptionIdx}`);
-        }
 
         function addSetToSelectedOption() {
             const selectedOptionIdx = document.getElementById('optionSelect').value;
