@@ -119,6 +119,7 @@ public class MenuManageService : IMenuManageService
         {
             Id = option.Id,
             Name = option.Name,
+            Order = option.Order,
             Children = option.Children.Select(child =>
             {
                 if (child.SubGroup != null)
@@ -192,10 +193,11 @@ public class MenuManageService : IMenuManageService
 
         foreach (var option in model.Options)
         {
-
+            //TODO: ADD ORDER CAUSE DB EXCEPTION
             var newOption = new MenuOption
             {
                 Name = option.Name,
+                Order = option.Order,
                 Icon = "test",
                 MenuItemId = menuItem.Id,
                 Children = new List<MenuOptionChild>()

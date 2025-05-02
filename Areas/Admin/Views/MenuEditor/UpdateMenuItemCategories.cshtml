@@ -75,6 +75,8 @@
                         <div class="input-group">
                             <input type="text" id="newOptionInput" class="form-control"
                                    placeholder="Име на нова опция"/>
+                            <input type="text" id="newOptionOrder" class="form-control"
+                                   placeholder="Позиция"/>
                             <button type="button" class="btn btn-success" id="saveOptionBtn" onclick="addMenuOption()">
                                 Запази
                             </button>
@@ -97,58 +99,69 @@
                 <!-- Right Preview -->
                 <div class="preview-section">
                     <ul class="menu-list">
-                        @for (int i = 0; i < Model.Options.Count; i++)
+                        @if (!Model.Options.Any())
                         {
-                            var option = Model.Options[i];
+                            <p class="text-muted fst-italic">Няма добавени опции</p>
+                        }
+                        else
+                        {
+                            for (int i = 0; i < Model.Options.Count; i++)
+                            {
+                                var option = Model.Options[i];
 
-                            <li>
-                                <details>
-                                    <summary><strong>📁 @option.Name</strong></summary>
-                                    <input type="hidden" asp-for="Options[i].Id" />
-                                    <input type="hidden" asp-for="Options[i].Name" />
+                                <li>
+                                    <details>
+                                        <summary><strong>📁 @option.Name - @option.Order</strong></summary>
+                                        <input type="hidden" asp-for="Options[i].Id"/>
+                                        <input type="hidden" asp-for="Options[i].Name"/>
+                                        <input type="hidden" asp-for="Options[i].Order"/>
 
-                                    @if (option.Children != null && option.Children.Any())
-                                    {
-                                        <ul class="child-list">
-                                            @for (int j = 0; j < option.Children.Count; j++)
-                                            {
-                                                var child = option.Children[j];
-
-                                                @if (child.Type == "SubGroup")
+                                        @if (option.Children != null && option.Children.Any())
+                                        {
+                                            <ul class="child-list">
+                                                @for (int j = 0; j < option.Children.Count; j++)
                                                 {
-                                                    <li class="list-group-item">
-                                                        <span>📌 @child.DisplayName</span>
-                                                        <input type="hidden" asp-for="Options[i].Children[j].Id" />
-                                                        <input type="hidden" asp-for="Options[i].Children[j].DisplayName" />
-                                                    </li>
-                                                }
-                                                else if (child.Type == "SubGroupSet" && child.SubGroupSetItems != null)
-                                                {
-                                                    <details>
-                                                        <summary><strong>📂 @child.DisplayName</strong></summary>
-                                                        <ul class="set-list">
-                                                            @for (int k = 0; k < child.SubGroupSetItems.Count; k++)
-                                                            {
-                                                                var setItem = child.SubGroupSetItems[k];
+                                                    var child = option.Children[j];
 
-                                                                <li>
-                                                                    <span>🔹 @setItem.Alias</span>
-                                                                    <input type="hidden" asp-for="Options[i].Children[j].SubGroupSetItems[k].Id" />
-                                                                    <input type="hidden" asp-for="Options[i].Children[j].SubGroupSetItems[k].Alias" />
-                                                                </li>
-                                                            }
-                                                        </ul>
-                                                    </details>
+                                                    @if (child.Type == "SubGroup")
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <span>📌 @child.DisplayName</span>
+                                                            <input type="hidden" asp-for="Options[i].Children[j].Id"/>
+                                                            <input type="hidden"
+                                                                   asp-for="Options[i].Children[j].DisplayName"/>
+                                                        </li>
+                                                    }
+                                                    else if (child.Type == "SubGroupSet" && child.SubGroupSetItems != null)
+                                                    {
+                                                        <details>
+                                                            <summary><strong>📂 @child.DisplayName</strong></summary>
+                                                            <ul class="set-list">
+                                                                @for (int k = 0; k < child.SubGroupSetItems.Count; k++)
+                                                                {
+                                                                    var setItem = child.SubGroupSetItems[k];
+
+                                                                    <li>
+                                                                        <span>🔹 @setItem.Alias</span>
+                                                                        <input type="hidden"
+                                                                               asp-for="Options[i].Children[j].SubGroupSetItems[k].Id"/>
+                                                                        <input type="hidden"
+                                                                               asp-for="Options[i].Children[j].SubGroupSetItems[k].Alias"/>
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </details>
+                                                    }
                                                 }
-                                            }
-                                        </ul>
-                                    }
-                                    else
-                                    {
-                                        <p class="text-muted fst-italic">Няма добавени подопции</p>
-                                    }
-                                </details>
-                            </li>
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted fst-italic">Няма добавени подопции</p>
+                                        }
+                                    </details>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
