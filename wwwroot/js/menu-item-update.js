@@ -1,4 +1,3 @@
-
 /* Linked select options */
 document.getElementById("categorySelect").addEventListener("change", function () {
     var selectedPrefix = this.value;
@@ -92,48 +91,191 @@ function addMenuOption() {
     document.getElementById("no-options").style.display = "none";
 }
 
+/* Add subgroup to option */
 function addSubcategoryToSelectedOption() {
-    let selectedOptionIndex = document.getElementById("optionSelect").value;
-    let subgroupSelect = document.getElementById("subcategorySelect");
-    let selectedSubgroupValue = subgroupSelect.value;
-    let selectedSubgroupText = subgroupSelect.options[subgroupSelect.selectedIndex].text;
+    const selectedOptionIndex = document.getElementById("optionSelect").value;
+    const subgroupSelect = document.getElementById("subcategorySelect");
+    const selectedSubgroupValue = subgroupSelect.value;
+    const selectedSubgroupText = subgroupSelect.options[subgroupSelect.selectedIndex].text;
 
     if (selectedOptionIndex === "" || selectedSubgroupValue === "") {
-        alert("Please select an option and a subgroup!");
+        alert("Моля, изберете опция и подгрупа!");
         return;
     }
 
-    // Find the corresponding menu option in the list
-    let optionDetails = document.querySelectorAll(".menu-list details")[selectedOptionIndex];
-    let childList = optionDetails.querySelector("ul.child-list");
-
-    // If child list doesn't exist, create it
-    if (!childList) {
-        childList = document.createElement("ul");
-        childList.classList.add("child-list");
-        optionDetails.appendChild(childList);
+    const menuListItems = document.querySelectorAll(".menu-list > li");
+    const selectedLi = menuListItems[selectedOptionIndex];
+    if (!selectedLi) {
+        alert("Избраната опция не съществува в списъка.");
+        return;
     }
 
-    // Create a new subgroup item
-    let childLi = document.createElement("li");
-    childLi.classList.add("list-group-item");
-    childLi.innerHTML = `<span>📌 ${selectedSubgroupText}</span>`;
+    const details = selectedLi.querySelector("details");
 
-    // Hidden input for model binding
-    let hiddenChildId = document.createElement("input");
-    hiddenChildId.type = "hidden";
-    hiddenChildId.name = `Options[${selectedOptionIndex}].Children[${childList.childElementCount}].Id`;
-    hiddenChildId.value = selectedSubgroupValue;
+    // Try to find an existing child list
+    let childList = details.querySelector("ul.child-list");
 
-    let hiddenChildDisplayName = document.createElement("input");
-    hiddenChildDisplayName.type = "hidden";
-    hiddenChildDisplayName.name = `Options[${selectedOptionIndex}].Children[${childList.childElementCount}].DisplayName`;
-    hiddenChildDisplayName.value = selectedSubgroupText;
+    // If no child list exists, create it and insert before the fallback "Няма добавени подопции" paragraph
+    if (!childList) {
+        childList = document.createElement("ul");
+        childList.className = "child-list";
 
-    childLi.appendChild(hiddenChildId);
-    childLi.appendChild(hiddenChildDisplayName);
-    childList.appendChild(childLi);
+        const fallbackParagraph = details.querySelector(`#no-option-children-${selectedOptionIndex}`);
+        if (fallbackParagraph) {
+            fallbackParagraph.remove(); // Remove the "no options" message
+        }
 
-    document.getElementById("no-option-children").style.display = "none";
+        details.appendChild(childList);
+    }
+
+    // Calculate the new child index
+    const childCount = childList.querySelectorAll("li").length;
+
+    // Create new list item
+    const li = document.createElement("li");
+    li.className = "list-group-item";
+    li.innerHTML = `
+        <span>📌 ${selectedSubgroupText}</span>
+        <input type="hidden" name="Options[${selectedOptionIndex}].Children[${childCount}].Id" value="0"/>
+        <input type="hidden" name="Options[${selectedOptionIndex}].Children[${childCount}].ReferenceId" value="${selectedSubgroupValue}"/>
+        <input type="hidden" name="Options[${selectedOptionIndex}].Children[${childCount}].DisplayName" value="${selectedSubgroupText}"/>
+        <input type="hidden" name="Options[${selectedOptionIndex}].Children[${childCount}].Type" value="SubGroup"/>
+    `;
+
+    // Append to the list
+    childList.appendChild(li);
 }
+
+/* Toggler for the add menu option set */
+function toggleAddOptionSetInput() {
+    const container = document.getElementById("newSetContainer");
+    const button = document.getElementById("toggleOptionSetInputBtn")
+    const isHidden = container.classList.contains("d-none");
+
+    if (isHidden) {
+        container.classList.remove("d-none");
+        button.classList.remove("btn-secondary");
+        button.classList.add("btn-danger");
+        document.getElementById("newSetInput").focus();
+    } else {
+        container.classList.add("d-none");
+        button.classList.remove("btn-danger");
+        button.classList.add("btn-secondary");
+        document.getElementById("newSetInput").value = "";
+    }
+}
+
+/* Add menu option set */
+function addMenuOptionSet() {
+    const selectedOptionIndex = document.getElementById("optionSelect").value;
+    const setName = document.getElementById("newSetInput").value.trim();
+
+    if (selectedOptionIndex === "" || setName === "") {
+        alert("Please select an option and enter a valid set name!");
+        return;
+    }
+
+    const menuListItems = document.querySelectorAll(".menu-list > li");
+    const selectedLi = menuListItems[selectedOptionIndex];
+    if (!selectedLi) {
+        alert("Selected option index is invalid.");
+        return;
+    }
+
+    const details = selectedLi.querySelector("details");
+
+    // Try to find an existing child list
+    let childList = details.querySelector("ul.child-list");
+    if (!childList) {
+        childList = document.createElement("ul");
+        childList.className = "child-list";
+
+        const fallbackParagraph = details.querySelector(`#no-option-children-${selectedOptionIndex}`);
+        if (fallbackParagraph) {
+            fallbackParagraph.remove(); // Remove "no children" message
+        }
+
+        details.appendChild(childList);
+    }
+
+    // Determine new child index
+    const existingChildren = childList.querySelectorAll("li, details");
+    const childIndex = existingChildren.length;
+
+    // Create new details block for the set
+    const setDetails = document.createElement("details");
+    setDetails.innerHTML = `
+        <summary>
+        <strong>📂 ${setName}</strong>
+        <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addSubgroupToThisSet(this)">Добави в сета</button>
+        </summary>
+        <ul class="set-list"></ul>
+        <input type="hidden" name="Options[${selectedOptionIndex}].Children[${childIndex}].DisplayName" value="${setName}"/>
+        <input type="hidden" name="Options[${selectedOptionIndex}].Children[${childIndex}].Type" value="SubGroupSet"/>
+    `;
+
+    // Append the new set to the child list
+    childList.appendChild(setDetails);
+
+    // Clear the input
+    document.getElementById("newSetInput").value = "";
+}
+
+function addSubgroupToThisSet(button) {
+    const subgroupSelect = document.getElementById("subcategorySelect");
+    const subgroupValue = subgroupSelect.value;
+    const subgroupText = subgroupSelect.options[subgroupSelect.selectedIndex]?.text;
+
+    if (!subgroupValue) {
+        alert("Моля, изберете подгрупа за добавяне.");
+        return;
+    }
+
+    const setDetails = button.closest("details");
+    const setList = setDetails.querySelector(".set-list");
+
+    const optionLi = button.closest("li");
+    const optionIndex = Array.from(document.querySelectorAll(".menu-list > li")).indexOf(optionLi);
+    if (optionIndex === -1) {
+        alert("Не може да се определи опцията.");
+        return;
+    }
+
+    const childList = optionLi.querySelector(".child-list");
+
+    // Compute the model-aligned Children index (j) of the current SubGroupSet
+    let setIndex = -1;
+    let currentIndex = 0;
+    for (const child of childList.children) {
+        if (child.tagName === "LI") {
+            // SubGroup – skip
+            currentIndex++;
+        } else if (child.tagName === "DETAILS") {
+            // SubGroupSet – check if it's the one we're inside
+            if (child === setDetails) {
+                setIndex = currentIndex;
+                break;
+            }
+            currentIndex++;
+        }
+    }
+
+    if (setIndex === -1) {
+        alert("Не може да се определи индекс на сета.");
+        return;
+    }
+
+    const itemCount = setList.querySelectorAll("li").length;
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+        <span>🔹 ${subgroupText}</span>
+        <input type="hidden" name="Options[${optionIndex}].Children[${setIndex}].SubGroupSetItems[${itemCount}].Id" value="${subgroupValue}"/>
+        <input type="hidden" name="Options[${optionIndex}].Children[${setIndex}].SubGroupSetItems[${itemCount}].Alias" value="${subgroupText}"/>
+    `;
+
+    setList.appendChild(li);
+}
+
+
 

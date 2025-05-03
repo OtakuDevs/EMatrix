@@ -96,16 +96,7 @@ public class MenuManageService : IMenuManageService
 
    public async Task<MenuItemAdminViewModel> GetMenuItemModelAsync(int id)
 {
-    var menuItem = await _context.MenuItems
-        .Include(m => m.Options)
-            .ThenInclude(o => o.Children)
-                .ThenInclude(c => c.SubGroup)
-        .Include(m => m.Options)
-            .ThenInclude(o => o.Children)
-                .ThenInclude(c => c.SubGroupSet)
-                    .ThenInclude(s => s.Items)
-                        .ThenInclude(i => i.SubGroup)
-        .FirstOrDefaultAsync(m => m.Id == id);
+    var menuItem = await GetMenuItem(id);
 
     if (menuItem == null)
         throw new KeyNotFoundException();
@@ -177,14 +168,10 @@ public class MenuManageService : IMenuManageService
 }
 
 
-    public async Task UpdateMenuItemAssignmentsAsync(MenuItemAdminViewModel model)
-    {
-        var menuItem = await _context.MenuItems
-            .Include(m => m.Options)
-            .ThenInclude(o => o.Children)
-            .ThenInclude(s => s.SubGroupSet)
-            .FirstOrDefaultAsync(m => m.Id == model.Id);
 
+public async Task UpdateMenuItemAssignmentsAsync(MenuItemAdminViewModel model)
+    {
+        var menuItem = await GetMenuItem(model.Id);
         if(menuItem == null)
             throw new KeyNotFoundException();
         _context.MenuOptionChildren.RemoveRange(menuItem.Options.SelectMany(o => o.Children));
@@ -278,4 +265,20 @@ public class MenuManageService : IMenuManageService
         _context.MenuItems.Update(menuItem);
         await _context.SaveChangesAsync();
     }
+
+    private async Task<MenuItem?> GetMenuItem(int id)
+    {
+        var menuItem = await _context.MenuItems
+            .Include(m => m.Options)
+            .ThenInclude(o => o.Children)
+            .ThenInclude(c => c.SubGroup)
+            .Include(m => m.Options)
+            .ThenInclude(o => o.Children)
+            .ThenInclude(c => c.SubGroupSet)
+            .ThenInclude(s => s.Items)
+            .ThenInclude(i => i.SubGroup)
+            .FirstOrDefaultAsync(m => m.Id == id);
+        return menuItem;
+    }
+
 }

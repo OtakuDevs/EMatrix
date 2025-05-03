@@ -88,9 +88,19 @@
                         <button type="button" class="btn btn-secondary" onclick="addSubcategoryToSelectedOption()">
                             Добави подгрупа
                         </button>
-                        <button type="button" class="btn btn-secondary" onclick="addSetToSelectedOption()">Добави
+                        <button type="button" class="btn btn-secondary" id="toggleOptionSetInputBtn" onclick="toggleAddOptionSetInput()">Добави
                             комплект
                         </button>
+                    </div>
+                    <div class="mb-3 d-none" id="newSetContainer">
+                        <label for="newOptionInput" class="form-label">Име на комплект</label>
+                        <div class="input-group">
+                            <input type="text" id="newSetInput" class="form-control"
+                                   placeholder="Име на комплект"/>
+                            <button type="button" class="btn btn-success" id="saveSetBtn" onclick="addMenuOptionSet()">
+                                Запази
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-success mt-3">Запази промените</button>
@@ -128,14 +138,18 @@
                                                         <li class="list-group-item">
                                                             <span>📌 @child.DisplayName</span>
                                                             <input type="hidden" asp-for="Options[i].Children[j].Id"/>
-                                                            <input type="hidden"
-                                                                   asp-for="Options[i].Children[j].DisplayName"/>
+                                                            <input type="hidden" asp-for="Options[i].Children[j].ReferenceId"/>
+                                                            <input type="hidden" asp-for="Options[i].Children[j].DisplayName"/>
+                                                            <input type="hidden" asp-for="Options[i].Children[j].Type"/>
                                                         </li>
                                                     }
                                                     else if (child.Type == "SubGroupSet" && child.SubGroupSetItems != null)
                                                     {
                                                         <details>
-                                                            <summary><strong>📂 @child.DisplayName</strong></summary>
+                                                            <summary>
+                                                                <strong>📂 @child.DisplayName</strong>
+                                                                <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addSubgroupToThisSet(this)">Добави в сета</button>
+                                                            </summary>
                                                             <ul class="set-list">
                                                                 @for (int k = 0; k < child.SubGroupSetItems.Count; k++)
                                                                 {
@@ -157,7 +171,7 @@
                                         }
                                         else
                                         {
-                                            <p id="no-option-children" class="text-muted fst-italic">Няма добавени подопции</p>
+                                            <p id="no-option-children-@i" class="text-muted fst-italic">Няма добавени подопции</p>
                                         }
                                     </details>
                                 </li>
@@ -173,18 +187,6 @@
 @section Scripts {
     <script src="~/js/menu-item-update.js" asp-append-version="true"></script>
     <script>
-
-
-
-        function addSetToSelectedOption() {
-            const selectedOptionIdx = document.getElementById('optionSelect').value;
-            if (!selectedOptionIdx) return;
-
-            const setName = prompt("Въведете име на комплекта:");
-            if (!setName) return;
-
-            alert(`Добави комплект '${setName}' към опция ${selectedOptionIdx}`);
-        }
 
         function removeOption(index) {
             alert('Премахване на опция ' + index);
