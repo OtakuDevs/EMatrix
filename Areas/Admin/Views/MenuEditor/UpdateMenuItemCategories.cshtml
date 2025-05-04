@@ -67,8 +67,24 @@
                     </div>
 
                     <div class="d-flex flex-column gap-1">
+                        <details class="card shadow-sm border-0 mb-2" id="editOptionDetails">
+                            <summary class="btn btn-main text-light d-flex align-items-center justify-content-between">
+                                ✏️ Редактиране на опция
+                                <i class="bi bi-pencil-square ms-2"></i>
+                            </summary>
+                            <div class="card-body">
+                                <div class="d-flex flex-column gap-2 mt-2">
+                                    <input type="text" id="editOptionInput" class="form-control" placeholder="Име на опцията"/>
+                                    <div class="d-flex flex-row gap-2">
+                                        <input type="number" id="editOptionOrder" class="form-control" placeholder="Позиция"/>
+                                        <button type="button" class="btn btn-success" onclick="updateSelectedOption()">Запази</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+
                         <details class="card shadow-sm border-0 mb-2">
-                            <summary class="btn btn-main text-light d-flex align-items-center justify-content-between" data-tooltip="Добави нови опция">
+                            <summary class="btn btn-main text-light d-flex align-items-center justify-content-between">
                                 ➕ Добавяне на нова опция
                                 <i class="bi bi-plus-square ms-2"></i>
                             </summary>
@@ -76,7 +92,7 @@
                                 <div class="d-flex flex-column gap-2 mt-2">
                                     <input type="text" id="newOptionInput" class="form-control" placeholder="Име на нова опция"/>
                                     <div class="d-flex flex-row gap-2">
-                                        <input type="text" id="newOptionOrder" class="form-control" placeholder="Позиция"/>
+                                        <input type="number" id="newOptionOrder" class="form-control" placeholder="Позиция"/>
                                         <button type="button" class="btn btn-success" onclick="addMenuOption()">Добави</button>
                                     </div>
                                 </div>
@@ -163,7 +179,7 @@
                                                                 <div class="d-flex flex-row gap-2">
                                                                     <button type="button"
                                                                             class="btn btn-sm btn-main"
-                                                                            onclick="addSubgroupToThisSet(this)">Добави подгрупа към сета
+                                                                            onclick="addSubgroupToThisSet(this)">Добави подгрупа към комплект
                                                                     </button>
                                                                     <button type="button"
                                                                             class="btn btn-outline-secondary btn-sm"
@@ -213,4 +229,8 @@
 
 @section Scripts {
     <script src="~/js/menu-item-update.js" asp-append-version="true"></script>
+    <script>
+        const optionsData = @Html.Raw(Json.Serialize(Model.Options));
+    </script>
+
 }

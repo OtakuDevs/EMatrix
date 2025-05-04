@@ -184,7 +184,7 @@ function addMenuOptionSet() {
         <summary>
         <strong>📂 ${setName}</strong>
         <div class="d-flex flex-row gap-2">
-        <button type="button" class="btn btn-sm btn-main" onclick="addSubgroupToThisSet(this)">Добави подгрупа към сета</button>
+        <button type="button" class="btn btn-sm btn-main" onclick="addSubgroupToThisSet(this)">Добави подгрупа към комплект</button>
         <button type="button" class="btn btn-outline-secondary btn-sm" onclick="removeMenuOptionSet(this)">X</button>
         </div>
         </summary>
@@ -297,6 +297,55 @@ function removeMenuOptionSetSubgroup(button) {
     }
     li.remove();
 }
+
+/* Edit menu option */
+document.getElementById("optionSelect").addEventListener("change", function () {
+    const selectedIndex = this.value;
+    const option = optionsData[selectedIndex]; // We'll define `optionsData` below
+    console.log(option);
+
+    if (option) {
+        document.getElementById("editOptionInput").value = option.name;
+        document.getElementById("editOptionOrder").value = option.order;
+
+        // Optional: auto-open the details section
+        document.getElementById("editOptionDetails").open = true;
+    }
+});
+
+function updateSelectedOption() {
+    const select = document.getElementById("optionSelect");
+    const selectedIndex = select.selectedIndex;
+    const newName = document.getElementById("editOptionInput").value;
+    const newOrder = document.getElementById("editOptionOrder").value;
+
+    if (selectedIndex <= 0) {
+        alert("Моля, изберете опция за редактиране.");
+        return;
+    }
+
+    const optionIndex = select.value; // This is the index from model (used in input names)
+
+    // Update hidden model inputs
+    document.querySelector(`input[name="Options[${optionIndex}].Name"]`).value = newName;
+    document.querySelector(`input[name="Options[${optionIndex}].Order"]`).value = newOrder;
+
+    // Update preview summary
+    const previewListItems = document.querySelectorAll(".menu-list > li");
+    const targetDetails = previewListItems[optionIndex]?.querySelector("details");
+
+    if (targetDetails) {
+        const summary = targetDetails.querySelector("summary > strong");
+        if (summary) {
+            summary.textContent = `📁 ${newName} - ${newOrder}`;
+        }
+    }
+
+    // Update select text
+    select.options[selectedIndex].text = newName;
+}
+
+
 
 
 
