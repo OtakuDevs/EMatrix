@@ -69,37 +69,13 @@
                              data-bs-parent="#menuAccordion">
                             <div class="accordion-body">
                                 <ul class="navbar-nav">
-                                    @foreach (var category in menuItem.Categories)
+                                    @foreach (var category in menuItem.Options)
                                     {
                                         <li class="nav-item">
                                             <a class="nav-link" asp-area="" asp-controller="Products"
                                                asp-action="GetMenuItemResult"
                                                asp-route-categoryId="@category.Key">
                                                 @category.Value
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                                <ul class="navbar-nav">
-                                    @foreach (var subCategory in menuItem.SubCategories)
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link" asp-area="" asp-controller="Products"
-                                               asp-action="GetMenuItemResult"
-                                               asp-route-subCategoryId="@subCategory.Key">
-                                                @subCategory.Value
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                                <ul class="navbar-nav">
-                                    @foreach (var set in menuItem.SubGroupSets)
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link" asp-area="" asp-controller="Products"
-                                               asp-action="GetMenuItemResult"
-                                               asp-route-subGroupSetId="@set.Key">
-                                                @set.Value
                                             </a>
                                         </li>
                                     }
@@ -117,7 +93,7 @@
                         <div class="menu-content">
                             <p class="menu-title">@cat.Name</p>
                             <ul class="menu-preview-items">
-                                @foreach (var item in cat.Items)
+                                @foreach (var item in cat.Options)
                                 {
                                     <li>@item</li>
                                 }

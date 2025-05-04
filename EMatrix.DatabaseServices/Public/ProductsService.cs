@@ -18,6 +18,8 @@ public class ProductsService : IProductsService
     {
         var menu = await _context.Menus
             .Include(m => m.MenuItems)
+            .ThenInclude(o => o.Options)
+            .ThenInclude(c => c.Children)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         var model = new ProductsPrimaryViewModel();
@@ -27,13 +29,14 @@ public class ProductsService : IProductsService
             {
                 Id = menuItem.Id,
                 Name = menuItem.Name,
+                Options = menuItem.Options.ToDictionary(o => o.Id, o => o.Name)
                 });
             model.MenuItemsGrid.Add(new MenuItemPreviewModel()
             {
                 Id = menuItem.Id,
                 Name = menuItem.Name,
                 Icon = $"{menuItem.Icon}",
-
+                Options = menuItem.Options.Select(o => o.Name).ToList(),
             });
         }
         return model;

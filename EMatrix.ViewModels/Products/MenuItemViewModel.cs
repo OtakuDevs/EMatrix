@@ -6,10 +6,5 @@ public class MenuItemViewModel
 
     public string Name { get; set; } = null!;
 
-    public Dictionary<string, string> Categories { get; set; } = new Dictionary<string, string>();
-
-    public Dictionary<string, string> SubCategories { get; set; } = new Dictionary<string, string>();
-
-    public Dictionary<int, string> SubGroupSets { get; set; } = new Dictionary<int, string>();
-
+    public Dictionary<int, string> Options { get; set; } = new Dictionary<int, string>();
 }
