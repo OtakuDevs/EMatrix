@@ -13,7 +13,7 @@
 
     <div class="content-wrapper update-menu-item">
         <div class="update-item-header">
-            <h2 class="mt-4">Редактиране на меню категория</h2>
+            <h2 class="mt-4">Редактиране на меню елемент</h2>
             <hr/>
         </div>
         <form asp-action="UpdateMenuItemAssignments" method="post">
@@ -63,47 +63,45 @@
                                     <option value="@i">@Model.Options[i].Name</option>
                                 }
                             </select>
-                            <button type="button" class="btn btn-secondary" id="toggleOptionInputBtn"
-                                    onclick="toggleAddOptionInput()" title="Добави опция">
-                                <i class="bi bi-plus-square" id="toggleOptionIcon"></i>
-                            </button>
                         </div>
                     </div>
 
-                    <div class="mb-3 d-none" id="newOptionContainer">
-                        <label for="newOptionInput" class="form-label">Име на нова опция</label>
-                        <div class="input-group">
-                            <input type="text" id="newOptionInput" class="form-control"
-                                   placeholder="Име на нова опция"/>
-                            <input type="text" id="newOptionOrder" class="form-control"
-                                   placeholder="Позиция"/>
-                            <button type="button" class="btn btn-success" id="saveOptionBtn" onclick="addMenuOption()">
-                                Запази
+                    <div class="d-flex flex-column gap-1">
+                        <details class="card shadow-sm border-0 mb-2">
+                            <summary class="btn btn-main text-light d-flex align-items-center justify-content-between" data-tooltip="Добави нови опция">
+                                ➕ Добавяне на нова опция
+                                <i class="bi bi-plus-square ms-2"></i>
+                            </summary>
+                            <div class="card-body">
+                                <div class="d-flex flex-column gap-2 mt-2">
+                                    <input type="text" id="newOptionInput" class="form-control" placeholder="Име на нова опция"/>
+                                    <div class="d-flex flex-row gap-2">
+                                        <input type="text" id="newOptionOrder" class="form-control" placeholder="Позиция"/>
+                                        <button type="button" class="btn btn-success" onclick="addMenuOption()">Добави</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+                        <details id="optionSetDetails" class="card shadow-sm border-0 mb-2">
+                            <summary class="btn btn-main text-light d-flex align-items-center justify-content-between" id="toggleOptionSetInputBtn">
+                                ➕ Добавяне на нов комплект
+                                <i class="bi bi-plus-square ms-2"></i>
+                            </summary>
+                            <div class="card-body">
+                                <div class="d-flex flex-row gap-2">
+                                    <input type="text" id="newSetInput" class="form-control" placeholder="Име на комплект"/>
+                                    <button type="button" class="btn btn-success" id="saveSetBtn" onclick="addMenuOptionSet()">Добави</button>
+                                </div>
+                            </div>
+                        </details>
+                        <div class="d-flex flex-row justify-content-evenly">
+                            <button type="button" data-tooltip="Добави подгрупа към опция" class="btn btn-main" onclick="addSubcategoryToSelectedOption()">
+                                Добави подгрупа
                             </button>
+
+                            <button type="submit" class="btn btn-success ms-auto">Запази промените</button>
                         </div>
                     </div>
-
-
-                    <div class="form-group mb-3">
-                        <button type="button" class="btn btn-secondary" onclick="addSubcategoryToSelectedOption()">
-                            Добави подгрупа
-                        </button>
-                        <button type="button" class="btn btn-secondary" id="toggleOptionSetInputBtn" onclick="toggleAddOptionSetInput()">Добави
-                            комплект
-                        </button>
-                    </div>
-                    <div class="mb-3 d-none" id="newSetContainer">
-                        <label for="newOptionInput" class="form-label">Име на комплект</label>
-                        <div class="input-group">
-                            <input type="text" id="newSetInput" class="form-control"
-                                   placeholder="Име на комплект"/>
-                            <button type="button" class="btn btn-success" id="saveSetBtn" onclick="addMenuOptionSet()">
-                                Запази
-                            </button>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-success mt-3">Запази промените</button>
 
                 </div>
                 <!-- Right Preview -->
@@ -121,7 +119,12 @@
 
                                 <li>
                                     <details>
-                                        <summary><strong>📁 @option.Name - @option.Order</strong></summary>
+                                        <summary>
+                                            <strong>📁 @option.Name - @option.Order</strong>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm"
+                                                    onclick="removeMenuOption(this)">X
+                                            </button>
+                                        </summary>
                                         <input type="hidden" asp-for="Options[i].Id"/>
                                         <input type="hidden" asp-for="Options[i].Name"/>
                                         <input type="hidden" asp-for="Options[i].Order"/>
@@ -136,11 +139,20 @@
                                                     @if (child.Type == "SubGroup")
                                                     {
                                                         <li class="list-group-item">
-                                                            <span>📌 @child.DisplayName</span>
-                                                            <input type="hidden" asp-for="Options[i].Children[j].Id"/>
-                                                            <input type="hidden" asp-for="Options[i].Children[j].ReferenceId"/>
-                                                            <input type="hidden" asp-for="Options[i].Children[j].DisplayName"/>
-                                                            <input type="hidden" asp-for="Options[i].Children[j].Type"/>
+                                                            <span>
+                                                                📌 @child.DisplayName
+                                                                <button type="button"
+                                                                        class="btn btn-outline-secondary btn-sm"
+                                                                        onclick="removeMenuOptionSubgroup(this)">X</button>
+                                                            </span>
+                                                            <input type="hidden"
+                                                                   asp-for="Options[i].Children[j].Id"/>
+                                                            <input type="hidden"
+                                                                   asp-for="Options[i].Children[j].ReferenceId"/>
+                                                            <input type="hidden"
+                                                                   asp-for="Options[i].Children[j].DisplayName"/>
+                                                            <input type="hidden"
+                                                                   asp-for="Options[i].Children[j].Type"/>
                                                         </li>
                                                     }
                                                     else if (child.Type == "SubGroupSet" && child.SubGroupSetItems != null)
@@ -148,7 +160,16 @@
                                                         <details>
                                                             <summary>
                                                                 <strong>📂 @child.DisplayName</strong>
-                                                                <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addSubgroupToThisSet(this)">Добави в сета</button>
+                                                                <div class="d-flex flex-row gap-2">
+                                                                    <button type="button"
+                                                                            class="btn btn-sm btn-main"
+                                                                            onclick="addSubgroupToThisSet(this)">Добави подгрупа към сета
+                                                                    </button>
+                                                                    <button type="button"
+                                                                            class="btn btn-outline-secondary btn-sm"
+                                                                            onclick="removeMenuOptionSet(this)">X
+                                                                    </button>
+                                                                </div>
                                                             </summary>
                                                             <ul class="set-list">
                                                                 @for (int k = 0; k < child.SubGroupSetItems.Count; k++)
@@ -156,7 +177,12 @@
                                                                     var setItem = child.SubGroupSetItems[k];
 
                                                                     <li>
-                                                                        <span>🔹 @setItem.Alias</span>
+                                                                        <span>
+                                                                            🔹 @setItem.Alias
+                                                                            <button type="button"
+                                                                                    class="btn btn-outline-secondary btn-sm"
+                                                                                    onclick="removeMenuOptionSetSubgroup(this)">X</button>
+                                                                        </span>
                                                                         <input type="hidden"
                                                                                asp-for="Options[i].Children[j].SubGroupSetItems[k].Id"/>
                                                                         <input type="hidden"
@@ -171,7 +197,8 @@
                                         }
                                         else
                                         {
-                                            <p id="no-option-children-@i" class="text-muted fst-italic">Няма добавени подопции</p>
+                                            <p id="no-option-children-@i" class="text-muted fst-italic">Няма
+                                                добавени подопции</p>
                                         }
                                     </details>
                                 </li>
@@ -186,24 +213,4 @@
 
 @section Scripts {
     <script src="~/js/menu-item-update.js" asp-append-version="true"></script>
-    <script>
-
-        function removeOption(index) {
-            alert('Премахване на опция ' + index);
-        }
-
-        function removeChild(optionIdx, refId) {
-            alert(`Премахване на подгрупа ${refId} от опция ${optionIdx}`);
-        }
-
-        function removeSet(optionIdx, setName) {
-            alert(`Премахване на комплект '${setName}' от опция ${optionIdx}`);
-        }
-
-        function removeSetItem(optionIdx, setName, itemId) {
-            alert(`Премахване на елемент ${itemId} от комплект '${setName}' в опция ${optionIdx}`);
-        }
-
-
-    </script>
 }

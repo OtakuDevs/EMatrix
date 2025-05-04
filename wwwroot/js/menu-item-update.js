@@ -11,28 +11,17 @@ document.getElementById("categorySelect").addEventListener("change", function ()
 });
 
 /* Toggler for the add menu option */
-function toggleAddOptionInput() {
-    const container = document.getElementById("newOptionContainer");
-    const button = document.getElementById("toggleOptionInputBtn")
-    const icon = document.getElementById("toggleOptionIcon");
-    const isHidden = container.classList.contains("d-none");
-
-    if (isHidden) {
-        container.classList.remove("d-none");
-        button.classList.remove("btn-secondary");
-        button.classList.add("btn-danger");
+document.querySelector("details").addEventListener("toggle", function () {
+    const icon = this.querySelector("summary i");
+    if (this.open) {
         icon.classList.remove("bi-plus-square");
         icon.classList.add("bi-x-square");
-        document.getElementById("newOptionInput").focus();
     } else {
-        container.classList.add("d-none");
-        button.classList.remove("btn-danger");
-        button.classList.add("btn-secondary");
         icon.classList.remove("bi-x-square");
         icon.classList.add("bi-plus-square");
-        document.getElementById("newOptionInput").value = "";
     }
-}
+});
+
 
 /* Add menu option function */
 function addMenuOption() {
@@ -51,7 +40,10 @@ function addMenuOption() {
 
     // Create summary for collapsible effect
     const summary = document.createElement("summary");
-    summary.innerHTML = `<strong>📁 ${name} - ${order}</strong>`;
+    summary.innerHTML = `
+            <strong>📁 ${name} - ${order}</strong>
+             <button type="button" class="btn btn-outline-secondary btn-sm" onclick="removeMenuOption(this)">X</button>
+            `;
 
     const hiddenId = document.createElement("input");
     hiddenId.type = "hidden";
@@ -135,7 +127,10 @@ function addSubcategoryToSelectedOption() {
     const li = document.createElement("li");
     li.className = "list-group-item";
     li.innerHTML = `
-        <span>📌 ${selectedSubgroupText}</span>
+        <span>
+        📌 ${selectedSubgroupText}
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="removeMenuOptionSubgroup(this)">X</button>
+        </span>
         <input type="hidden" name="Options[${selectedOptionIndex}].Children[${childCount}].Id" value="0"/>
         <input type="hidden" name="Options[${selectedOptionIndex}].Children[${childCount}].ReferenceId" value="${selectedSubgroupValue}"/>
         <input type="hidden" name="Options[${selectedOptionIndex}].Children[${childCount}].DisplayName" value="${selectedSubgroupText}"/>
@@ -144,25 +139,6 @@ function addSubcategoryToSelectedOption() {
 
     // Append to the list
     childList.appendChild(li);
-}
-
-/* Toggler for the add menu option set */
-function toggleAddOptionSetInput() {
-    const container = document.getElementById("newSetContainer");
-    const button = document.getElementById("toggleOptionSetInputBtn")
-    const isHidden = container.classList.contains("d-none");
-
-    if (isHidden) {
-        container.classList.remove("d-none");
-        button.classList.remove("btn-secondary");
-        button.classList.add("btn-danger");
-        document.getElementById("newSetInput").focus();
-    } else {
-        container.classList.add("d-none");
-        button.classList.remove("btn-danger");
-        button.classList.add("btn-secondary");
-        document.getElementById("newSetInput").value = "";
-    }
 }
 
 /* Add menu option set */
@@ -207,7 +183,10 @@ function addMenuOptionSet() {
     setDetails.innerHTML = `
         <summary>
         <strong>📂 ${setName}</strong>
-        <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addSubgroupToThisSet(this)">Добави в сета</button>
+        <div class="d-flex flex-row gap-2">
+        <button type="button" class="btn btn-sm btn-main" onclick="addSubgroupToThisSet(this)">Добави подгрупа към сета</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="removeMenuOptionSet(this)">X</button>
+        </div>
         </summary>
         <ul class="set-list"></ul>
         <input type="hidden" name="Options[${selectedOptionIndex}].Children[${childIndex}].DisplayName" value="${setName}"/>
@@ -221,6 +200,7 @@ function addMenuOptionSet() {
     document.getElementById("newSetInput").value = "";
 }
 
+/* Add subgroup to Menu Option Set */
 function addSubgroupToThisSet(button) {
     const subgroupSelect = document.getElementById("subcategorySelect");
     const subgroupValue = subgroupSelect.value;
@@ -269,12 +249,53 @@ function addSubgroupToThisSet(button) {
 
     const li = document.createElement("li");
     li.innerHTML = `
-        <span>🔹 ${subgroupText}</span>
+        <span>
+        🔹 ${subgroupText}
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="removeMenuOptionSetSubgroup(this)">X</button>
+        </span>
         <input type="hidden" name="Options[${optionIndex}].Children[${setIndex}].SubGroupSetItems[${itemCount}].Id" value="${subgroupValue}"/>
         <input type="hidden" name="Options[${optionIndex}].Children[${setIndex}].SubGroupSetItems[${itemCount}].Alias" value="${subgroupText}"/>
     `;
 
     setList.appendChild(li);
+}
+
+/* Remove Menu Option */
+function removeMenuOption(button) {
+    const li = button.closest("li");
+    if (!li) {
+        alert("Не можа да се намери родителският елемент за изтриване.");
+        return;
+    }
+
+    li.remove();
+}
+
+function removeMenuOptionSubgroup(button) {
+    const li = button.closest("li");
+    if (!li) {
+        alert("Неуспешно");
+        return;
+    }
+    li.remove();
+}
+
+function removeMenuOptionSet(button) {
+    const details = button.closest("details");
+    if (!details) {
+        alert("Неуспешно");
+        return;
+    }
+    details.remove();
+}
+
+function removeMenuOptionSetSubgroup(button) {
+    const li = button.closest("li");
+    if (!li) {
+        alert("Неуспешно");
+        return;
+    }
+    li.remove();
 }
 
 

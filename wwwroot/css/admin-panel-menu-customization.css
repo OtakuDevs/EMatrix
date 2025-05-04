@@ -56,7 +56,106 @@
 
 .update-item-body {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-gap: 2rem;
     padding: 1rem;
 }
+
+.update-item-body .controls-section input[readonly] {
+    pointer-events: none;
+}
+
+#toggleOptionInputBtn.btn-danger {
+    background-color: #a94442;
+    border: 1px solid #a94442;
+}
+
+#toggleOptionSetInputBtn.btn-danger {
+    background-color: #a94442;
+    border: 1px solid #a94442;
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-md);
+    transition: background-color 0.2s ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.16) 0 3px 6px, rgba(0, 0, 0, 0.23) 0 3px 6px;
+}
+
+.preview-section {
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 0.95rem;
+}
+
+.menu-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.menu-list > li {
+    margin-bottom: 1rem;
+}
+
+.menu-list summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.35rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.menu-list summary:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.menu-list details > ul,
+.child-list,
+.set-list {
+    margin-top: 0.5rem;
+    padding-left: 1.5rem;
+}
+
+.child-list > li,
+.set-list > li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-left: 3px solid rgba(150, 101, 0, 0.3);
+    margin-bottom: 0.25rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 0.25rem;
+}
+
+.child-list > li span,
+.set-list > li span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+
+button.btn-outline-secondary.btn-sm,
+button.btn-outline-primary.btn-sm {
+    margin-left: auto;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+}
+
+.card-title {
+    font-size: 1.1rem;
+}
+
