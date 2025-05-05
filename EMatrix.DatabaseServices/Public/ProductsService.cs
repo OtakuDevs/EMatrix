@@ -53,65 +53,11 @@ public class ProductsService : IProductsService
        return model;
     }
 
-    public async Task<ProductsSecondaryViewModel> GetSecondaryViewByCategoryId(string id)
+    public Task<ProductsSecondaryViewModel> GetSecondaryViewByOptionId(int optionId)
     {
-        var category = await _context.Categories
-            .Include(c => c.SubCategories)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
-        if (category == null)
-            throw new KeyNotFoundException();
-        // Create the final model
-        var model = new ProductsSecondaryViewModel()
-        {
-            Title = category.Name,
-            Mode = SecondaryViewMode.Category
-        };
-        // Group subcategories dynamically by prefix (first part of the name)
-        var groupedSubCategories = category.SubCategories
-            .GroupBy(sub => sub.Alias)
-            .ToDictionary(g => g.Key, g => g.ToList());
-        foreach (var gsc in groupedSubCategories)
-        {
-            if(gsc.Value.Count == 1)
-                model.SubGroups.Add(new OptionViewModel()
-                {
-                    Name = gsc.Key,
-                    Id = gsc.Value.First().Id,
-                });
-            else
-            {
-                model.SubGroups.Add(new OptionViewModel()
-                {
-                    Name = gsc.Key,
-                    Entries = gsc.Value.Select(c => c.Id).ToList()
-                });
-            }
-        }
-        model.SubGroups = model.SubGroups.OrderBy(g => g.Name).ToList();
-
-        return model;
+        throw new NotImplementedException();
     }
 
-    public async Task<ProductsSecondaryViewModel> GetSecondaryViewBySubCategoryId(string id)
-    {
-
-        var model = new ProductsSecondaryViewModel()
-        {
-        };
-        return model;
-    }
-
-    public async Task<ProductsSecondaryViewModel> GetSecondaryViewBySubGroupSetId(int id)
-    {
-
-        var model = new ProductsSecondaryViewModel()
-        {
-
-        };
-
-        return model;
-    }
 
     // Helper function to extract the group key (i.e., prefix before first space)
     private string GetGroupKey(string name)

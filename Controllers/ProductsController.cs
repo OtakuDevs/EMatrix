@@ -14,13 +14,13 @@ public class ProductsController : Controller
     }
 
     // GET
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> ProductsPrimaryView()
     {
         var model = await _productsService.GetPrimaryViewAsync(1);
         return View(model);
     }
 
-    public async Task<IActionResult> GetMenuItemResult(string? categoryId, string? subCategoryId, int? subGroupSetId, int? menuItemId)
+    public async Task<IActionResult> ProductsSecondaryView(int? menuItemId, int? optionId)
     {
         ProductsSecondaryViewModel model;
 
@@ -28,18 +28,11 @@ public class ProductsController : Controller
         {
             model = await _productsService.GetSecondaryViewByMenuItemId(menuItemId.Value);
         }
-        else if (!string.IsNullOrEmpty(categoryId))
+        else if (optionId.HasValue)
         {
-            model = await _productsService.GetSecondaryViewByCategoryId(categoryId);
+            model = await _productsService.GetSecondaryViewByOptionId(optionId.Value);
         }
-        else if (!string.IsNullOrEmpty(subCategoryId))
-        {
-            model = await _productsService.GetSecondaryViewBySubCategoryId(subCategoryId);
-        }
-        else if (subGroupSetId.HasValue)
-        {
-            model = await _productsService.GetSecondaryViewBySubGroupSetId(subGroupSetId.Value);
-        }
+
         else
         {
             return NotFound();

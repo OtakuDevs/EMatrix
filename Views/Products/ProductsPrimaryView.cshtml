@@ -10,7 +10,7 @@
     <ul class="breadcrumb">
         <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
         <span><i class="bi bi-chevron-right"></i></span>
-        <li><a href="@Url.Action("Index", "Products")">Продукти</a></li>
+        <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
     </ul>
     <div class="products-preview">
         <div class="products-header">
@@ -73,8 +73,8 @@
                                     {
                                         <li class="nav-item">
                                             <a class="nav-link" asp-area="" asp-controller="Products"
-                                               asp-action="GetMenuItemResult"
-                                               asp-route-categoryId="@category.Key">
+                                               asp-action="ProductsSecondaryView"
+                                               asp-route-optionId="@category.Key">
                                                 @category.Value
                                             </a>
                                         </li>
@@ -88,7 +88,7 @@
             <div id="menuView" class="menu-as-grid grid-view">
                 @foreach (var cat in Model.MenuItemsGrid)
                 {
-                    <a href="@Url.Action("GetMenuItemResult", new { menuItemId = cat.Id})" class="menu-card">
+                    <a href="@Url.Action("ProductsSecondaryView", new { menuItemId = cat.Id})" class="menu-card">
                         <img src="@Url.Content(cat.Icon)" alt="icon"/>
                         <div class="menu-content">
                             <p class="menu-title">@cat.Name</p>

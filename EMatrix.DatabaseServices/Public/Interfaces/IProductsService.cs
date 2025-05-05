@@ -8,9 +8,5 @@ public interface IProductsService
 
     Task<ProductsSecondaryViewModel> GetSecondaryViewByMenuItemId(int id);
 
-    Task<ProductsSecondaryViewModel> GetSecondaryViewByCategoryId(string id);
-
-    Task<ProductsSecondaryViewModel> GetSecondaryViewBySubCategoryId(string id);
-
-    Task<ProductsSecondaryViewModel> GetSecondaryViewBySubGroupSetId(int id);
+    Task<ProductsSecondaryViewModel> GetSecondaryViewByOptionId(int optionId);
 }
