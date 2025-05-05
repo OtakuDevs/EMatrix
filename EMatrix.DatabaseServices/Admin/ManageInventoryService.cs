@@ -86,7 +86,7 @@ public class ManageInventoryService : IManageInventoryService
                 Id = g.Id,
                 Name = g.Name,
                 Alias = g.Alias,
-                SubGroups = g.SubCategories.Select(s => new SubGroupViewModel()
+                SubGroups = g.SubCategories.OrderBy(s => s.Id).Select(s => new SubGroupViewModel()
                 {
                     Id = s.Id,
                     Name = s.Name,

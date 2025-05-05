@@ -25,7 +25,7 @@ document.querySelector("details").addEventListener("toggle", function () {
 
 /* Add menu option function */
 function addMenuOption() {
-    let index = document.querySelectorAll(".menu-list details").length;
+    let index = document.querySelectorAll(".menu-list > li > details").length;
     let name = document.getElementById("newOptionInput").value.trim();
     let order = document.getElementById("newOptionOrder").value.trim();
 
@@ -76,11 +76,22 @@ function addMenuOption() {
     newOption.textContent = name;
     document.getElementById("optionSelect").appendChild(newOption);
 
+    // Add this to the end of your addMenuOption() function:
+    optionsData.push({
+        id: 0,
+        name: name,
+        order: order,
+        children: []
+    });
+
     // Clear input fields
     document.getElementById("newOptionInput").value = "";
     document.getElementById("newOptionOrder").value = "";
 
-    document.getElementById("no-options").style.display = "none";
+    const noOption = document.getElementById("no-options");
+    if(noOption !== null) {
+        noOption.style.display = "none";
+    }
 }
 
 /* Add subgroup to option */
@@ -139,6 +150,7 @@ function addSubcategoryToSelectedOption() {
 
     // Append to the list
     childList.appendChild(li);
+    details.open = true;
 }
 
 /* Add menu option set */
@@ -198,6 +210,7 @@ function addMenuOptionSet() {
 
     // Clear the input
     document.getElementById("newSetInput").value = "";
+    details.open = true;
 }
 
 /* Add subgroup to Menu Option Set */
@@ -258,6 +271,7 @@ function addSubgroupToThisSet(button) {
     `;
 
     setList.appendChild(li);
+    setDetails.open = true;
 }
 
 /* Remove Menu Option */
@@ -268,8 +282,24 @@ function removeMenuOption(button) {
         return;
     }
 
+    // Find the index of the <li> within the top-level list
+    const listItems = Array.from(document.querySelectorAll(".menu-list > li"));
+    const index = listItems.indexOf(li);
+
+    // Remove the corresponding option from the select
+    if (index >= 0) {
+        const select = document.getElementById("optionSelect");
+        select.remove(index + 1); // +1 to skip the placeholder option (like "-- Избери опция --")
+    }
+
+    // Optional: Remove from optionsData if maintained
+    if (Array.isArray(window.optionsData)) {
+        optionsData.splice(index, 1);
+    }
+
     li.remove();
 }
+
 
 function removeMenuOptionSubgroup(button) {
     const li = button.closest("li");
@@ -307,9 +337,6 @@ document.getElementById("optionSelect").addEventListener("change", function () {
     if (option) {
         document.getElementById("editOptionInput").value = option.name;
         document.getElementById("editOptionOrder").value = option.order;
-
-        // Optional: auto-open the details section
-        document.getElementById("editOptionDetails").open = true;
     }
 });
 
