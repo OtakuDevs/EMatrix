@@ -25,7 +25,7 @@
 
         <div class="d-flex mb-3">
             <h2>Складови наличности</h2>
-            <a class="btn btn-secondary ms-auto h-75" asp-action="GetGroupsTable">Режим Групи</a>
+            <a class="btn btn-success ms-auto h-75" asp-action="GetGroupsTable">Режим Групи</a>
         </div>
         <div class="search-bar">
             <input type="text" class="form-control"
@@ -56,8 +56,8 @@
                             data-cat="@sub.Value.Substring(0, 2)">@sub.Value - @sub.Text</option>
                 }
             </select>
-            <button type="submit" form="search-form" class="btn btn-outline-secondary ms-auto">Търси</button>
-            <a href="@Url.Action("GetAllInventoryItems")" class="btn btn-outline-secondary">Изчисти</a>
+            <button type="submit" form="search-form" class="btn btn-main ms-auto">Търси</button>
+            <a href="@Url.Action("GetAllInventoryItems")" class="btn btn-main-outline">Изчисти</a>
         </div>
         <table class="table table-bordered table-striped">
             <thead>
@@ -80,7 +80,7 @@
                     <td>
                         <button
                             type="button"
-                            class="btn btn-outline-secondary me-1 btn-details"
+                            class="btn btn-main-outline me-1 btn-details"
                             data-bs-toggle="modal"
                             data-bs-target="#detailsModal"
                             data-tooltip="Детайли за артикул"
@@ -89,7 +89,7 @@
                         </button>
                         <button
                             type="button"
-                            class="btn btn-outline-secondary me-1 btn-update"
+                            class="btn btn-main-outline me-1 btn-update"
                             data-bs-toggle="modal"
                             data-bs-target="#updateModal"
                             data-item-id="@item.Id"
@@ -100,7 +100,7 @@
                             data-tooltip="Промяна на артикул">
                             <i class="bi bi-pencil me-2"></i>Промяна
                         </button>
-                        <button class="btn btn-outline-secondary">Продажби</button>
+                        <button class="btn btn-main-outline">Продажби</button>
                     </td>
                 </tr>
             }

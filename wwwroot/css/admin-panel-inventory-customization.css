@@ -12,6 +12,8 @@
     table-layout: auto;
     width: 100%;
     border-collapse: collapse;
+    border-color: var(--border-color);
+    color: var(--font-color);
 
     th, td {
         vertical-align: middle;
@@ -54,9 +56,38 @@
         max-width: 900px !important;
     }
 }
+.modal-content {
+    background-color: #b8b6a6;
+    color: var(--font-color);
+}
+
+.modal-header {
+    border-color: var(--border-color);
+}
+
+.modal-footer {
+    border-color: var(--border-color);
+    justify-content: space-between;
+}
 
 /* Groups editing */
 /* Smooth transition for the collapsing div */
+.groups-table table {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    color: var(--font-color);
+}
+
+.groups-table table tr:not(.table-secondary-row) {
+    background: var(--color-opacity-light-3) !important;
+    border-color: var(--border-color); !important;
+}
+
+.table-secondary-row {
+    background-color: #b8b6a6 !important;
+    border-color: var(--border-color); !important;
+}
+
 .groups-table th, td {
     font-size: 0.9rem;
     vertical-align: middle;

@@ -108,6 +108,14 @@ button:focus,
   border-color: rgba(150, 101, 0, 0.8);
 }
 
+input, select, textarea {
+  background: var(--color-opacity-light-3) !important;
+  border-color: var(--color-opacity-3) !important;
+}
+
+input:read-only {
+  background: var(--color-opacity-1) !important;
+}
 
 /* Wrapper for each section inside the container */
 

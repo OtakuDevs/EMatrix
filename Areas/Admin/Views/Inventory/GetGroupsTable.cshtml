@@ -25,7 +25,7 @@
 
         <div class="d-flex mb-3">
             <h2>Редактор групи/подгрупи</h2>
-            <a class="btn btn-secondary ms-auto h-75" asp-action="GetAllInventoryItems">Режим Склад</a>
+            <a class="btn btn-success ms-auto h-75" asp-action="GetAllInventoryItems">Режим Склад</a>
         </div>
         <table class="table">
             <colgroup>
@@ -39,21 +39,21 @@
                 <th>Код</th>
                 <th>Название (Датабаза)</th>
                 <th>Название (Публично)</th>
-                <th>Опции</th>
+                <th class="text-center">Опции</th>
             </tr>
             </thead>
             <tbody>
             @foreach (var group in Model.Groups)
             {
                 var collapseId = $"subgroup-{group.Id}";
-                <tr class="table-light toggle-row expandable-row" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId" style="cursor:pointer;">
+                <tr class="toggle-row expandable-row" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId" style="cursor:pointer;">
                     <td>@group.Id</td>
                     <td>@group.Name</td>
                     <td>@group.Alias</td>
                     <td class="text-center">
                         <button
                             type="button"
-                            class="btn btn-outline-secondary me-1"
+                            class="btn btn-main-outline me-1"
                             data-bs-toggle="modal"
                             data-bs-target="#updateModal"
                             data-tooltip="Промяна публично название."
@@ -76,14 +76,14 @@
                                 </colgroup>
                                 @foreach (var sub in group.SubGroups)
                                 {
-                                    <tr class="table-secondary">
+                                    <tr class="table-secondary-row">
                                         <td>@sub.Id</td>
                                         <td>@sub.Name</td>
                                         <td>@sub.Alias</td>
                                         <td class="text-center">
                                             <button
                                                 type="button"
-                                                class="btn btn-outline-secondary me-1"
+                                                class="btn btn-main-outline me-1"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#updateModal"
                                                 data-tooltip="Промяна публично название."

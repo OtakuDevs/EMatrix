@@ -58,31 +58,34 @@
     }
 
     .pagination .page-link {
-        color: #333; /* Dark text for contrast */
-        border-color: #ddd; /* Light border */
-        background-color: #fcfcfc; /* Soft background */
+        color: var(--font-color);
+        border: 1px solid var(--color-opacity-3) !important;
+        background-color: var(--color-opacity-light-3) !important;
         padding: 4px 10px;
-        position: relative;
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
 
     .pagination .page-link:hover {
-        background-color: #efefef; /* Subtle hover effect */
-        border-color: #ccc;
+        background-color: var(--color-opacity-light-2) !important;
+        border-color: var(--color-opacity-2) !important;
+        color: var(--font-color);
     }
 
     .pagination .page-item.active .page-link {
-        background-color: #ddd; /* Slightly darker to highlight active */
-        border-color: #bbb;
-        color: #000; /* Stronger contrast for active */
+        background-color: var(--color-opacity-light-1) !important;
+        border-color: var(--color-opacity-2) !important;
+        color: var(--color-highlight);
     }
 
     .pagination .page-item .page-link:focus {
+        outline: none;
         box-shadow: none;
     }
 
     .pagination .page-item.disabled .page-link {
-        color: #aaa;
-        background-color: #f5f5f5;
+        color: var(--color-opacity-2);
+        background-color: var(--color-opacity-light-1) !important;
+        border-color: var(--color-opacity-3) !important;
         pointer-events: none;
     }
 
