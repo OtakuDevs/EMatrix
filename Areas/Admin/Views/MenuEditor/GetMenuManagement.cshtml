@@ -23,7 +23,7 @@
 
         <div class="menu-header">
             <h2 class="text-center">Съдържание на менюто</h2>
-            <a href="#" class="btn btn-outline-secondary me-1 btn-add"
+            <a href="#" class="btn btn-main me-1 btn-add"
                data-bs-toggle="modal"
                data-bs-target="#addMenuItemModal"
                data-tooltip="Създай нова категория">
@@ -43,11 +43,11 @@
             {
                 <tr>
                     <td>@item.Name</td>
-                    <td>@item.Position</td>
+                    <td class="text-center">@item.Position</td>
                     <td>
                         <button
                             type="button"
-                            class="btn btn-outline-secondary me-1 btn-rename"
+                            class="btn btn-main-outline me-1 btn-rename"
                             data-bs-toggle="modal"
                             data-bs-target="#renameModal"
                             data-menu-item-id="@item.Id"
@@ -58,7 +58,7 @@
                         </button>
 
                         <a href="@Url.Action("UpdateMenuItemCategories", new { menuItemId = item.Id })"
-                           class="btn btn-outline-secondary me-1"
+                           class="btn btn-main-outline me-1"
                            data-tooltip="Редактиране на елементи в категория">
                             <i class="bi bi-stack me-2"></i>Редакция
                         </a>
@@ -66,13 +66,13 @@
                         <form asp-action="UpdateCategoryImage" method="post" enctype="multipart/form-data" class="d-inline-block">
                             <input type="hidden" name="menuItemId" value="@item.Id" />
 
-                            <label id="upload-label-@item.Id" class="btn btn-outline-secondary me-1" data-tooltip="Обновяване на снимка">
+                            <label id="upload-label-@item.Id" class="btn btn-main-outline me-1" data-tooltip="Обновяване на снимка">
                                 <i class="bi bi-image me-2"></i>Избери файл
                                 <input type="file" name="imageFile" accept="image/*" hidden onchange="handleFileSelect(this, @item.Id)" />
                             </label>
 
                             <!-- Small spinner (initially hidden) -->
-                            <div id="upload-spinner-@item.Id" class="btn btn-outline-secondary me-1 d-none spinner-container">
+                            <div id="upload-spinner-@item.Id" class="btn btn-main-outline me-1 d-none spinner-container">
                                 <i class="me-2 spinner-border spinner-border-sm"></i> Обновяване...
                             </div>
 
@@ -80,7 +80,7 @@
 
                         <button
                             type="button"
-                            class="btn btn-outline-secondary btn-delete"
+                            class="btn btn-main-outline btn-delete"
                             data-bs-toggle="modal"
                             data-bs-target="#deleteModal"
                             data-menu-item-id="@item.Id"

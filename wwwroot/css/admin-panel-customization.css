@@ -1,13 +1,25 @@
 
 .tabs-container {
     & .nav-link {
-        color: #495057;
+        color: var(--font-color);
+        transition: all 0.25s ease;
     }
     & .nav-link:hover {
-        background-color: #efefef;
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(0, 0, 0, 0.15);
     }
     & .nav-link.active {
-        background-color: #efefef;
-        border-color: #dee2e6;
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-link:focus {
+        outline: none;
+        box-shadow: none;
+        border-color: rgba(0, 0, 0, 0.15) !important;
+    }
+
+    & .nav-tabs {
+        border-color: rgba(0, 0, 0, 0.15);
     }
 }

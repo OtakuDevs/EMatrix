@@ -17,7 +17,7 @@
   --color-opacity-light-7: rgba(255, 255, 255, 0.7);
   --color-opacity-light-8: rgba(255, 255, 255, 0.8);
   --color-opacity-light-9: rgba(255, 255, 255, 0.9);
-  --font-color: #bab8b8;
+  --border-color: rgba(0, 0, 0, 0.15);
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 16px;
@@ -127,14 +127,61 @@ button:focus,
 
 .btn-main {
   color: antiquewhite;
-  background: rgba(150, 101, 0, 1);
+  background-color: rgba(150, 101, 0, 1);
   border: none;
-  transition: color 0.2s ease, background-color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
+
 .btn-main:hover {
-  background: rgba(150, 101, 0, 0.8);
+  background-color: rgba(135, 90, 0, 1);
   color: antiquewhite;
 }
+
+.btn-main-outline {
+  color: var(--font-color);
+  background-color: transparent;
+  border: 1px solid rgba(150, 101, 0, 1);
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-main-outline:hover {
+  background-color: var(--color-opacity-light-2);
+  color: var(--font-color);
+  border-color: rgba(120, 81, 0, 1);
+}
+
+.btn-success {
+  background-color: #4a9350; /* Muted green */
+  color: #fff;
+  border: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-success:hover {
+  background-color: #3d7b42; /* Slightly darker matte green */
+}
+
+.btn-success:focus {
+  box-shadow: 0 0 0 0.15rem rgba(74, 147, 80, 0.4);
+  outline: none;
+}
+
+.btn-danger {
+  background-color: #c34b4b; /* Muted red */
+  color: #fff;
+  border: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-danger:hover {
+  background-color: #a73838; /* Slightly darker matte red */
+}
+
+.btn-danger:focus {
+  box-shadow: 0 0 0 0.15rem rgba(195, 75, 75, 0.4);
+  outline: none;
+}
+
 
 /* Custom tooltip */
 [data-tooltip] {

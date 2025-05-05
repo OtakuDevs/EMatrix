@@ -10,6 +10,18 @@ document.getElementById("categorySelect").addEventListener("change", function ()
     subcategorySelect.value = "";
 });
 
+/* Show warning message */
+function showMessage(message, type = 'warning') {
+    const alertBox = document.getElementById("alertBox");
+    alertBox.textContent = message;
+    alertBox.className = `alert alert-${type}`;
+    alertBox.classList.add("show");
+
+    setTimeout(() => {
+        alertBox.classList.remove("show");
+    }, 5000);
+}
+
 /* Toggler for the add menu option */
 document.querySelector("details").addEventListener("toggle", function () {
     const icon = this.querySelector("summary i");
@@ -29,8 +41,13 @@ function addMenuOption() {
     let name = document.getElementById("newOptionInput").value.trim();
     let order = document.getElementById("newOptionOrder").value.trim();
 
-    if (name === "" || order === "") {
-        alert("Please enter a valid name and order!");
+    if (name === "") {
+        showMessage("Името е задължително поле!", "warning");
+        return;
+    }
+
+    if (order === "" || isNaN(order)) {
+        showMessage("Позицията трябва да бъде валидно число!", "warning");
         return;
     }
 
@@ -101,15 +118,20 @@ function addSubcategoryToSelectedOption() {
     const selectedSubgroupValue = subgroupSelect.value;
     const selectedSubgroupText = subgroupSelect.options[subgroupSelect.selectedIndex].text;
 
-    if (selectedOptionIndex === "" || selectedSubgroupValue === "") {
-        alert("Моля, изберете опция и подгрупа!");
+    if (selectedOptionIndex === "") {
+        showMessage("Моля, изберете опция от списъка.", "warning");
+        return;
+    }
+
+    if (selectedSubgroupValue === "") {
+        showMessage("Моля, изберете подгрупа от списъка.", "warning");
         return;
     }
 
     const menuListItems = document.querySelectorAll(".menu-list > li");
     const selectedLi = menuListItems[selectedOptionIndex];
     if (!selectedLi) {
-        alert("Избраната опция не съществува в списъка.");
+        showMessage("Избраната опция не съществува в текущия списък. Опитайте да презаредите страницата.", "danger");
         return;
     }
 
@@ -158,15 +180,20 @@ function addMenuOptionSet() {
     const selectedOptionIndex = document.getElementById("optionSelect").value;
     const setName = document.getElementById("newSetInput").value.trim();
 
-    if (selectedOptionIndex === "" || setName === "") {
-        alert("Please select an option and enter a valid set name!");
+    if (selectedOptionIndex === "") {
+        showMessage("Моля, изберете опция от списъка.", "warning");
+        return;
+    }
+
+    if (setName === "") {
+        showMessage("Моля, въведете име за комплекта.", "warning");
         return;
     }
 
     const menuListItems = document.querySelectorAll(".menu-list > li");
     const selectedLi = menuListItems[selectedOptionIndex];
     if (!selectedLi) {
-        alert("Selected option index is invalid.");
+        showMessage("Избраната опция не съществува в текущия списък. Опитайте да презаредите страницата.", "danger");
         return;
     }
 
@@ -220,7 +247,7 @@ function addSubgroupToThisSet(button) {
     const subgroupText = subgroupSelect.options[subgroupSelect.selectedIndex]?.text;
 
     if (!subgroupValue) {
-        alert("Моля, изберете подгрупа за добавяне.");
+        showMessage("Моля, изберете подгрупа от списъка.", "warning");
         return;
     }
 
@@ -230,7 +257,7 @@ function addSubgroupToThisSet(button) {
     const optionLi = button.closest("li");
     const optionIndex = Array.from(document.querySelectorAll(".menu-list > li")).indexOf(optionLi);
     if (optionIndex === -1) {
-        alert("Не може да се определи опцията.");
+        showMessage("Избраната опция не съществува в текущия списък. Опитайте да презаредите страницата.", "danger");
         return;
     }
 
@@ -254,7 +281,7 @@ function addSubgroupToThisSet(button) {
     }
 
     if (setIndex === -1) {
-        alert("Не може да се определи индекс на сета.");
+        alert("Не може да се определи индекс на сета. Опитайте да презаредите страницата.");
         return;
     }
 
@@ -278,7 +305,7 @@ function addSubgroupToThisSet(button) {
 function removeMenuOption(button) {
     const li = button.closest("li");
     if (!li) {
-        alert("Не можа да се намери родителският елемент за изтриване.");
+        showMessage("Неуспешно изтриване на опция! Опитайте да презаредите страницата.", "danger");
         return;
     }
 
@@ -304,7 +331,7 @@ function removeMenuOption(button) {
 function removeMenuOptionSubgroup(button) {
     const li = button.closest("li");
     if (!li) {
-        alert("Неуспешно");
+        showMessage("Неуспешно изтриване на подгрупа към опция! Опитайте да презаредите страницата.", "danger");
         return;
     }
     li.remove();
@@ -313,7 +340,7 @@ function removeMenuOptionSubgroup(button) {
 function removeMenuOptionSet(button) {
     const details = button.closest("details");
     if (!details) {
-        alert("Неуспешно");
+        showMessage("Неуспешно изтриване на комплект към опция! Опитайте да презаредите страницата.", "danger");
         return;
     }
     details.remove();
@@ -322,7 +349,7 @@ function removeMenuOptionSet(button) {
 function removeMenuOptionSetSubgroup(button) {
     const li = button.closest("li");
     if (!li) {
-        alert("Неуспешно");
+        showMessage("Неуспешно на подгрупа към комплект! Опитайте да презаредите страницата.", "danger");
         return;
     }
     li.remove();
@@ -332,7 +359,6 @@ function removeMenuOptionSetSubgroup(button) {
 document.getElementById("optionSelect").addEventListener("change", function () {
     const selectedIndex = this.value;
     const option = optionsData[selectedIndex]; // We'll define `optionsData` below
-    console.log(option);
 
     if (option) {
         document.getElementById("editOptionInput").value = option.name;
@@ -347,7 +373,7 @@ function updateSelectedOption() {
     const newOrder = document.getElementById("editOptionOrder").value;
 
     if (selectedIndex <= 0) {
-        alert("Моля, изберете опция за редактиране.");
+        showMessage("Моля, изберете опция за редактиране.", "warning");
         return;
     }
 

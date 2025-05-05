@@ -8,6 +8,11 @@
 }
 
 .menu-index table {
+    border-color: var(--border-color);
+    color: var(--font-color);
+}
+
+.menu-index table {
     th, td {
         vertical-align: middle;
         padding: 0.25rem 0.5rem;
@@ -27,17 +32,7 @@
     width: 100%;
 }
 
-.menu-index .btn-outline-secondary {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-.menu-index .btn-outline-secondary:hover {
-    background-color: var(--color-opacity-2);
-    color: #000000;
-    border-color: #999;
-}
-
-.menu-index .btn-outline-secondary i {
+.menu-index .btn-main i {
     font-size: 1.1rem;
 }
 
@@ -45,9 +40,39 @@
     padding: 0.45rem;
 }
 
+.modal-content {
+    background-color: #b8b6a6;
+    color: var(--font-color);
+}
+
+.modal-footer {
+    justify-content: space-between;
+}
+
 /* Section Update Menu Item */
+#alertBox {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none; /* Prevent clicks when hidden */
+}
+
+#alertBox.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+#alertBox {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    transform: translateX(-2rem);
+    z-index: 1050;
+    width: fit-content;
+    max-width: 90%;
+}
+
 
 .update-menu-item {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-content: flex-start;
@@ -63,16 +88,6 @@
 
 .update-item-body .controls-section input[readonly] {
     pointer-events: none;
-}
-
-#toggleOptionInputBtn.btn-danger {
-    background-color: #a94442;
-    border: 1px solid #a94442;
-}
-
-#toggleOptionSetInputBtn.btn-danger {
-    background-color: #a94442;
-    border: 1px solid #a94442;
 }
 
 .card {
