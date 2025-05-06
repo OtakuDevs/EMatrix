@@ -208,6 +208,10 @@
                                                                     </li>
                                                                 }
                                                             </ul>
+                                                            <input type="hidden"
+                                                                   asp-for="Options[i].Children[j].DisplayName"/>
+                                                            <input type="hidden"
+                                                                   asp-for="Options[i].Children[j].Type"/>
                                                         </details>
                                                     }
                                                 }

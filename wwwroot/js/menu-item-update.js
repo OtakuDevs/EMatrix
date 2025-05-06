@@ -153,8 +153,8 @@ function addSubcategoryToSelectedOption() {
         details.appendChild(childList);
     }
 
-    // Calculate the new child index
-    const childCount = childList.querySelectorAll("li").length;
+    // Count only direct <li> children
+    const childCount = childList.querySelectorAll(":scope > li, :scope > details").length;
 
     // Create new list item
     const li = document.createElement("li");
@@ -214,8 +214,7 @@ function addMenuOptionSet() {
     }
 
     // Determine new child index
-    const existingChildren = childList.querySelectorAll("li, details");
-    const childIndex = existingChildren.length;
+    const childIndex = childList.querySelectorAll(":scope > li, :scope > details").length;
 
     // Create new details block for the set
     const setDetails = document.createElement("details");

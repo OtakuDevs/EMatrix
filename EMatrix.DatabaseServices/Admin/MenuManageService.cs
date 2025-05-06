@@ -118,7 +118,7 @@ public class MenuManageService : IMenuManageService
                     return new MenuOptionChildAdminViewModel
                     {
                         Id = child.Id,
-                        DisplayName = child.DisplayName ?? child.SubGroup.Alias,
+                        DisplayName = child.SubGroup.Alias ?? child.DisplayName,
                         Type = "SubGroup",
                         ReferenceId = child.SubGroupId
                     };
@@ -178,19 +178,18 @@ public async Task UpdateMenuItemAssignmentsAsync(MenuItemAdminViewModel model)
         _context.MenuOptions.RemoveRange(menuItem.Options);
         menuItem.Options.Clear();
 
-        foreach (var option in model.Options)
+        //Create the options
+        foreach (var menuOption in model.Options)
         {
-            //TODO: ADD ORDER CAUSE DB EXCEPTION
-            var newOption = new MenuOption
+            var option = new MenuOption()
             {
-                Name = option.Name,
-                Order = option.Order,
-                Icon = "test",
+                Order = menuOption.Order,
+                Name = menuOption.Name,
+                Icon = "to be implemented",
                 MenuItemId = menuItem.Id,
-                Children = new List<MenuOptionChild>()
+                Children = new List<MenuOptionChild>(),
             };
-
-            foreach (var child in option.Children)
+            foreach (var child in menuOption.Children)
             {
                 var optionChild = new MenuOptionChild();
 
@@ -198,6 +197,7 @@ public async Task UpdateMenuItemAssignmentsAsync(MenuItemAdminViewModel model)
                 {
                     case "SubGroup":
                         optionChild.SubGroupId = child.ReferenceId;
+                        optionChild.DisplayName = child.DisplayName;
                         break;
 
                     case "SubGroupSet":
@@ -212,16 +212,18 @@ public async Task UpdateMenuItemAssignmentsAsync(MenuItemAdminViewModel model)
                                         SubGroupId = item.Id,
                                     }).ToList()
                             };
-
+                            optionChild.DisplayName = subGroupSet.Name;
                             optionChild.SubGroupSet = subGroupSet;
                         }
                         break;
                 }
 
-                newOption.Children.Add(optionChild);
+                option.Children.Add(optionChild);
             }
-            menuItem.Options.Add(newOption);
+            menuItem.Options.Add(option);
         }
+        _context.MenuOptions.AddRange(menuItem.Options);
+
         await _context.SaveChangesAsync();
     }
 

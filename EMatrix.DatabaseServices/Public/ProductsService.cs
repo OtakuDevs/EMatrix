@@ -19,7 +19,6 @@ public class ProductsService : IProductsService
         var menu = await _context.Menus
             .Include(m => m.MenuItems)
             .ThenInclude(o => o.Options)
-            .ThenInclude(c => c.Children)
             .FirstOrDefaultAsync(m => m.Id == id);
 
         var model = new ProductsPrimaryViewModel();
@@ -30,32 +29,66 @@ public class ProductsService : IProductsService
                 Id = menuItem.Id,
                 Name = menuItem.Name,
                 Options = menuItem.Options.ToDictionary(o => o.Id, o => o.Name)
-                });
+            });
             model.MenuItemsGrid.Add(new MenuItemPreviewModel()
             {
                 Id = menuItem.Id,
                 Name = menuItem.Name,
                 Icon = $"{menuItem.Icon}",
-                Options = menuItem.Options.Select(o => o.Name).ToList(),
+                Options = menuItem.Options.ToDictionary(c => c.Id, c => c.Name)
             });
         }
+
         return model;
     }
 
     public async Task<ProductsSecondaryViewModel> GetSecondaryViewByMenuItemId(int id)
     {
-       var menuItem = await _context.MenuItems
-           .FirstOrDefaultAsync(m => m.Id == id);
-       var model = new ProductsSecondaryViewModel()
-       {
-
-       };
-       return model;
+        var menuItem = await _context.MenuItems
+            .Include(m => m.Options)
+            .ThenInclude(m => m.Children)
+            .FirstOrDefaultAsync(m => m.Id == id);
+        var model = new ProductsSecondaryViewModel()
+        {
+            Title = menuItem.Name,
+            Options = menuItem.Options.OrderBy(c => c.Order).Select(s => new OptionViewModel()
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Entries = s.Children.OrderBy(c => c.DisplayName)
+                        .ToDictionary(c => c.Id.ToString(), c => c.DisplayName)
+                })
+                .ToList()
+        };
+        return model;
     }
 
-    public Task<ProductsSecondaryViewModel> GetSecondaryViewByOptionId(int optionId)
+    public async Task<ProductsSecondaryViewModel> GetSecondaryViewByOptionId(int optionId)
     {
-        throw new NotImplementedException();
+        var option = await _context.MenuOptions
+            .Include(m => m.Children)
+            .ThenInclude(sc => sc.SubGroup)
+            .Include(m => m.Children)
+            .ThenInclude(ss => ss.SubGroupSet)
+            .ThenInclude(sc => sc.Items)
+            .ThenInclude(sc => sc.SubGroup)
+            .FirstOrDefaultAsync(m => m.Id == optionId);
+        if (option == null)
+            throw new KeyNotFoundException();
+        var model = new ProductsSecondaryViewModel()
+        {
+            Title = option.Name,
+            Options = option.Children.OrderBy(c => c.DisplayName)
+                .Select(s => new OptionViewModel()
+                {
+                    Id = s.Id,
+                    Name = s.DisplayName,
+                    SubGroupId = s.SubGroup == null ? null : s.SubGroup.Id.ToString(),
+                    Entries = s.SubGroupSet == null ? null : s.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
+                })
+                .ToList()
+        };
+        return model;
     }
 
 
@@ -68,6 +101,4 @@ public class ProductsService : IProductsService
         var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         return parts.Length > 0 ? parts[0].ToUpper() : name.ToUpper();
     }
-
-
 }

@@ -281,6 +281,15 @@
     font-weight: 600;
 }
 
+.products-body .accordion-button.no-collapse-link {
+    color: var(--font-color);
+    font-weight: normal;
+    &::after{
+        background-image: unset;
+    }
+}
+
+
 .menu-as-grid {
     width: 100%;
     display: grid;
