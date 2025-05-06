@@ -116,7 +116,9 @@ function addSubcategoryToSelectedOption() {
     const selectedOptionIndex = document.getElementById("optionSelect").value;
     const subgroupSelect = document.getElementById("subcategorySelect");
     const selectedSubgroupValue = subgroupSelect.value;
-    const selectedSubgroupText = subgroupSelect.options[subgroupSelect.selectedIndex].text;
+    const selectedSubgroupTextRaw = subgroupSelect.options[subgroupSelect.selectedIndex].text;
+    const selectedSubgroupText = selectedSubgroupTextRaw.replace(/^\d{4} - /, "");
+
 
     if (selectedOptionIndex === "") {
         showMessage("Моля, изберете опция от списъка.", "warning");
@@ -243,7 +245,8 @@ function addMenuOptionSet() {
 function addSubgroupToThisSet(button) {
     const subgroupSelect = document.getElementById("subcategorySelect");
     const subgroupValue = subgroupSelect.value;
-    const subgroupText = subgroupSelect.options[subgroupSelect.selectedIndex]?.text;
+    const subgroupTextRaw = subgroupSelect.options[subgroupSelect.selectedIndex]?.text;
+    const subgroupText = subgroupTextRaw.replace(/^\d{4} - /, "");
 
     if (!subgroupValue) {
         showMessage("Моля, изберете подгрупа от списъка.", "warning");
