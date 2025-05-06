@@ -40,4 +40,11 @@ public class ProductsController : Controller
 
         return View(model);
     }
+
+    public async Task<IActionResult> ProductsListingView(int optionId)
+    {
+        ProductsListingViewModel model = new ProductsListingViewModel();
+        model.Options = await _productsService.GetSecondaryViewByOptionId(optionId);
+        return View(model);
+    }
 }

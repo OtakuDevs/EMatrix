@@ -1,18 +1,21 @@
-@model EMatrix.ViewModels.Products.ProductsSecondaryViewModel
+@model EMatrix.ViewModels.Products.ProductsListingViewModel
 
 <link rel="stylesheet" href="~/css/products-result-customization.css" asp-append-version="true"/>
 
 @{
     ViewData["Title"] = "Продукти";
 }
-
 <div class="container-fluid mt-3 products-container">
     <ul class="breadcrumb">
         <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
         <span><i class="bi bi-chevron-right"></i></span>
         <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
         <span><i class="bi bi-chevron-right"></i></span>
-        <li><a href="">@Model.Title</a></li>
+        <li>
+            <a href="@Url.Action("ProductsSecondaryView", "Products", new { optionId = Model.Options.OptionId })">@Model.Options.Title</a>
+        </li>
+        <span><i class="bi bi-chevron-right"></i></span>
+        <li><a href="">INSERT HERE</a></li>
     </ul>
 
     <div class="products-preview">
@@ -55,13 +58,12 @@
 
         <div class="products-body">
             <div class="accordion" id="optionsAccordion">
-                <h4>@Model.Title</h4>
+                <h4>@Model.Options.Title</h4>
                 <hr/>
-                @foreach (var entry in Model.Options)
+                @foreach (var entry in Model.Options.Options)
                 {
                     var hasEntries = entry.SubGroupId == null && entry.Entries?.Any() == true;
                     var collapseId = $"collapse-option-{entry.Id}";
-                    var optionId = Model.OptionId == -1 ? entry.Id : Model.OptionId;
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading-@entry.Id">
                             @if (hasEntries)
@@ -78,7 +80,7 @@
                             {
                                 <a class="accordion-button no-collapse-link" asp-controller="Products"
                                    asp-action="ProductsListingView"
-                                   asp-route-optionId="@optionId">
+                                   asp-route-optionId="@Model.Options.OptionId">
                                     @entry.Name
                                 </a>
                             }
@@ -96,7 +98,7 @@
                                             <li class="nav-item">
                                                 <a class="nav-link" asp-controller="Products"
                                                    asp-action="ProductsListingView"
-                                                   asp-route-optionId="@optionId">
+                                                   asp-route-optionId="@Model.Options.OptionId">
                                                     @item.Value
                                                 </a>
                                             </li>
@@ -109,55 +111,9 @@
                 }
             </div>
 
-            @* RIGHT: PREVIEW GRID (or List) *@
-            <div class="menu-as-grid grid-view" id="secondaryPreview">
-                @foreach (var cat in Model.Options)
-                {
-                    <div class="menu-card" onclick="location.href='@Url.Action("ProductsSecondaryView", new { optionId = cat.Id })'">
-                        <img src="@Url.Content("")" alt="icon"/>
-                        <div class="menu-content">
-                            <p class="menu-title">@cat.Name</p>
-                            <ul class="menu-preview-items">
-                                @if (cat.Entries != null)
-                                {
-                                    foreach (var item in cat.Entries!)
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link" asp-controller="Products"
-                                               asp-action="ProductsSecondaryView"
-                                               asp-route-optionId="@item.Key">
-                                                @item.Value
-                                            </a>
-                                        </li>
-                                    }
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                }
+            <div>
+                <p>INSERT PRODUCTS HERE</p>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts
-{
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const menuView = document.getElementById("secondaryPreview");
-            const gridViewBtn = document.getElementById("gridViewBtn");
-            const listViewBtn = document.getElementById("listViewBtn");
-
-            gridViewBtn.addEventListener("click", function () {
-                menuView.classList.add("menu-as-grid");
-                menuView.classList.remove("menu-as-list");
-            });
-
-            listViewBtn.addEventListener("click", function () {
-                menuView.classList.add("menu-as-list");
-                menuView.classList.remove("menu-as-grid");
-            });
-        });
-    </script>
-
-}

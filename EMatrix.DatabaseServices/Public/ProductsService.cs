@@ -50,12 +50,16 @@ public class ProductsService : IProductsService
             .FirstOrDefaultAsync(m => m.Id == id);
         var model = new ProductsSecondaryViewModel()
         {
+            OptionId = -1,
             Title = menuItem.Name,
-            Options = menuItem.Options.OrderBy(c => c.Order).Select(s => new OptionViewModel()
+            Options = menuItem.Options
+                .OrderBy(c => c.Order)
+                .Select(s => new OptionChildViewModel()
                 {
                     Id = s.Id,
                     Name = s.Name,
-                    Entries = s.Children.OrderBy(c => c.DisplayName)
+                    Entries = s.Children
+                        .OrderBy(c => c.DisplayName)
                         .ToDictionary(c => c.Id.ToString(), c => c.DisplayName)
                 })
                 .ToList()
@@ -77,9 +81,10 @@ public class ProductsService : IProductsService
             throw new KeyNotFoundException();
         var model = new ProductsSecondaryViewModel()
         {
+            OptionId = option.Id,
             Title = option.Name,
             Options = option.Children.OrderBy(c => c.DisplayName)
-                .Select(s => new OptionViewModel()
+                .Select(s => new OptionChildViewModel()
                 {
                     Id = s.Id,
                     Name = s.DisplayName,

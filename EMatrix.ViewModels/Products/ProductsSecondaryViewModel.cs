@@ -2,13 +2,14 @@ namespace EMatrix.ViewModels.Products;
 
 public class ProductsSecondaryViewModel
 {
+    public int OptionId { get; set; }
     public string Title { get; set; } = string.Empty;
 
-    public List<OptionViewModel> Options { get; set; } = new List<OptionViewModel>();
+    public List<OptionChildViewModel> Options { get; set; } = new List<OptionChildViewModel>();
 
 }
 
-public class OptionViewModel
+public class OptionChildViewModel
 {
     public int Id { get; set; }
 
