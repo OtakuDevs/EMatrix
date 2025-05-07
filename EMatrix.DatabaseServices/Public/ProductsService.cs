@@ -23,7 +23,7 @@ public class ProductsService : IProductsService
             var menuItems = await _context.MenuItems
                 .Include(o => o.Options)
                 .ToListAsync();
-            foreach (var item in menuItems)
+            foreach (var item in menuItems.OrderBy(o => o.Order))
             {
                 model.Accordion.Options.Add(new AccordionOptionViewModel()
                 {
@@ -73,6 +73,8 @@ public class ProductsService : IProductsService
             .Where(s => s.SubCategoryId == id)
             .ToListAsync();
         var model = new ProductsSecondaryViewModel();
+        model.Accordion.Type = "Option";
+        model.Accordion.SelectedSubGroup = id;
         var option = await _context.MenuOptions
             .Include(ch => ch.Children)
             .ThenInclude(s => s.SubGroup)

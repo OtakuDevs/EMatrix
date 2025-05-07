@@ -15,7 +15,8 @@
                     @menuItem.Name
                 </button>
             </h2>
-            <div id="@collapseId" class="accordion-collapse collapse @(Model.Type == "Option" ? "show" : "")" aria-labelledby="@headingId"
+            <div id="@collapseId" class="accordion-collapse collapse @(Model.Type == "Option" ? "show" : "")"
+                 aria-labelledby="@headingId"
                  data-bs-parent="#menuAccordion">
                 <div class="accordion-body">
                     <ul class="navbar-nav">
@@ -53,7 +54,8 @@
                                         }
                                         else
                                         {
-                                            <a class="accordion-button no-collapse-link" asp-controller="Products"
+                                            <a class="accordion-button no-collapse-link @(Model.SelectedSubGroup == entry.SubGroupId ? "active" : "")"
+                                               asp-controller="Products"
                                                asp-action="ProductsSecondaryView"
                                                asp-route-optionId="@menuItem.Id"
                                                asp-route-id="@entry.SubGroupId">
@@ -64,7 +66,8 @@
 
                                     @if (hasEntries)
                                     {
-                                        <div id="@collapseIdInner" class="accordion-collapse collapse"
+                                        var isSelected = entry.Entries?.Any(e => e.Key == Model.SelectedSubGroup) == true;
+                                        <div id="@collapseIdInner" class="accordion-collapse collapse @(isSelected ? "show" : "")"
                                              aria-labelledby="heading-@entry.Id"
                                              data-bs-parent="#@collapseId"> <!-- THIS LINE IS KEY -->
                                             <div class="accordion-body ps-4">
@@ -72,8 +75,10 @@
                                                     @foreach (var item in entry.Entries!)
                                                     {
                                                         <li class="nav-item">
-                                                            <a class="nav-link" asp-controller="Products"
+                                                            <a class="nav-link @(Model.SelectedSubGroup == item.Key ? "active" : "")"
+                                                               asp-controller="Products"
                                                                asp-action="ProductsSecondaryView"
+                                                               asp-route-optionId="@menuItem.Id"
                                                                asp-route-id="@item.Key">
                                                                 @item.Value
                                                             </a>

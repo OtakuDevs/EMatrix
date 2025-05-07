@@ -58,30 +58,7 @@
 
             @* RIGHT: PREVIEW GRID (or List) *@
             <div class="menu-as-grid grid-view" id="secondaryPreview">
-                @foreach (var cat in Model.Options)
-                {
-                    <div class="menu-card" onclick="location.href='@Url.Action("ProductsSecondaryView", new { optionId = cat.Id })'">
-                        <img src="@Url.Content("")" alt="icon"/>
-                        <div class="menu-content">
-                            <p class="menu-title">@cat.Name</p>
-                            <ul class="menu-preview-items">
-                                @if (cat.Entries != null)
-                                {
-                                    foreach (var item in cat.Entries!)
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link" asp-controller="Products"
-                                               asp-action="ProductsSecondaryView"
-                                               asp-route-optionId="@item.Key">
-                                                @item.Value
-                                            </a>
-                                        </li>
-                                    }
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                }
+                <p>INSERT ITEMS HERE</p>
             </div>
         </div>
     </div>

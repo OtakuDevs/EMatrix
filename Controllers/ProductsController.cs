@@ -33,10 +33,4 @@ public class ProductsController : Controller
         return View(model);
     }
 
-    public async Task<IActionResult> ProductsListingView(int optionId)
-    {
-        ProductsListingViewModel model = new ProductsListingViewModel();
-
-        return View(model);
-    }
 }

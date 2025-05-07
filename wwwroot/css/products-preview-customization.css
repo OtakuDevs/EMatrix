@@ -114,6 +114,11 @@
     transition: color 0.2s ease-in-out;
 }
 
+.products-body .accordion .nav-link.active {
+    color: #b36920;
+    text-decoration: underline;
+}
+
 .products-body .accordion .nav-link:hover {
     color: #b36920;
     text-decoration: underline;
@@ -122,6 +127,10 @@
 /* Chevron (using Bootstrap default but tinting via filter) */
 .products-body .accordion-button::after {
     filter: brightness(0.7) sepia(1) hue-rotate(10deg) saturate(5);
+}
+
+.products-body .accordion-button:focus {
+    box-shadow: none;
 }
 
 /* When accordion is open */
@@ -136,6 +145,11 @@
     &::after{
         background-image: unset;
     }
+}
+
+.accordion-button.no-collapse-link.active {
+    color: #b36920;
+    text-decoration: underline;
 }
 
 .products-header > .grid-header {
