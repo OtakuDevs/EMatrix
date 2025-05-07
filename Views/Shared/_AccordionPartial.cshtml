@@ -1,0 +1,94 @@
+@model EMatrix.ViewModels.Products.AccordionViewModel
+
+<div class="accordion" id="menuAccordion">
+    <h4>Категории продукти</h4>
+    @for (int i = 0; i < Model.Options.Count; i++)
+    {
+        var menuItem = Model.Options[i];
+        var headingId = $"heading-{i}";
+        var collapseId = $"collapse-{i}";
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="@headingId">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId">
+                    @menuItem.Name
+                </button>
+            </h2>
+            <div id="@collapseId" class="accordion-collapse collapse @(Model.Type == "Option" ? "show" : "")" aria-labelledby="@headingId"
+                 data-bs-parent="#menuAccordion">
+                <div class="accordion-body">
+                    <ul class="navbar-nav">
+                        @if (Model.Type == "MenuItem")
+                        {
+                            @foreach (var entry in menuItem.Options)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Products"
+                                       asp-action="ProductsPrimaryView"
+                                       asp-route-id="@entry.Id"
+                                       asp-route-type="Option">
+                                        @entry.Name
+                                    </a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            @foreach (var entry in menuItem.Options)
+                            {
+                                var hasEntries = entry.SubGroupId == null && entry.Entries?.Any() == true;
+                                var collapseIdInner = $"collapse-option-{entry.Id}";
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading-@entry.Id">
+                                        @if (hasEntries)
+                                        {
+                                            <button class="accordion-button collapsed" type="button"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#@collapseIdInner"
+                                                    aria-expanded="false"
+                                                    aria-controls="@collapseIdInner">
+                                                @entry.Name
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <a class="accordion-button no-collapse-link" asp-controller="Products"
+                                               asp-action="ProductsSecondaryView"
+                                               asp-route-optionId="@menuItem.Id"
+                                               asp-route-id="@entry.SubGroupId">
+                                                @entry.Name
+                                            </a>
+                                        }
+                                    </h2>
+
+                                    @if (hasEntries)
+                                    {
+                                        <div id="@collapseIdInner" class="accordion-collapse collapse"
+                                             aria-labelledby="heading-@entry.Id"
+                                             data-bs-parent="#@collapseId"> <!-- THIS LINE IS KEY -->
+                                            <div class="accordion-body ps-4">
+                                                <ul class="nav flex-column">
+                                                    @foreach (var item in entry.Entries!)
+                                                    {
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" asp-controller="Products"
+                                                               asp-action="ProductsSecondaryView"
+                                                               asp-route-id="@item.Key">
+                                                                @item.Value
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+</div>

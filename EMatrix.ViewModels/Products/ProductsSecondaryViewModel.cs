@@ -2,6 +2,7 @@ namespace EMatrix.ViewModels.Products;
 
 public class ProductsSecondaryViewModel
 {
+    public AccordionViewModel Accordion { get; set; } = new AccordionViewModel();
     public int OptionId { get; set; }
     public string Title { get; set; } = string.Empty;
 

@@ -130,6 +130,14 @@
     font-weight: 600;
 }
 
+.products-body .accordion-button.no-collapse-link {
+    color: var(--font-color);
+    font-weight: normal;
+    &::after{
+        background-image: unset;
+    }
+}
+
 .products-header > .grid-header {
     margin: 0 2rem;
     padding-bottom: 0.85rem;

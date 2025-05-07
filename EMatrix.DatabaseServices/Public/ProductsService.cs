@@ -14,85 +14,88 @@ public class ProductsService : IProductsService
         _context = context;
     }
 
-    public async Task<ProductsPrimaryViewModel> GetPrimaryViewAsync(int id)
+    public async Task<ProductsPrimaryViewModel> GetPrimaryViewAsync(int id, string type)
     {
-        var menu = await _context.Menus
-            .Include(m => m.MenuItems)
-            .ThenInclude(o => o.Options)
-            .FirstOrDefaultAsync(m => m.Id == id);
-
-        var model = new ProductsPrimaryViewModel();
-        foreach (var menuItem in menu.MenuItems.OrderBy(m => m.Order))
+        ProductsPrimaryViewModel model = new ProductsPrimaryViewModel();
+        if (type == "MenuItem")
         {
-            model.Menu.Add(new MenuItemViewModel()
+            model.Accordion.Type = type;
+            var menuItems = await _context.MenuItems
+                .Include(o => o.Options)
+                .ToListAsync();
+            foreach (var item in menuItems)
             {
-                Id = menuItem.Id,
-                Name = menuItem.Name,
-                Options = menuItem.Options.ToDictionary(o => o.Id, o => o.Name)
-            });
-            model.MenuItemsGrid.Add(new MenuItemPreviewModel()
+                model.Accordion.Options.Add(new AccordionOptionViewModel()
+                {
+                    Name = item.Name,
+                    Options = item.Options.Select(opt => new AccordionOptionChildViewModel()
+                    {
+                        Id = opt.Id,
+                        Name = opt.Name,
+                    }).ToList(),
+                });
+            }
+        }
+        else if (type == "Option")
+        {
+            model.Accordion.Type = type;
+            var option = await _context.MenuOptions
+                .Include(ch => ch.Children)
+                .ThenInclude(s => s.SubGroup)
+                .Include(ch => ch.Children)
+                .ThenInclude(s => s.SubGroupSet)
+                .ThenInclude(sc => sc.Items)
+                .ThenInclude(sc => sc.SubGroup)
+                .FirstOrDefaultAsync(o => o.Id == id);
+            model.Accordion.Options.Add(new AccordionOptionViewModel()
             {
-                Id = menuItem.Id,
-                Name = menuItem.Name,
-                Icon = $"{menuItem.Icon}",
-                Options = menuItem.Options.ToDictionary(c => c.Id, c => c.Name)
+                Id = option.Id,
+                Name = option.Name,
+                Options = option.Children.Select(o => new AccordionOptionChildViewModel()
+                    {
+                        Id = o.Id,
+                        Name = o.DisplayName ?? o.SubGroup?.Name,
+                        SubGroupId = o.SubGroupId != null ? o.SubGroupId : null,
+                        Entries = o.SubGroupSetId == null
+                            ? null
+                            : o.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
+                    })
+                    .ToList(),
             });
         }
-
         return model;
     }
 
-    public async Task<ProductsSecondaryViewModel> GetSecondaryViewByMenuItemId(int id)
+    public async Task<ProductsSecondaryViewModel> GetSecondaryViewAsync(string id, int optionId)
     {
-        var menuItem = await _context.MenuItems
-            .Include(m => m.Options)
-            .ThenInclude(m => m.Children)
-            .FirstOrDefaultAsync(m => m.Id == id);
-        var model = new ProductsSecondaryViewModel()
-        {
-            OptionId = -1,
-            Title = menuItem.Name,
-            Options = menuItem.Options
-                .OrderBy(c => c.Order)
-                .Select(s => new OptionChildViewModel()
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    Entries = s.Children
-                        .OrderBy(c => c.DisplayName)
-                        .ToDictionary(c => c.Id.ToString(), c => c.DisplayName)
-                })
-                .ToList()
-        };
-        return model;
-    }
-
-    public async Task<ProductsSecondaryViewModel> GetSecondaryViewByOptionId(int optionId)
-    {
+        var items = await _context.InventoryItems
+            .Include(s => s.SubCategory)
+            .Where(s => s.SubCategoryId == id)
+            .ToListAsync();
+        var model = new ProductsSecondaryViewModel();
         var option = await _context.MenuOptions
-            .Include(m => m.Children)
-            .ThenInclude(sc => sc.SubGroup)
-            .Include(m => m.Children)
-            .ThenInclude(ss => ss.SubGroupSet)
+            .Include(ch => ch.Children)
+            .ThenInclude(s => s.SubGroup)
+            .Include(ch => ch.Children)
+            .ThenInclude(s => s.SubGroupSet)
             .ThenInclude(sc => sc.Items)
             .ThenInclude(sc => sc.SubGroup)
-            .FirstOrDefaultAsync(m => m.Id == optionId);
-        if (option == null)
-            throw new KeyNotFoundException();
-        var model = new ProductsSecondaryViewModel()
+            .FirstOrDefaultAsync(o => o.Id == optionId);
+        model.Accordion.Options.Add(new AccordionOptionViewModel()
         {
-            OptionId = option.Id,
-            Title = option.Name,
-            Options = option.Children.OrderBy(c => c.DisplayName)
-                .Select(s => new OptionChildViewModel()
+            Id = option.Id,
+            Name = option.Name,
+            Options = option.Children.Select(o => new AccordionOptionChildViewModel()
                 {
-                    Id = s.Id,
-                    Name = s.DisplayName,
-                    SubGroupId = s.SubGroup == null ? null : s.SubGroup.Id.ToString(),
-                    Entries = s.SubGroupSet == null ? null : s.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
+                    Id = o.Id,
+                    Name = o.DisplayName ?? o.SubGroup?.Name,
+                    SubGroupId = o.SubGroupId != null ? o.SubGroupId : null,
+                    Entries = o.SubGroupSetId == null
+                        ? null
+                        : o.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
                 })
-                .ToList()
-        };
+                .ToList(),
+        });
         return model;
     }
 

@@ -12,4 +12,11 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Products\ProductsMenuOptionViewModel.cs" />
+      <Compile Remove="Products\ProductsMenuOptionChildViewModel.cs" />
+      <Compile Remove="Products\ProductsMenuItemViewModel.cs" />
+      <Compile Remove="Products\ProductsMenuItemGridViewModel.cs" />
+    </ItemGroup>
+
 </Project>

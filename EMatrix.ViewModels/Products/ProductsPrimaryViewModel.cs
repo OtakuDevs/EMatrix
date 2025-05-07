@@ -2,7 +2,7 @@ namespace EMatrix.ViewModels.Products;
 
 public class ProductsPrimaryViewModel
 {
-    public List<MenuItemViewModel> Menu { get; set; } = new List<MenuItemViewModel>();
+    public AccordionViewModel Accordion { get; set; } = new AccordionViewModel();
 
     public List<MenuItemPreviewModel> MenuItemsGrid { get; set; } = new List<MenuItemPreviewModel>();
 }

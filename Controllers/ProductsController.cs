@@ -14,29 +14,21 @@ public class ProductsController : Controller
     }
 
     // GET
-    public async Task<IActionResult> ProductsPrimaryView()
+    public async Task<IActionResult> ProductsPrimaryView(int id = 1, string type = "MenuItem")
     {
-        var model = await _productsService.GetPrimaryViewAsync(1);
+
+        var model = await _productsService.GetPrimaryViewAsync(id, type);
         return View(model);
     }
 
-    public async Task<IActionResult> ProductsSecondaryView(int? menuItemId, int? optionId)
+    public async Task<IActionResult> ProductsSecondaryView(string id, int optionId)
     {
         ProductsSecondaryViewModel model;
 
-        if (menuItemId.HasValue)
-        {
-            model = await _productsService.GetSecondaryViewByMenuItemId(menuItemId.Value);
-        }
-        else if (optionId.HasValue)
-        {
-            model = await _productsService.GetSecondaryViewByOptionId(optionId.Value);
-        }
 
-        else
-        {
-            return NotFound();
-        }
+            model = await _productsService.GetSecondaryViewAsync(id, optionId);
+
+
 
         return View(model);
     }
@@ -44,7 +36,7 @@ public class ProductsController : Controller
     public async Task<IActionResult> ProductsListingView(int optionId)
     {
         ProductsListingViewModel model = new ProductsListingViewModel();
-        model.Options = await _productsService.GetSecondaryViewByOptionId(optionId);
+
         return View(model);
     }
 }

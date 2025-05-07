@@ -1,6 +1,6 @@
 @model EMatrix.ViewModels.Products.ProductsSecondaryViewModel
 
-<link rel="stylesheet" href="~/css/products-result-customization.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/products-preview-customization.css" asp-append-version="true"/>
 
 @{
     ViewData["Title"] = "Продукти";
@@ -54,60 +54,7 @@
         </div>
 
         <div class="products-body">
-            <div class="accordion" id="optionsAccordion">
-                <h4>@Model.Title</h4>
-                <hr/>
-                @foreach (var entry in Model.Options)
-                {
-                    var hasEntries = entry.SubGroupId == null && entry.Entries?.Any() == true;
-                    var collapseId = $"collapse-option-{entry.Id}";
-                    var optionId = Model.OptionId == -1 ? entry.Id : Model.OptionId;
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="heading-@entry.Id">
-                            @if (hasEntries)
-                            {
-                                <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#@collapseId"
-                                        aria-expanded="false"
-                                        aria-controls="@collapseId">
-                                    @entry.Name
-                                </button>
-                            }
-                            else
-                            {
-                                <a class="accordion-button no-collapse-link" asp-controller="Products"
-                                   asp-action="ProductsListingView"
-                                   asp-route-optionId="@optionId">
-                                    @entry.Name
-                                </a>
-                            }
-                        </h2>
-
-                        @if (hasEntries)
-                        {
-                            <div id="@collapseId" class="accordion-collapse collapse"
-                                 aria-labelledby="heading-@entry.Id"
-                                 data-bs-parent="#optionsAccordion">
-                                <div class="accordion-body ps-4">
-                                    <ul class="nav flex-column">
-                                        @foreach (var item in entry.Entries!)
-                                        {
-                                            <li class="nav-item">
-                                                <a class="nav-link" asp-controller="Products"
-                                                   asp-action="ProductsListingView"
-                                                   asp-route-optionId="@optionId">
-                                                    @item.Value
-                                                </a>
-                                            </li>
-                                        }
-                                    </ul>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                }
-            </div>
+            @await Html.PartialAsync("_AccordionPartial", Model.Accordion)
 
             @* RIGHT: PREVIEW GRID (or List) *@
             <div class="menu-as-grid grid-view" id="secondaryPreview">

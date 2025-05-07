@@ -4,9 +4,7 @@ namespace EMatrix.DatabaseServices.Public.Interfaces;
 
 public interface IProductsService
 {
-    Task<ProductsPrimaryViewModel> GetPrimaryViewAsync(int id);
+    Task<ProductsPrimaryViewModel> GetPrimaryViewAsync(int id, string type);
 
-    Task<ProductsSecondaryViewModel> GetSecondaryViewByMenuItemId(int id);
-
-    Task<ProductsSecondaryViewModel> GetSecondaryViewByOptionId(int optionId);
+    Task<ProductsSecondaryViewModel> GetSecondaryViewAsync(string id, int optionId);
 }
