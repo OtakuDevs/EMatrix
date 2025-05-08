@@ -13,7 +13,6 @@ public class ProductsController : Controller
         _productsService = productsService;
     }
 
-    // GET
     public async Task<IActionResult> ProductsPrimaryView(int id = 1, string type = "MenuItem")
     {
 

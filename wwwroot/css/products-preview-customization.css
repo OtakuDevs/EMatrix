@@ -23,8 +23,8 @@
     text-decoration: underline;
 }
 
-.breadcrumb li:last-child a:hover {
-    text-decoration: none;
+.breadcrumb-item.active {
+    color: antiquewhite;
     cursor: default;
 }
 
@@ -137,6 +137,7 @@
 .products-body .accordion-button:not(.collapsed) {
     color: #b36920;
     font-weight: 600;
+    box-shadow: none;
 }
 
 .products-body .accordion-button.no-collapse-link {
@@ -379,13 +380,6 @@
     box-shadow: rgba(0, 0, 0, 0.15) 0 4px 10px;
     transition: background-color 0.2s ease-in-out;
 
-}
-
-.menu-as-list > .menu-card:hover {
-    cursor: pointer;
-    & p {
-        color: var(--color-highlight);
-    }
 }
 
 .menu-as-list img {

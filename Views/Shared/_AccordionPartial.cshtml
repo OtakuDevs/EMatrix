@@ -54,7 +54,7 @@
                                         }
                                         else
                                         {
-                                            <a class="accordion-button no-collapse-link @(Model.SelectedSubGroup == entry.SubGroupId ? "active" : "")"
+                                            <a class="accordion-button no-collapse-link @(Model.SelectedSubGroupId == entry.SubGroupId ? "active" : "")"
                                                asp-controller="Products"
                                                asp-action="ProductsSecondaryView"
                                                asp-route-optionId="@menuItem.Id"
@@ -66,7 +66,7 @@
 
                                     @if (hasEntries)
                                     {
-                                        var isSelected = entry.Entries?.Any(e => e.Key == Model.SelectedSubGroup) == true;
+                                        var isSelected = entry.Entries?.Any(e => e.Key == Model.SelectedSubGroupId) == true;
                                         <div id="@collapseIdInner" class="accordion-collapse collapse @(isSelected ? "show" : "")"
                                              aria-labelledby="heading-@entry.Id"
                                              data-bs-parent="#@collapseId"> <!-- THIS LINE IS KEY -->
@@ -75,7 +75,7 @@
                                                     @foreach (var item in entry.Entries!)
                                                     {
                                                         <li class="nav-item">
-                                                            <a class="nav-link @(Model.SelectedSubGroup == item.Key ? "active" : "")"
+                                                            <a class="nav-link @(Model.SelectedSubGroupId == item.Key ? "active" : "")"
                                                                asp-controller="Products"
                                                                asp-action="ProductsSecondaryView"
                                                                asp-route-optionId="@menuItem.Id"

@@ -22,6 +22,7 @@ public class ProductsService : IProductsService
             model.Accordion.Type = type;
             var menuItems = await _context.MenuItems
                 .Include(o => o.Options)
+                .ThenInclude(c => c.Children)
                 .ToListAsync();
             foreach (var item in menuItems.OrderBy(o => o.Order))
             {
@@ -35,6 +36,17 @@ public class ProductsService : IProductsService
                     }).ToList(),
                 });
             }
+
+            model.MenuPreview.Type = type;
+            model.MenuPreview.Options = menuItems
+                .OrderBy(o => o.Order)
+                .Select(o => new MenuOptionViewModel()
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    Icon = o.Icon,
+                    Children = o.Options.ToDictionary(c => c.Id.ToString(), c => c.Name)
+                }).ToList();
         }
         else if (type == "Option")
         {
@@ -62,7 +74,21 @@ public class ProductsService : IProductsService
                     })
                     .ToList(),
             });
+            model.MenuPreview.Id = option.Id;
+            model.MenuPreview.Type = type;
+            model.MenuPreview.Options = option.Children.Select(o => new MenuOptionViewModel()
+                {
+                    Id = o.Id,
+                    Name = o.DisplayName ?? o.SubGroup?.Name,
+                    Icon = "test",
+                    Children = o.SubGroupSetId == null
+                        ? new Dictionary<string, string> { { o.SubGroup!.Id, o.SubGroup.Name } }
+                        : o.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
+
+                })
+                .ToList();
         }
+
         return model;
     }
 
@@ -72,9 +98,11 @@ public class ProductsService : IProductsService
             .Include(s => s.SubCategory)
             .Where(s => s.SubCategoryId == id)
             .ToListAsync();
+        var selectedSubGroup = await _context.SubCategories.FirstOrDefaultAsync(s => s.Id == id);
         var model = new ProductsSecondaryViewModel();
         model.Accordion.Type = "Option";
-        model.Accordion.SelectedSubGroup = id;
+        model.Accordion.SelectedSubGroupId = selectedSubGroup.Id;
+        model.Accordion.SelectedSubGroupName = selectedSubGroup.Alias;
         var option = await _context.MenuOptions
             .Include(ch => ch.Children)
             .ThenInclude(s => s.SubGroup)

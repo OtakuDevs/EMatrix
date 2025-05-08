@@ -1,6 +1,6 @@
 namespace EMatrix.ViewModels.Products;
 
-public class MenuItemPreviewModel
+public class MenuOptionViewModel
 {
     public int Id { get; set; }
 
@@ -8,5 +8,5 @@ public class MenuItemPreviewModel
 
     public string Icon { get; set; } = null!;
 
-    public Dictionary<int, string> Options { get; set; } = new Dictionary<int,string>();
+    public Dictionary<string, string> Children { get; set; } = new Dictionary<string,string>();
 }

@@ -7,11 +7,25 @@
 }
 
 <div class="container-fluid mt-3 products-container">
-    <ul class="breadcrumb">
-        <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
-        <span><i class="bi bi-chevron-right"></i></span>
-        <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
-    </ul>
+    @if (Model.Accordion.Type == "MenuItem")
+    {
+        <ul class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
+            <span><i class="bi bi-chevron-right"></i></span>
+            <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
+        </ul>
+    }
+    else if (Model.Accordion.Type == "Option")
+    {
+        <ul class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
+            <span><i class="bi bi-chevron-right"></i></span>
+            <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
+            <span><i class="bi bi-chevron-right"></i></span>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Accordion.Options.First().Name</li>
+        </ul>
+
+    }
     <div class="products-preview">
         <div class="products-header">
             <div class="search-bar">
@@ -52,21 +66,34 @@
         <div class="products-body">
             @await Html.PartialAsync("_AccordionPartial", Model.Accordion)
             <div id="menuView" class="menu-as-grid grid-view">
-                @foreach (var cat in Model.MenuItemsGrid)
+                @foreach (var cat in Model.MenuPreview.Options)
                 {
-                    <div class="menu-card" onclick="location.href='@Url.Action("ProductsSecondaryView", new { menuItemId = cat.Id })'">
+                    <div class="menu-card" onclick="toggleListView()">
                         <img src="@Url.Content(cat.Icon)" alt="icon"/>
                         <div class="menu-content">
                             <p class="menu-title">@cat.Name</p>
                             <ul class="menu-preview-items">
-                                @foreach (var item in cat.Options)
+                                @foreach (var item in cat.Children)
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Products"
-                                           asp-action="ProductsSecondaryView"
-                                           asp-route-optionId="@item.Key">
-                                            @item.Value
-                                        </a>
+                                        @if (Model.MenuPreview.Type == "MenuItem")
+                                        {
+                                            <a class="nav-link" asp-controller="Products"
+                                               asp-action="ProductsPrimaryView"
+                                               asp-route-id="@item.Key"
+                                               asp-route-type="Option">
+                                                @item.Value
+                                            </a>
+                                        }
+                                        else if (Model.MenuPreview.Type == "Option")
+                                        {
+                                            <a class="nav-link" asp-controller="Products"
+                                               asp-action="ProductsSecondaryView"
+                                               asp-route-id="@item.Key"
+                                               asp-route-optionId="@Model.MenuPreview.Id">
+                                                @item.Value
+                                            </a>
+                                        }
                                     </li>
                                 }
                             </ul>
@@ -97,6 +124,12 @@
                 menuView.classList.remove("menu-as-grid");
             });
         });
+
+        function toggleListView(){
+            const menuView = document.getElementById("menuView");
+            menuView.classList.add("menu-as-list");
+            menuView.classList.remove("menu-as-grid");
+        }
     </script>
 
 }

@@ -12,7 +12,12 @@
         <span><i class="bi bi-chevron-right"></i></span>
         <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
         <span><i class="bi bi-chevron-right"></i></span>
-        <li><a href="">@Model.Title</a></li>
+        <li><a href="@Url.Action("ProductsPrimaryView", "Products", new { id = Model.Accordion.Options.First().Id, type="Option" })">
+            @Model.Accordion.Options.First().Name
+        </a></li>
+        <span><i class="bi bi-chevron-right"></i></span>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Accordion.SelectedSubGroupName</li>
+
     </ul>
 
     <div class="products-preview">
