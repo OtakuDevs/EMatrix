@@ -80,7 +80,7 @@ public class ProductsService : IProductsService
                 {
                     Id = o.Id,
                     Name = o.DisplayName ?? o.SubGroup?.Name,
-                    Icon = "test",
+                    Icon = option.Icon,
                     Children = o.SubGroupSetId == null
                         ? new Dictionary<string, string> { { o.SubGroup!.Id, o.SubGroup.Name } }
                         : o.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
@@ -127,16 +127,5 @@ public class ProductsService : IProductsService
                 .ToList(),
         });
         return model;
-    }
-
-
-    // Helper function to extract the group key (i.e., prefix before first space)
-    private string GetGroupKey(string name)
-    {
-        if (string.IsNullOrEmpty(name)) return "";
-
-        // Split the name by space and take the first part (this is our dynamic prefix)
-        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        return parts.Length > 0 ? parts[0].ToUpper() : name.ToUpper();
     }
 }

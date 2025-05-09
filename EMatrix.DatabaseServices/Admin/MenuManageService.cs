@@ -25,7 +25,9 @@ public class MenuManageService : IMenuManageService
     public async Task<MenuAdminViewModel> GetMenu(int id)
     {
         var menu = await _context.Menus
-            .Include(r => r.MenuItems).FirstOrDefaultAsync(m => m.Id == id);
+            .Include(r => r.MenuItems)
+            .ThenInclude(o => o.Options)
+            .FirstOrDefaultAsync(m => m.Id == id);
         if(menu == null)
             throw new KeyNotFoundException();
 
@@ -35,7 +37,12 @@ public class MenuManageService : IMenuManageService
             {
                 Id = r.Id,
                 Name = r.Name,
-                Position = r.Order
+                Position = r.Order,
+                Options = r.Options.Select(o => new SelectListItem()
+                {
+                    Value = o.Id.ToString(),
+                    Text = o.Name
+                }).ToList()
             })
             .ToList(),
         };
@@ -228,45 +235,75 @@ public async Task UpdateMenuItemAssignmentsAsync(MenuItemAdminViewModel model)
     }
 
 
-    public async Task UpdateMenuItemImageAsync(int menuItemId, IFormCollection form)
+    public async Task UpdateItemImageAsync(int menuItemId, int? selectedOption, IFormCollection form)
+{
+    if (form.Files.Count == 0 || form.Files["imageFile"] == null)
+        throw new KeyNotFoundException("Моля изберете файл.");
+
+    var file = form.Files["imageFile"]!;
+    var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+    if (fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
+        throw new ArgumentException("Само файлове с разширение .jpg, .jpeg, .png са разрешени!");
+
+    string? oldIconPath = null;
+    string? newIconRelativePath = null;
+
+    if (selectedOption.HasValue)
     {
-        if(form.Files.Count == 0)
-            throw new KeyNotFoundException("Моля изберете файл.");
-        var file = form.Files["imageFile"];
-        if(file == null)
-            throw new KeyNotFoundException("Моля изберете файл.");
-        var fileExtension = Path.GetExtension(file.FileName);
-        if(fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
-            throw new ArgumentException("Само файлове с разширение .jpg, .jpeg, .png са разрешени!");
+        var option = await _context.MenuOptions.FirstOrDefaultAsync(o => o.Id == selectedOption);
+        if (option == null)
+            throw new KeyNotFoundException("Опцията не е открита.");
 
-        var menuItem = _context.MenuItems.FirstOrDefault(m => m.Id == menuItemId);
-        if(menuItem == null)
-            throw new KeyNotFoundException("Категорията не е открита.");
-        if (!string.IsNullOrEmpty(menuItem.Icon))
+        if (!string.IsNullOrEmpty(option.Icon))
         {
-            // Convert relative path to absolute path
-            var iconPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", menuItem.Icon.TrimStart('/'));
-
-            if (File.Exists(iconPath))
-            {
-                File.Delete(iconPath);
-            }
-
-            // Clear the icon field
-            menuItem.Icon = string.Empty;
+            oldIconPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", option.Icon.TrimStart('/'));
         }
-        var fileName = Path.GetFileName(file.FileName);
-        var relativePath = Path.Combine("/images/menu-categories", fileName);
-        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath.TrimStart('/'));
 
-        await using (var stream = new FileStream(path, FileMode.Create))
+        var fileName = Path.GetFileName(file.FileName);
+        newIconRelativePath = Path.Combine("/images/menu-categories", fileName);
+        var newIconFullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", newIconRelativePath.TrimStart('/'));
+
+        await using (var stream = new FileStream(newIconFullPath, FileMode.Create))
         {
             await file.CopyToAsync(stream);
         }
-        menuItem.Icon = relativePath;
-        _context.MenuItems.Update(menuItem);
-        await _context.SaveChangesAsync();
+
+        option.Icon = newIconRelativePath;
+        _context.MenuOptions.Update(option);
     }
+    else
+    {
+        var menuItem = await _context.MenuItems.FirstOrDefaultAsync(m => m.Id == menuItemId);
+        if (menuItem == null)
+            throw new KeyNotFoundException("Категорията не е открита.");
+
+        if (!string.IsNullOrEmpty(menuItem.Icon))
+        {
+            oldIconPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", menuItem.Icon.TrimStart('/'));
+        }
+
+        var fileName = Path.GetFileName(file.FileName);
+        newIconRelativePath = Path.Combine("/images/menu-categories", fileName);
+        var newIconFullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", newIconRelativePath.TrimStart('/'));
+
+        await using (var stream = new FileStream(newIconFullPath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        menuItem.Icon = newIconRelativePath;
+        _context.MenuItems.Update(menuItem);
+    }
+
+    if (oldIconPath != null && File.Exists(oldIconPath))
+    {
+        File.Delete(oldIconPath);
+    }
+
+    await _context.SaveChangesAsync();
+}
+
 
     private async Task<MenuItem?> GetMenuItem(int id)
     {

@@ -68,7 +68,7 @@
             <div id="menuView" class="menu-as-grid grid-view">
                 @foreach (var cat in Model.MenuPreview.Options)
                 {
-                    <div class="menu-card" onclick="toggleListView()">
+                    <div id="card-@(cat.Id)" class="menu-card" onclick="toggleListView('@cat.Id')">
                         <img src="@Url.Content(cat.Icon)" alt="icon"/>
                         <div class="menu-content">
                             <p class="menu-title">@cat.Name</p>
@@ -125,10 +125,12 @@
             });
         });
 
-        function toggleListView(){
+        function toggleListView(id){
             const menuView = document.getElementById("menuView");
             menuView.classList.add("menu-as-list");
             menuView.classList.remove("menu-as-grid");
+            const element = document.getElementById(`card-${id}`);
+            element.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
         }
     </script>
 

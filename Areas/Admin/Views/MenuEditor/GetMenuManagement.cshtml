@@ -63,20 +63,16 @@
                             <i class="bi bi-stack me-2"></i>Редакция
                         </a>
 
-                        <form asp-action="UpdateCategoryImage" method="post" enctype="multipart/form-data" class="d-inline-block">
-                            <input type="hidden" name="menuItemId" value="@item.Id" />
-
-                            <label id="upload-label-@item.Id" class="btn btn-main-outline me-1" data-tooltip="Обновяване на снимка">
-                                <i class="bi bi-image me-2"></i>Избери файл
-                                <input type="file" name="imageFile" accept="image/*" hidden onchange="handleFileSelect(this, @item.Id)" />
-                            </label>
-
-                            <!-- Small spinner (initially hidden) -->
-                            <div id="upload-spinner-@item.Id" class="btn btn-main-outline me-1 d-none spinner-container">
-                                <i class="me-2 spinner-border spinner-border-sm"></i> Обновяване...
-                            </div>
-
-                        </form>
+                        <button
+                            type="button"
+                            class="btn btn-main-outline me-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#uploadModal"
+                            data-menu-item-id="@item.Id"
+                            data-menu-item-name="@item.Name"
+                            data-tooltip="Обновяване на снимка">
+                            <i class="bi bi-image me-2"></i>Избери файл
+                        </button>
 
                         <button
                             type="button"
@@ -107,11 +103,11 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="CategoryName" class="form-label">Име на категория</label>
-                        <input type="text" class="form-control" id="CategoryName" name="name" required />
+                        <input type="text" class="form-control" id="CategoryName" name="name" required/>
                     </div>
                     <div class="mb-3">
                         <label for="position" class="form-label">Позиция в меню</label>
-                        <input type="text" class="form-control" id="position" name="position" required />
+                        <input type="text" class="form-control" id="position" name="position" required/>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -132,13 +128,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id" id="renameMenuItemId" />
+                    <input type="hidden" name="id" id="renameMenuItemId"/>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="oldMenuItemName" readonly disabled/>
                         <label for="oldMenuItemName">Текущо име</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="renameMenuItemName" name="name" />
+                        <input type="text" class="form-control" id="renameMenuItemName" name="name"/>
                         <label for="renameMenuItemName">Ново име</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -146,13 +142,63 @@
                         <label for="oldMenuItemName">Текущa позиция</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="newMenuItemPosition" name="position" />
+                        <input type="text" class="form-control" id="newMenuItemPosition" name="position"/>
                         <label for="renameMenuItemName">Нова позиция</label>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Отказ</button>
                     <button type="submit" class="btn btn-success">Запази</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-action="UpdateCategoryImage" method="post" enctype="multipart/form-data">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Обновяване на снимка</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="menuItemId" id="uploadMenuItemId"/>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="uploadModalName" readonly disabled/>
+                        <label for="uploadModalName">Категория</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="uploadModalOptions" name="selectedOption">
+                            <option value="">-- Избери опция --</option>
+                        </select>
+                        <label for="uploadModalOptions">Опции</label>
+                    </div>
+                    <input type="file" class="form-control" name="imageFile" accept="image/*" required/>
+                </div>
+                <fieldset class="border rounded p-3 m-3">
+                    <legend class="float-none w-auto fs-6 px-2">Информация</legend>
+                    <p class="mb-1 text-muted small">
+                        За промяна на снимка на <strong>категория</strong>, изберете и прикачете снимка чрез бутона <em>„Choose File“</em>,
+                        без да избирате опция, и натиснете бутона <em>„Обнови снимка“</em>.
+                    </p>
+                    <p class="mb-1 text-muted small">
+                        За промяна на снимка на <strong>опция от категория</strong>, първо изберете желаната опция от списъка, след това прикачете снимка и натиснете <em>„Обнови снимка“</em>.
+                    </p>
+                    <p class="mb-0 text-muted small">
+                        Приемат се само файлове с разширения: <strong>.jpg</strong>, <strong>.jpeg</strong> или <strong>.png</strong>.
+                    </p>
+                </fieldset>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Затвори</button>
+                    <button type="submit" class="btn btn-success" id="upload-button">
+                    <span id="upload-spinner" class="spinner-border spinner-border-sm me-2 d-none"
+                          role="status" aria-hidden="true"></span>
+                        Обнови снимка
+                    </button>
                 </div>
             </div>
         </form>
@@ -168,7 +214,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Затвори"></button>
                 </div>
                 <div class="modal-body" style="color: darkred">
-                    <input type="hidden" name="id" id="deleteMenuItemId" />
+                    <input type="hidden" name="id" id="deleteMenuItemId"/>
                     <p>
                         <strong>Внимание:</strong> Изтриването на категория от менюто е <u>необратимо действие</u>.
                     </p>
@@ -176,11 +222,14 @@
                         След потвърждение, категорията ще бъде <strong>завинаги премахната</strong> от менюто.
                     </p>
                     <p>
-                        <strong>Свързаните групи и подгрупи няма да бъдат изтрити</strong>, но връзката им с тази категория ще бъде загубена.
-                        Ако желаете да възстановите категорията в бъдеще, ще трябва ръчно да я създадете отново и да добавите съответните групи.
+                        <strong>Свързаните групи и подгрупи няма да бъдат изтрити</strong>, но връзката им с тази
+                        категория ще бъде загубена.
+                        Ако желаете да възстановите категорията в бъдеще, ще трябва ръчно да я създадете отново и да
+                        добавите съответните групи.
                     </p>
                     <p>
-                        Освен това, категорията ще изчезне от публичното меню на сайта и няма да бъде достъпна за потребителите.
+                        Освен това, категорията ще изчезне от публичното меню на сайта и няма да бъде достъпна за
+                        потребителите.
                     </p>
                     <p class="fw-bold">
                         Сигурни ли сте, че желаете да изтриете тази категория?
@@ -198,6 +247,8 @@
 @section Scripts
 {
     <script>
+        const menuItems = @Html.Raw(Json.Serialize(Model.MenuItems));
+
         const renameModal = document.getElementById('renameModal');
         renameModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
@@ -211,26 +262,34 @@
         });
 
         const deleteModal = document.getElementById('deleteModal');
-        deleteModal.addEventListener('show.bs.modal', function (event){
+        deleteModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
             const id = button.getAttribute('data-menu-item-id');
             deleteModal.querySelector('#deleteMenuItemId').value = id;
         })
-    </script>
-    <script>
-        function handleFileSelect(input, key) {
-            const label = document.getElementById(`upload-label-${key}`);
-            const spinner = document.getElementById(`upload-spinner-${key}`);
 
-            if (label && spinner) {
-                label.classList.add('d-none');
-                spinner.classList.remove('d-none');
+        const uploadModal = document.getElementById('uploadModal');
+        uploadModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-menu-item-id');
+            const name = button.getAttribute('data-menu-item-name');
+            uploadModal.querySelector('#uploadMenuItemId').value = id;
+            uploadModal.querySelector('#uploadModalName').value = name;
+
+            const select = uploadModal.querySelector('#uploadModalOptions');
+            select.innerHTML = '<option value="">-- Избери опция --</option>'; // clear previous
+
+            const menuItem = menuItems.find(m => m.id === id || m.id.toString() === id); // match by Id
+            console.log(menuItem);
+            if (menuItem && menuItem.options) {
+                menuItem.options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt.value;
+                    option.textContent = opt.text;
+                    select.appendChild(option);
+                });
             }
+        })
 
-            setTimeout(() => {
-                input.form.submit();
-            }, 2000); // 2 second delay
-        }
     </script>
-
 }

@@ -108,12 +108,12 @@ public class MenuEditorController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateCategoryImage(int menuItemId)
+    public async Task<IActionResult> UpdateCategoryImage(int menuItemId, int? selectedOption)
     {
         var form = Request.Form;
         try
         {
-            await _menuManageService.UpdateMenuItemImageAsync(menuItemId, form);
+            await _menuManageService.UpdateItemImageAsync(menuItemId,selectedOption, form);
             TempData["Success"] = "Успешна промяна на снимка за категория.";
         }
         catch (Exception e)
