@@ -27,6 +27,7 @@ public class MenuManageService : IMenuManageService
         var menu = await _context.Menus
             .Include(r => r.MenuItems)
             .ThenInclude(o => o.Options)
+            .ThenInclude(c => c.Children)
             .FirstOrDefaultAsync(m => m.Id == id);
         if(menu == null)
             throw new KeyNotFoundException();
@@ -38,11 +39,11 @@ public class MenuManageService : IMenuManageService
                 Id = r.Id,
                 Name = r.Name,
                 Position = r.Order,
-                Options = r.Options.Select(o => new SelectListItem()
+                Options = r.Options.SelectMany(o => o.Children).Select(c => new SelectListItem()
                 {
-                    Value = o.Id.ToString(),
-                    Text = o.Name
-                }).ToList()
+                    Value = c.Id.ToString(),
+                    Text = c.DisplayName
+                }).ToList(),
             })
             .ToList(),
         };
@@ -251,7 +252,7 @@ public async Task UpdateMenuItemAssignmentsAsync(MenuItemAdminViewModel model)
 
     if (selectedOption.HasValue)
     {
-        var option = await _context.MenuOptions.FirstOrDefaultAsync(o => o.Id == selectedOption);
+        var option = await _context.MenuOptionChildren.FirstOrDefaultAsync(o => o.Id == selectedOption);
         if (option == null)
             throw new KeyNotFoundException("Опцията не е открита.");
 
@@ -270,7 +271,7 @@ public async Task UpdateMenuItemAssignmentsAsync(MenuItemAdminViewModel model)
         }
 
         option.Icon = newIconRelativePath;
-        _context.MenuOptions.Update(option);
+        _context.MenuOptionChildren.Update(option);
     }
     else
     {

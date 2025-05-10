@@ -245,6 +245,10 @@ namespace EMatrix.Database.Migrations
                     b.Property<string>("DisplayName")
                         .HasColumnType("text");
 
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("MenuOptionId")
                         .HasColumnType("integer");
 

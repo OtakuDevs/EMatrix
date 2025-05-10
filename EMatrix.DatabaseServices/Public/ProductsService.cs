@@ -58,7 +58,9 @@ public class ProductsService : IProductsService
                 .ThenInclude(s => s.SubGroupSet)
                 .ThenInclude(sc => sc.Items)
                 .ThenInclude(sc => sc.SubGroup)
+                .Include(ch => ch.MenuItem)
                 .FirstOrDefaultAsync(o => o.Id == id);
+
             model.Accordion.Options.Add(new AccordionOptionViewModel()
             {
                 Id = option.Id,
@@ -80,7 +82,7 @@ public class ProductsService : IProductsService
                 {
                     Id = o.Id,
                     Name = o.DisplayName ?? o.SubGroup?.Name,
-                    Icon = option.Icon,
+                    Icon = !string.IsNullOrWhiteSpace(o.Icon) ? o.Icon : option.MenuItem.Icon,
                     Children = o.SubGroupSetId == null
                         ? new Dictionary<string, string> { { o.SubGroup!.Id, o.SubGroup.Name } }
                         : o.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)

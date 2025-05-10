@@ -16,4 +16,5 @@ public class MenuItemRowModel
     public int Position { get; set; }
 
     public List<SelectListItem> Options { get; set; } = new List<SelectListItem>();
+
 }

@@ -172,9 +172,9 @@
                     </div>
                     <div class="form-floating mb-3">
                         <select class="form-select" id="uploadModalOptions" name="selectedOption">
-                            <option value="">-- Избери опция --</option>
+                            <option value="">-- Избери подопция --</option>
                         </select>
-                        <label for="uploadModalOptions">Опции</label>
+                        <label for="uploadModalOptions">Подопции</label>
                     </div>
                     <input type="file" class="form-control" name="imageFile" accept="image/*" required/>
                 </div>
@@ -182,10 +182,11 @@
                     <legend class="float-none w-auto fs-6 px-2">Информация</legend>
                     <p class="mb-1 text-muted small">
                         За промяна на снимка на <strong>категория</strong>, изберете и прикачете снимка чрез бутона <em>„Choose File“</em>,
-                        без да избирате опция, и натиснете бутона <em>„Обнови снимка“</em>.
+                        без да избирате подопция, и натиснете бутона <em>„Обнови снимка“</em>.
                     </p>
                     <p class="mb-1 text-muted small">
-                        За промяна на снимка на <strong>опция от категория</strong>, първо изберете желаната опция от списъка, след това прикачете снимка и натиснете <em>„Обнови снимка“</em>.
+                        За да промените снимката на <strong>подопция</strong> към дадена опция, първо изберете подопцията от списъка, след това прикачете снимка и натиснете бутона <em>„Обнови снимка“</em>.
+                        Ако подопцията няма собствена снимка, ще използва тази на съответната <strong>категория</strong>.
                     </p>
                     <p class="mb-0 text-muted small">
                         Приемат се само файлове с разширения: <strong>.jpg</strong>, <strong>.jpeg</strong> или <strong>.png</strong>.
@@ -277,10 +278,10 @@
             uploadModal.querySelector('#uploadModalName').value = name;
 
             const select = uploadModal.querySelector('#uploadModalOptions');
-            select.innerHTML = '<option value="">-- Избери опция --</option>'; // clear previous
+            select.innerHTML = '<option value="">-- Избери подопция --</option>'; // clear previous
 
             const menuItem = menuItems.find(m => m.id === id || m.id.toString() === id); // match by Id
-            console.log(menuItem);
+
             if (menuItem && menuItem.options) {
                 menuItem.options.forEach(opt => {
                     const option = document.createElement('option');
