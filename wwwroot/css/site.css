@@ -190,6 +190,15 @@ input:read-only {
   outline: none;
 }
 
+.text-success {
+  color: #3d7b42 !important;
+  margin-bottom: 0;
+}
+
+.text-danger {
+  color: #963232 !important;
+  margin-bottom: 0;
+}
 
 /* Custom tooltip */
 [data-tooltip] {

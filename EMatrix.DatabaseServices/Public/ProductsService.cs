@@ -94,7 +94,7 @@ public class ProductsService : IProductsService
         return model;
     }
 
-    public async Task<ProductsSecondaryViewModel> GetSecondaryViewAsync(string id, int optionId)
+    public async Task<ProductsSecondaryViewModel> GetSecondaryViewAsync(string id,int childId, int optionId)
     {
         var items = await _context.InventoryItems
             .Include(s => s.SubCategory)
@@ -128,6 +128,18 @@ public class ProductsService : IProductsService
                 })
                 .ToList(),
         });
+
+        var childIcon = option.Children.FirstOrDefault(o => o.Id == childId).Icon;
+        model.Products = items.OrderBy(i => i.NameAlias)
+            .Select(i => new ProductListingViewModel()
+            {
+                Id = i.Id,
+                SubCategory = i.SubCategory.Alias,
+                NameAlias = i.NameAlias,
+                Icon = childIcon,
+                Price = i.Price,
+                Availability = i.Quantity > 0
+            }).ToList();
         return model;
     }
 }

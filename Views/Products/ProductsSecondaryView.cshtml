@@ -62,8 +62,32 @@
             @await Html.PartialAsync("_AccordionPartial", Model.Accordion)
 
             @* RIGHT: PREVIEW GRID (or List) *@
-            <div class="menu-as-grid grid-view" id="secondaryPreview">
-                <p>INSERT ITEMS HERE</p>
+            <div class="menu-as-grid products-view" id="secondaryPreview">
+                @foreach (var item in Model.Products)
+                {
+                    <div class="menu-card">
+                        <img src="@Url.Content(item.Icon)" alt="icon"/>
+                        <div class="menu-content">
+                            <p class="menu-title">@item.NameAlias</p>
+                            <p class="text-muted">@item.SubCategory</p>
+                            <div class="d-flex flex-row justify-content-between gap-2 mt-3">
+                                <p class="price align-content-center">Цена: @item.Price.ToString("F2", new System.Globalization.CultureInfo("bg-BG")) лв.</p>
+                                @if (item.Availability)
+                                {
+                                    <p class="text-success">Налично</p>
+                                }
+                                else
+                                {
+                                    <p class="text-danger">Изчерпано</p>
+                                }
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row gap-2">
+                            <button class="btn btn-main btn-sm text-nowrap">Добави в количка</button>
+                            <button class="btn btn-main btn-sm text-nowrap @(item.Availability ? "d-none" : "")">Запитване</button>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>

@@ -20,12 +20,12 @@ public class ProductsController : Controller
         return View(model);
     }
 
-    public async Task<IActionResult> ProductsSecondaryView(string id, int optionId)
+    public async Task<IActionResult> ProductsSecondaryView(string id, int childId, int optionId)
     {
         ProductsSecondaryViewModel model;
 
 
-            model = await _productsService.GetSecondaryViewAsync(id, optionId);
+            model = await _productsService.GetSecondaryViewAsync(id, childId, optionId);
 
 
 

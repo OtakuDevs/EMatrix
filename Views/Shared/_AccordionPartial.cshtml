@@ -58,6 +58,7 @@
                                                asp-controller="Products"
                                                asp-action="ProductsSecondaryView"
                                                asp-route-optionId="@menuItem.Id"
+                                               asp-route-childId="@entry.Id"
                                                asp-route-id="@entry.SubGroupId">
                                                 @entry.Name
                                             </a>
@@ -79,6 +80,7 @@
                                                                asp-controller="Products"
                                                                asp-action="ProductsSecondaryView"
                                                                asp-route-optionId="@menuItem.Id"
+                                                               asp-route-childId="@entry.Id"
                                                                asp-route-id="@item.Key">
                                                                 @item.Value
                                                             </a>

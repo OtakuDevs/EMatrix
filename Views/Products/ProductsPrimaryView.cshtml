@@ -90,6 +90,7 @@
                                             <a class="nav-link" asp-controller="Products"
                                                asp-action="ProductsSecondaryView"
                                                asp-route-id="@item.Key"
+                                               asp-route-childId="@cat.Id"
                                                asp-route-optionId="@Model.MenuPreview.Id">
                                                 @item.Value
                                             </a>

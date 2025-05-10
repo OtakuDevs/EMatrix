@@ -12,4 +12,6 @@ public class ProductListingViewModel
 
     public float Price { get; set; }
 
+    public bool Availability { get; set; }
+
 }
