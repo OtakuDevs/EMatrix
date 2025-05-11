@@ -115,16 +115,30 @@
             const gridViewBtn = document.getElementById("gridViewBtn");
             const listViewBtn = document.getElementById("listViewBtn");
 
+            // Apply stored view preference
+            const savedView = localStorage.getItem("menuViewMode");
+            if (savedView === "list") {
+                menuView.classList.add("menu-as-list");
+                menuView.classList.remove("menu-as-grid");
+            } else {
+                // default to grid
+                menuView.classList.add("menu-as-grid");
+                menuView.classList.remove("menu-as-list");
+            }
+
             gridViewBtn.addEventListener("click", function () {
                 menuView.classList.add("menu-as-grid");
                 menuView.classList.remove("menu-as-list");
+                localStorage.setItem("menuViewMode", "grid");
             });
 
             listViewBtn.addEventListener("click", function () {
                 menuView.classList.add("menu-as-list");
                 menuView.classList.remove("menu-as-grid");
+                localStorage.setItem("menuViewMode", "list");
             });
         });
+
 
         function toggleListView(id){
             const menuView = document.getElementById("menuView");
