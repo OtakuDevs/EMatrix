@@ -94,17 +94,30 @@ public class ProductsService : IProductsService
         return model;
     }
 
-    public async Task<ProductsSecondaryViewModel> GetSecondaryViewAsync(string id,int childId, int optionId)
+    public async Task<ProductsSecondaryViewModel> GetSecondaryViewAsync(string id,int childId, int optionId, int page = 1)
     {
-        var items = await _context.InventoryItems
+        const int pageSize = 8;
+        var skip = (page - 1) * pageSize;
+
+        //Base query
+        var query = _context.InventoryItems
             .Include(s => s.SubCategory)
             .Where(s => s.SubCategoryId == id)
-            .ToListAsync();
+            .OrderBy(i => i.NameAlias)
+            .AsQueryable();
+
+        var totalPages = (int)Math.Ceiling((double)query.Count() / pageSize);
+
+        var items = await query.Skip(skip).Take(pageSize).ToListAsync();
+
         var selectedSubGroup = await _context.SubCategories.FirstOrDefaultAsync(s => s.Id == id);
         var model = new ProductsSecondaryViewModel();
         model.Accordion.Type = "Option";
         model.Accordion.SelectedSubGroupId = selectedSubGroup.Id;
         model.Accordion.SelectedSubGroupName = selectedSubGroup.Alias;
+        model.Accordion.SelectedChildId = childId;
+        model.CurrentPage = page;
+        model.TotalPages = totalPages;
         var option = await _context.MenuOptions
             .Include(ch => ch.Children)
             .ThenInclude(s => s.SubGroup)

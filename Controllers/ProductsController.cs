@@ -15,21 +15,19 @@ public class ProductsController : Controller
 
     public async Task<IActionResult> ProductsPrimaryView(int id = 1, string type = "MenuItem")
     {
-
         var model = await _productsService.GetPrimaryViewAsync(id, type);
         return View(model);
     }
 
-    public async Task<IActionResult> ProductsSecondaryView(string id, int childId, int optionId)
+    public async Task<IActionResult> ProductsSecondaryView(string id, int childId, int optionId, int page = 1)
     {
         ProductsSecondaryViewModel model;
 
+        model = await _productsService.GetSecondaryViewAsync(id, childId, optionId, page);
 
-            model = await _productsService.GetSecondaryViewAsync(id, childId, optionId);
-
-
+        ViewBag.CurrentPage = model.CurrentPage;
+        ViewBag.TotalPages = model.TotalPages;
 
         return View(model);
     }
-
 }

@@ -62,32 +62,54 @@
             @await Html.PartialAsync("_AccordionPartial", Model.Accordion)
 
             @* RIGHT: PREVIEW GRID (or List) *@
-            <div class="menu-as-grid products-view" id="secondaryPreview">
-                @foreach (var item in Model.Products)
-                {
-                    <div class="menu-card">
-                        <img src="@Url.Content(item.Icon)" alt="icon"/>
-                        <div class="menu-content">
-                            <p class="menu-title">@item.NameAlias</p>
-                            <p class="text-muted">@item.SubCategory</p>
-                            <div class="d-flex flex-row justify-content-between gap-2 mt-3">
-                                <p class="price align-content-center">Цена: @item.Price.ToString("F2", new System.Globalization.CultureInfo("bg-BG")) лв.</p>
-                                @if (item.Availability)
-                                {
-                                    <p class="text-success">Налично</p>
-                                }
-                                else
-                                {
-                                    <p class="text-danger">Изчерпано</p>
-                                }
+            <div class="products-wrapper">
+                <div class="menu-as-grid products-view" id="secondaryPreview">
+                    @foreach (var item in Model.Products)
+                    {
+                        <div class="menu-card">
+                            <img src="@Url.Content(item.Icon)" alt="icon"/>
+                            <div class="menu-content">
+                                <div class="menu-content-header">
+                                    <p class="menu-title">@item.NameAlias</p>
+                                    <p class="text-muted">@item.SubCategory</p>
+                                </div>
+
+                                <div class="menu-content-body">
+                                    <p class="price align-content-center"><span>Цена: </span>@item.Price.ToString("F2", new System.Globalization.CultureInfo("bg-BG")) лв.</p>
+                                    @if (item.Availability)
+                                    {
+                                        <p class="text-success">Налично</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-danger">Изчерпано</p>
+                                    }
+                                </div>
+
+                                <div class="menu-content-footer">
+                                    @if (item.Availability)
+                                    {
+                                        <button class="btn btn-main btn-sm text-nowrap">Добави в количка</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-main btn-sm text-nowrap">Запитване</button>
+                                    }
+                                </div>
                             </div>
                         </div>
-                        <div class="d-flex flex-row gap-2">
-                            <button class="btn btn-main btn-sm text-nowrap">Добави в количка</button>
-                            <button class="btn btn-main btn-sm text-nowrap @(item.Availability ? "d-none" : "")">Запитване</button>
-                        </div>
-                    </div>
-                }
+                    }
+                </div>
+                <!-- Pagination -->
+                <form asp-controller="Products"
+                      asp-action="ProductsSecondaryView">
+                    <input type="hidden" name="optionId" value="@Model.Accordion.Options.First().Id" />
+                    <input type="hidden" name="childId" value="@Model.Accordion.SelectedChildId" />
+                    <input type="hidden" name="id" value="@Model.Accordion.SelectedSubGroupId" />
+
+                    @await Html.PartialAsync("_PaginationPartial")
+                </form>
+
             </div>
         </div>
     </div>
