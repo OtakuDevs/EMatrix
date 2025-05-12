@@ -1,35 +1,39 @@
-@model EMatrix.ViewModels.Products.ProductsSecondaryViewModel
+@model EMatrix.ViewModels.Products.ProductsSearchViewModel
 
 <link rel="stylesheet" href="~/css/products-preview-customization.css" asp-append-version="true"/>
 
 @{
     ViewData["Title"] = "Продукти";
 }
-
 <div class="container-fluid mt-3 products-container">
-    <ul class="breadcrumb">
-        <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
-        <span><i class="bi bi-chevron-right"></i></span>
-        <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
-        <span><i class="bi bi-chevron-right"></i></span>
-        <li>
-            <a href="@Url.Action("ProductsPrimaryView", "Products", new { id = Model.Accordion.Options.First().Id, type = "Option" })">
-                @Model.Accordion.Options.First().Name
-            </a></li>
-        <span><i class="bi bi-chevron-right"></i></span>
-        <li class="breadcrumb-item active" aria-current="page">@Model.Accordion.SelectedSubGroupName</li>
-
-    </ul>
-
+    @if (Model.Accordion.Type == "MenuItem")
+    {
+        <ul class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
+            <span><i class="bi bi-chevron-right"></i></span>
+            <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
+        </ul>
+    }
+    else if (Model.Accordion.Type == "Option")
+    {
+        <ul class="breadcrumb">
+            <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
+            <span><i class="bi bi-chevron-right"></i></span>
+            <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
+            <span><i class="bi bi-chevron-right"></i></span>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Accordion.Options.First().Name</li>
+        </ul>
+    }
     <div class="products-preview">
         <div class="products-header">
             <div class="search-bar w-100 pb-2">
-                <form asp-action="ProductsSecondaryView" class="d-flex flex-wrap flex-grow-1 gap-2 w-100">
+                <form asp-action="ProductsSearchView" class="d-flex flex-wrap flex-grow-1 gap-2 w-100">
                     <div class="flex-grow-1">
-                        <input type="hidden" name="optionId" value="@Model.Accordion.Options.First().Id"/>
-                        <input type="hidden" name="childId" value="@Model.Accordion.SelectedChildId"/>
-                        <input type="hidden" name="id" value="@Model.Accordion.SelectedSubGroupId"/>
-                        <input class="form-control w-100" id="search" name="search" placeholder="Търси продукти.." value="@Model.SearchTerm"/>
+                        <input type="text" class="form-control w-100" id="search" name="search"
+                               placeholder="Търси продукти.." value="@Model.SearchTerm"/>
+                        <input type="hidden" name="optionId"
+                               value="@(Model.Accordion.Type == "MenuItem" ? null : Model.Accordion.Options.First().Id)"/>
+                        <input type="hidden" name="type" value="@Model.Accordion.Type"/>
                     </div>
                     <button type="submit" class="btn btn-main text-light">Търси</button>
                 </form>
@@ -65,11 +69,9 @@
                 </div>
             </div>
         </div>
-
         <div class="products-body">
             @await Html.PartialAsync("_AccordionPartial", Model.Accordion)
 
-            @* RIGHT: PREVIEW GRID (or List) *@
             <div class="products-wrapper">
                 <div class="menu-as-grid products-view" id="secondaryPreview">
                     @foreach (var item in Model.Products)
@@ -112,11 +114,11 @@
                 </div>
                 <!-- Pagination -->
                 <form asp-controller="Products"
-                      asp-action="ProductsSecondaryView">
-                    <input type="hidden" name="optionId" value="@Model.Accordion.Options.First().Id"/>
-                    <input type="hidden" name="childId" value="@Model.Accordion.SelectedChildId"/>
-                    <input type="hidden" name="id" value="@Model.Accordion.SelectedSubGroupId"/>
+                      asp-action="ProductsSearchView">
                     <input type="hidden" name="search" value="@Model.SearchTerm"/>
+                    <input type="hidden" name="optionId"
+                           value="@(Model.Accordion.Type == "MenuItem" ? null : Model.Accordion.Options.First().Id)"/>
+                    <input type="hidden" name="type" value="@Model.Accordion.Type"/>
 
                     @await Html.PartialAsync("_PaginationPartial")
                 </form>
@@ -125,40 +127,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts
-{
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const menuView = document.getElementById("secondaryPreview");
-            const gridViewBtn = document.getElementById("gridViewBtn");
-            const listViewBtn = document.getElementById("listViewBtn");
-
-            // Apply saved view mode from localStorage
-            const savedView = localStorage.getItem("menuViewMode");
-            if (savedView === "list") {
-                menuView.classList.add("menu-as-list");
-                menuView.classList.remove("menu-as-grid");
-            } else {
-                // Default to grid
-                menuView.classList.add("menu-as-grid");
-                menuView.classList.remove("menu-as-list");
-            }
-
-            // Set to grid
-            gridViewBtn.addEventListener("click", function () {
-                menuView.classList.add("menu-as-grid");
-                menuView.classList.remove("menu-as-list");
-                localStorage.setItem("menuViewMode", "grid");
-            });
-
-            // Set to list
-            listViewBtn.addEventListener("click", function () {
-                menuView.classList.add("menu-as-list");
-                menuView.classList.remove("menu-as-grid");
-                localStorage.setItem("menuViewMode", "list");
-            });
-        });
-
-    </script>
-}

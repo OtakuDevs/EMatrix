@@ -1,6 +1,6 @@
 namespace EMatrix.ViewModels.Products;
 
-public class ProductsSecondaryViewModel
+public class ProductsSearchViewModel
 {
     public AccordionViewModel Accordion { get; set; } = new AccordionViewModel();
 
@@ -12,4 +12,3 @@ public class ProductsSecondaryViewModel
 
     public string SearchTerm { get; set; }
 }
-
