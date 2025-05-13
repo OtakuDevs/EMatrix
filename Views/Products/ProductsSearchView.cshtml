@@ -74,9 +74,12 @@
 
             <div class="products-wrapper">
                 <div class="menu-as-grid products-view" id="secondaryPreview">
+                @if (Model.Products.Any())
+                {
                     @foreach (var item in Model.Products)
                     {
                         <div class="menu-card">
+                            <p class="product-code"><span>Код: </span>@item.Id</p>
                             <img src="@Url.Content(item.Icon)" alt="icon"/>
                             <div class="menu-content">
                                 <div class="menu-content-header">
@@ -111,18 +114,31 @@
                             </div>
                         </div>
                     }
+                }
+                    else
+                    {
+                        <div class="no-products-found">
+                            <h3>Няма намерени продукти</h3>
+                            <p>Изглежда, че няма продукти, отговарящи на вашето търсене или избрана категория.</p>
+                            <p>Опитайте с по-обща или различна ключова дума.</p>
+                            <p>Ако не откривате търсения продукт, <strong>свържете се с нас</strong> – ще се радваме да
+                                помогнем!</p>
+                        </div>
+                    }
                 </div>
                 <!-- Pagination -->
-                <form asp-controller="Products"
-                      asp-action="ProductsSearchView">
-                    <input type="hidden" name="search" value="@Model.SearchTerm"/>
-                    <input type="hidden" name="optionId"
-                           value="@(Model.Accordion.Type == "MenuItem" ? null : Model.Accordion.Options.First().Id)"/>
-                    <input type="hidden" name="type" value="@Model.Accordion.Type"/>
+                @if (Model.Products.Any())
+                {
+                    <form asp-controller="Products"
+                          asp-action="ProductsSearchView">
+                        <input type="hidden" name="search" value="@Model.SearchTerm"/>
+                        <input type="hidden" name="optionId"
+                               value="@(Model.Accordion.Type == "MenuItem" ? null : Model.Accordion.Options.First().Id)"/>
+                        <input type="hidden" name="type" value="@Model.Accordion.Type"/>
 
-                    @await Html.PartialAsync("_PaginationPartial")
-                </form>
-
+                        @await Html.PartialAsync("_PaginationPartial")
+                    </form>
+                }
             </div>
         </div>
     </div>

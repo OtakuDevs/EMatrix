@@ -107,12 +107,12 @@ public class ProductsService : IProductsService
             .AsQueryable();
         if (!string.IsNullOrEmpty(search))
         {
-            var normalizedSearch = search.Trim();
+            var normalizedSearch = search.Trim().ToLower();
             query = query.Where(i =>
-                    EF.Functions.Like(i.NameAlias, $"%{normalizedSearch}%") ||
-                    EF.Functions.Like(i.DescriptionAlias, $"%{normalizedSearch}%") ||
-                    EF.Functions.Like(i.SubCategory.Alias, $"%{normalizedSearch}%") ||
-                    EF.Functions.Like(i.Category.Alias, $"%{normalizedSearch}%"))
+                    i.NameAlias.ToLower().Contains(normalizedSearch) ||
+                    i.DescriptionAlias.ToLower().Contains(normalizedSearch) ||
+                    i.SubCategory.Alias.ToLower().Contains(normalizedSearch) ||
+                    i.Category.Alias.ToLower().Contains(normalizedSearch))
                 .OrderBy(i => i.NameAlias);
         }
 
@@ -245,25 +245,40 @@ public class ProductsService : IProductsService
             query = query.Where(o => optionSubgroupIds.Contains(o.SubCategoryId));
         }
 
-        var normalizedSearch = search.Trim();
+        var normalizedSearch = search.Trim().ToLower();
         query = query.Where(i =>
-                EF.Functions.Like(i.NameAlias, $"%{normalizedSearch}%") ||
-                EF.Functions.Like(i.DescriptionAlias, $"%{normalizedSearch}%") ||
-                EF.Functions.Like(i.SubCategory.Alias, $"%{normalizedSearch}%") ||
-                EF.Functions.Like(i.Category.Alias, $"%{normalizedSearch}%"))
+                i.NameAlias.ToLower().Contains(normalizedSearch) ||
+                i.DescriptionAlias.ToLower().Contains(normalizedSearch) ||
+                i.SubCategory.Alias.ToLower().Contains(normalizedSearch) ||
+                i.Category.Alias.ToLower().Contains(normalizedSearch) ||
+                EF.Functions.Like(i.Id, $"{normalizedSearch}%"))
             .OrderBy(i => i.NameAlias);
         var totalPages = (int)Math.Ceiling((double)query.Count() / pageSize);
         var items = await query.Skip(skip).Take(pageSize).ToListAsync();
-        model.Products = items.OrderBy(i => i.NameAlias)
+
+        var menuOptionChildren = _context.MenuOptionChildren
+            .Include(c => c.SubGroupSet)
+            .ThenInclude(sc => sc.Items)
+            .ThenInclude(i => i.SubGroup)
+            .ToList();
+
+        model.Products = items
+            .OrderBy(i => i.NameAlias)
+            .AsEnumerable() // switch to LINQ to Objects
             .Select(i => new ProductListingViewModel()
             {
                 Id = i.Id,
                 SubCategory = i.SubCategory.Alias,
                 NameAlias = i.NameAlias,
-                Icon = "to be added",
+                Icon = menuOptionChildren
+                    .FirstOrDefault(c =>
+                        (c.SubGroupId != null && c.SubGroupId == i.SubCategoryId) ||
+                        (c.SubGroupSetId != null && c.SubGroupSet.Items.Any(s => s.SubGroupId == i.SubCategoryId)))
+                    ?.Icon,
                 Price = i.Price,
                 Availability = i.Quantity > 0
-            }).ToList();
+            })
+            .ToList();
         model.CurrentPage = page;
         model.TotalPages = totalPages;
         model.SearchTerm = search;

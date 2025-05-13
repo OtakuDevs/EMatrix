@@ -29,7 +29,8 @@
                         <input type="hidden" name="optionId" value="@Model.Accordion.Options.First().Id"/>
                         <input type="hidden" name="childId" value="@Model.Accordion.SelectedChildId"/>
                         <input type="hidden" name="id" value="@Model.Accordion.SelectedSubGroupId"/>
-                        <input class="form-control w-100" id="search" name="search" placeholder="Търси продукти.." value="@Model.SearchTerm"/>
+                        <input class="form-control w-100" id="search" name="search" placeholder="Търси продукти.."
+                               value="@Model.SearchTerm"/>
                     </div>
                     <button type="submit" class="btn btn-main text-light">Търси</button>
                 </form>
@@ -72,55 +73,72 @@
             @* RIGHT: PREVIEW GRID (or List) *@
             <div class="products-wrapper">
                 <div class="menu-as-grid products-view" id="secondaryPreview">
-                    @foreach (var item in Model.Products)
+                    @if (Model.Products.Any())
                     {
-                        <div class="menu-card">
-                            <img src="@Url.Content(item.Icon)" alt="icon"/>
-                            <div class="menu-content">
-                                <div class="menu-content-header">
-                                    <p class="menu-title">@item.NameAlias</p>
-                                    <p class="text-muted">@item.SubCategory</p>
-                                </div>
+                        @foreach (var item in Model.Products)
+                        {
+                            <div class="menu-card">
+                                <p class="product-code"><span>Код: </span>@item.Id</p>
+                                <img src="@Url.Content(item.Icon)" alt="icon"/>
+                                <div class="menu-content">
+                                    <div class="menu-content-header">
+                                        <p class="menu-title">@item.NameAlias</p>
+                                        <p class="text-muted">@item.SubCategory</p>
+                                    </div>
 
-                                <div class="menu-content-body">
-                                    <p class="price align-content-center">
-                                        <span>Цена: </span>@item.Price.ToString("F2", new System.Globalization.CultureInfo("bg-BG")) лв.
-                                    </p>
-                                    @if (item.Availability)
-                                    {
-                                        <p class="text-success">Налично</p>
-                                    }
-                                    else
-                                    {
-                                        <p class="text-danger">Изчерпано</p>
-                                    }
-                                </div>
+                                    <div class="menu-content-body">
+                                        <p class="price align-content-center">
+                                            <span>Цена: </span>@item.Price.ToString("F2", new System.Globalization.CultureInfo("bg-BG")) лв.
+                                        </p>
+                                        @if (item.Availability)
+                                        {
+                                            <p class="text-success">Налично</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-danger">Изчерпано</p>
+                                        }
+                                    </div>
 
-                                <div class="menu-content-footer">
-                                    @if (item.Availability)
-                                    {
-                                        <button class="btn btn-main btn-sm text-nowrap">Добави в количка</button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-main btn-sm text-nowrap">Запитване</button>
-                                    }
+                                    <div class="menu-content-footer">
+                                        @if (item.Availability)
+                                        {
+                                            <button class="btn btn-main btn-sm text-nowrap">Добави в количка</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-main btn-sm text-nowrap">Запитване</button>
+                                        }
+                                    </div>
                                 </div>
                             </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-products-found">
+                            <h3>Няма намерени продукти</h3>
+                            <p>Изглежда, че няма продукти, отговарящи на вашето търсене или избрана категория.</p>
+                            <p>Опитайте с по-обща или различна ключова дума.</p>
+                            <p>Ако не откривате търсения продукт, <strong>свържете се с нас</strong> – ще се радваме да
+                                помогнем!</p>
                         </div>
                     }
+
                 </div>
                 <!-- Pagination -->
-                <form asp-controller="Products"
-                      asp-action="ProductsSecondaryView">
-                    <input type="hidden" name="optionId" value="@Model.Accordion.Options.First().Id"/>
-                    <input type="hidden" name="childId" value="@Model.Accordion.SelectedChildId"/>
-                    <input type="hidden" name="id" value="@Model.Accordion.SelectedSubGroupId"/>
-                    <input type="hidden" name="search" value="@Model.SearchTerm"/>
+                @if (Model.Products.Any())
+                {
+                    <form asp-controller="Products"
+                          asp-action="ProductsSecondaryView">
+                        <input type="hidden" name="optionId" value="@Model.Accordion.Options.First().Id"/>
+                        <input type="hidden" name="childId" value="@Model.Accordion.SelectedChildId"/>
+                        <input type="hidden" name="id" value="@Model.Accordion.SelectedSubGroupId"/>
+                        <input type="hidden" name="search" value="@Model.SearchTerm"/>
 
-                    @await Html.PartialAsync("_PaginationPartial")
-                </form>
-
+                        @await Html.PartialAsync("_PaginationPartial")
+                    </form>
+                }
             </div>
         </div>
     </div>

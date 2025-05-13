@@ -25,6 +25,8 @@ public class ManageInventoryService : IManageInventoryService
 
         //Base query
         var query = _context.InventoryItems
+            .Include(i => i.Category)
+            .Include(i => i.SubCategory)
             .AsQueryable();
 
         // Apply select filter
@@ -37,13 +39,17 @@ public class ManageInventoryService : IManageInventoryService
         //Apply search filter if provided
         if (!string.IsNullOrEmpty(search))
         {
-            var searchTerm = search.ToLowerInvariant();
+            var normalizedSearch = search.Trim().ToLower();
             query = query.Where(item =>
-                EF.Functions.Like(item.Name.ToLower(), $"%{searchTerm}%")
-                || EF.Functions.Like(item.NameAlias.ToLower(), $"%{searchTerm}%")
-                || EF.Functions.Like(item.Description.ToLower(), $"%{searchTerm}%")
-                || EF.Functions.Like(item.DescriptionAlias.ToLower(), $"%{searchTerm}%")
-                || EF.Functions.Like(item.Id, $"{searchTerm}%"));
+                item.Name.ToLower().Contains(normalizedSearch)
+                || item.NameAlias.ToLower().Contains(normalizedSearch)
+                || item.Description.ToLower().Contains(normalizedSearch)
+                || item.DescriptionAlias.ToLower().Contains(normalizedSearch)
+                || item.Category.Alias.ToLower().Contains(normalizedSearch)
+                || item.Category.Name.ToLower().Contains(normalizedSearch)
+                || item.SubCategory.Alias.ToLower().Contains(normalizedSearch)
+                || item.SubCategory.Name.ToLower().Contains(normalizedSearch)
+                || EF.Functions.Like(item.Id, $"{normalizedSearch}%"));
         }
 
         var totalPages = query.Count();
