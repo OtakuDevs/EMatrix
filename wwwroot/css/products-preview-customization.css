@@ -271,14 +271,19 @@
     right: 0;
     top: 100%;
     min-width: 220px;
-    background: white;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: rgba(0, 0, 0, 0.1) 0 4px 8px;
+
+
     padding: 0.5rem;
     margin-top: 0.5rem;
     display: none;
-    border-radius: var(--border-radius-md);
+
     z-index: 1000;
+    color: var(--font-color);
+    background-color: #b8b6a6;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: var(--border-radius-md);
+    box-shadow: rgba(0, 0, 0, 0.15) 0 4px 10px;
+    transition: background-color 0.2s ease-in-out;
 }
 
 #cart:hover #cart-content {
@@ -302,7 +307,6 @@
 
 .cart-empty {
     font-size: 0.9rem;
-    color: gray;
 }
 
 /* Menu grid / list */

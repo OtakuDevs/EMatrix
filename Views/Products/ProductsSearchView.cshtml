@@ -104,7 +104,7 @@
                                 <div class="menu-content-footer">
                                     @if (item.Availability)
                                     {
-                                        <button class="btn btn-main btn-sm text-nowrap">Добави в количка</button>
+                                        <button class="btn btn-main btn-sm text-nowrap" onclick="addProductToCart(this)">Добави в количка</button>
                                     }
                                     else
                                     {
@@ -143,3 +143,106 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        // In-memory cart array (just for demo — use localStorage or backend in production)
+        const cart = [];
+
+        function addProductToCart(button) {
+            const card = button.closest('.menu-card');
+
+            const idText = card.querySelector('.product-code')?.textContent.trim();
+            const id = idText?.split(":")[1]?.trim();
+            const name = card.querySelector('.menu-title')?.textContent.trim();
+            const icon = card.querySelector('img').getAttribute('src');
+            const priceText = card.querySelector('.price')?.textContent.trim();
+            const price = parseFloat(priceText?.split(":")[1]?.replace("лв.", "").trim().replace(',', '.')) || 0;
+
+            // Check if product already in cart
+            const existing = cart.find(p => p.id === id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ id, name, icon, price, qty: 1 });
+            }
+
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartList = document.querySelector("#cart-content ul");
+            const cartTotal = document.querySelector("#cart-total");
+            const cartItems = document.querySelector("#cart-items");
+
+            // Clear existing items (except empty state message)
+            cartList.innerHTML = "";
+
+            if (cart.length === 0) {
+                cartList.innerHTML = `<li><p class="text-center cart-empty">Вашата количка е празна!</p></li>`;
+                cartItems.textContent = "0";
+                cartItems.classList.add("count-zero");
+                cartTotal.textContent = "0 продукт(а) - 0.00лв.";
+                return;
+            }
+
+            let total = 0;
+            let totalItems = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                totalItems += item.qty;
+
+                const li = document.createElement("li");
+                li.innerHTML = `
+                <div class="cart-item d-flex gap-2 align-items-center">
+                    <img src="${item.icon}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: contain;">
+                    <div class="flex-grow-1">
+                        <p class="m-0">${item.name}</p>
+                        <small>${item.qty} x ${item.price.toFixed(2)} лв.</small>
+                    </div>
+                </div>
+            `;
+                cartList.appendChild(li);
+            });
+
+            cartItems.textContent = totalItems;
+            cartItems.classList.remove("count-zero");
+            cartTotal.textContent = `${totalItems} продукт(а) - ${total.toFixed(2)}лв.`;
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const menuView = document.getElementById("secondaryPreview");
+            const gridViewBtn = document.getElementById("gridViewBtn");
+            const listViewBtn = document.getElementById("listViewBtn");
+
+            // Apply saved view mode from localStorage
+            const savedView = localStorage.getItem("menuViewMode");
+            if (savedView === "list") {
+                menuView.classList.add("menu-as-list");
+                menuView.classList.remove("menu-as-grid");
+            } else {
+                // Default to grid
+                menuView.classList.add("menu-as-grid");
+                menuView.classList.remove("menu-as-list");
+            }
+
+            // Set to grid
+            gridViewBtn.addEventListener("click", function () {
+                menuView.classList.add("menu-as-grid");
+                menuView.classList.remove("menu-as-list");
+                localStorage.setItem("menuViewMode", "grid");
+            });
+
+            // Set to list
+            listViewBtn.addEventListener("click", function () {
+                menuView.classList.add("menu-as-list");
+                menuView.classList.remove("menu-as-grid");
+                localStorage.setItem("menuViewMode", "list");
+            });
+        });
+
+    </script>
+}
