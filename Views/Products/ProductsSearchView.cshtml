@@ -59,11 +59,19 @@
                             </div>
                         </a>
                         <div id="cart-content" class="dropdown-menu cart-content j-dropdown">
-                            <ul>
+                            <div class="cart-content-header">
+                                <div class="cart-header-item">Артикул</div>
+                                <div class="cart-header-qty">Количество</div>
+                                <div class="cart-header-price">Цена</div>
+                            </div>
+                            <ul id="cart-list">
                                 <li>
                                     <p class="text-center cart-empty">Вашата количка е празна!</p>
                                 </li>
                             </ul>
+                            <div class="cart-content-footer">
+                                Общо: <span id="cart-footer-total">0.00 лв.</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -84,7 +92,7 @@
                             <div class="menu-content">
                                 <div class="menu-content-header">
                                     <p class="menu-title">@item.NameAlias</p>
-                                    <p class="text-muted">@item.SubCategory</p>
+                                    <p class="text-muted item-subcategory">@item.SubCategory</p>
                                 </div>
 
                                 <div class="menu-content-body">
@@ -156,6 +164,7 @@
             const idText = card.querySelector('.product-code')?.textContent.trim();
             const id = idText?.split(":")[1]?.trim();
             const name = card.querySelector('.menu-title')?.textContent.trim();
+            const subgroup = card.querySelector('.item-subcategory')?.textContent.trim();
             const icon = card.querySelector('img').getAttribute('src');
             const priceText = card.querySelector('.price')?.textContent.trim();
             const price = parseFloat(priceText?.split(":")[1]?.replace("лв.", "").trim().replace(',', '.')) || 0;
@@ -165,22 +174,24 @@
             if (existing) {
                 existing.qty += 1;
             } else {
-                cart.push({ id, name, icon, price, qty: 1 });
+                cart.push({ id, name, subgroup, icon, price, qty: 1 });
             }
 
             updateCartUI();
         }
 
         function updateCartUI() {
-            const cartList = document.querySelector("#cart-content ul");
+            const cartContent = document.querySelector("#cart-content");
             const cartTotal = document.querySelector("#cart-total");
             const cartItems = document.querySelector("#cart-items");
 
-            // Clear existing items (except empty state message)
-            cartList.innerHTML = "";
+            // Reset content
+            cartContent.innerHTML = "";
 
             if (cart.length === 0) {
-                cartList.innerHTML = `<li><p class="text-center cart-empty">Вашата количка е празна!</p></li>`;
+                cartContent.innerHTML = `
+            <ul><li><p class="text-center cart-empty">Вашата количка е празна!</p></li></ul>
+        `;
                 cartItems.textContent = "0";
                 cartItems.classList.add("count-zero");
                 cartTotal.textContent = "0 продукт(а) - 0.00лв.";
@@ -190,22 +201,43 @@
             let total = 0;
             let totalItems = 0;
 
+            // Header
+            const header = document.createElement("div");
+            header.classList.add("cart-content-header");
+            header.innerHTML = `
+        <div class="cart-header-item">Артикул</div>
+        <div class="cart-header-qty">Количество</div>
+        <div class="cart-header-price">Цена</div>
+    `;
+            cartContent.appendChild(header);
+
+            // List
+            const ul = document.createElement("ul");
             cart.forEach(item => {
                 total += item.price * item.qty;
                 totalItems += item.qty;
 
                 const li = document.createElement("li");
                 li.innerHTML = `
-                <div class="cart-item d-flex gap-2 align-items-center">
-                    <img src="${item.icon}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: contain;">
-                    <div class="flex-grow-1">
-                        <p class="m-0">${item.name}</p>
-                        <small>${item.qty} x ${item.price.toFixed(2)} лв.</small>
-                    </div>
+            <div class="cart-item">
+                <img src="${item.icon}" alt="${item.name}">
+                <div class="cart-item-names">
+                    <p class="m-0 cart-item-name">${item.name}</p>
+                    <p class="m-0 cart-item-subgroup">${item.subgroup}</p>
                 </div>
-            `;
-                cartList.appendChild(li);
+                <p class="cart-item-qty">${item.qty} x</p>
+                <p class="cart-item-price">${item.price.toFixed(2)} лв.</p>
+            </div>
+        `;
+                ul.appendChild(li);
             });
+            cartContent.appendChild(ul);
+
+            // Footer
+            const footer = document.createElement("div");
+            footer.classList.add("cart-content-footer");
+            footer.innerHTML = `Общо: <span id="cart-footer-total">${total.toFixed(2)} лв.</span>`;
+            cartContent.appendChild(footer);
 
             cartItems.textContent = totalItems;
             cartItems.classList.remove("count-zero");

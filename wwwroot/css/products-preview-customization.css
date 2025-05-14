@@ -270,24 +270,33 @@
     position: absolute;
     right: 0;
     top: 100%;
-    min-width: 220px;
-
-
+    min-width: 400px;
     padding: 0.5rem;
     margin-top: 0.5rem;
-    display: none;
-
     z-index: 1000;
     color: var(--font-color);
     background-color: #b8b6a6;
     border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: var(--border-radius-md);
     box-shadow: rgba(0, 0, 0, 0.15) 0 4px 10px;
-    transition: background-color 0.2s ease-in-out;
+
+    /* animation setup */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+
+    /* layout */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
+/* Show dropdown on hover */
 #cart:hover #cart-content {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 #cart-content ul {
@@ -298,7 +307,7 @@
 
 #cart-content li {
     padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 #cart-content li:last-child {
@@ -307,6 +316,68 @@
 
 .cart-empty {
     font-size: 0.9rem;
+}
+
+.cart-content-header {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 0.25rem 0.50rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+
+    & .cart-header-item {
+        margin-right: auto;
+    }
+}
+.cart-content-footer {
+    text-align: right;
+    font-weight: 400;
+    color: #6c6a6a;
+    padding: 0.25rem 0.50rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+
+    & span {
+        font-size: 1rem;
+        color: var(--font-color);
+        margin: 0;
+        font-weight: 500;
+    }
+}
+
+.cart-item {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    font-size: 0.85rem;
+}
+
+.cart-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 4px;
+    flex-shrink: 0;
+    mix-blend-mode: multiply;
+}
+
+.cart-item-names {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    & .cart-item-name {
+        font-weight: bold;
+    }
+
+    & .cart-item-subgroup {
+        font-size: 0.7rem;
+        opacity: 0.9;
+    }
+}
+
+.cart-item-qty, .cart-item-price {
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
 /* Menu grid / list */
@@ -515,7 +586,7 @@
 }
 
 .products-view.menu-as-grid .menu-content-header,
-.products-view.menu-as-list .menu-content-header{
+.products-view.menu-as-list .menu-content-header {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
