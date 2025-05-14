@@ -180,28 +180,33 @@
             updateCartUI();
         }
 
+        function changeQty(id, delta) {
+            console.log(cart)
+            console.log(id)
+            const item = cart.find(p => p.id === id);
+            if (!item) return;
+
+            item.qty += delta;
+
+            if (item.qty < 1) {
+                cart = cart.filter(p => p.id !== id);
+            }
+
+            updateCartUI(); // re-render cart
+        }
+
         function updateCartUI() {
             const cartContent = document.querySelector("#cart-content");
+            const cartList = cartContent.querySelector("ul");
             const cartTotal = document.querySelector("#cart-total");
             const cartItems = document.querySelector("#cart-items");
 
-            // Reset content
-            cartContent.innerHTML = "";
-
-            if (cart.length === 0) {
-                cartContent.innerHTML = `
-            <ul><li><p class="text-center cart-empty">Вашата количка е празна!</p></li></ul>
-        `;
-                cartItems.textContent = "0";
-                cartItems.classList.add("count-zero");
-                cartTotal.textContent = "0 продукт(а) - 0.00лв.";
-                return;
-            }
+            cartContent.innerHTML = ""; // Clear all content
 
             let total = 0;
             let totalItems = 0;
 
-            // Header
+            // Add Header always
             const header = document.createElement("div");
             header.classList.add("cart-content-header");
             header.innerHTML = `
@@ -211,37 +216,53 @@
     `;
             cartContent.appendChild(header);
 
-            // List
+            // Create list container
             const ul = document.createElement("ul");
-            cart.forEach(item => {
-                total += item.price * item.qty;
-                totalItems += item.qty;
 
+            if (cart.length === 0) {
                 const li = document.createElement("li");
-                li.innerHTML = `
-            <div class="cart-item">
-                <img src="${item.icon}" alt="${item.name}">
-                <div class="cart-item-names">
-                    <p class="m-0 cart-item-name">${item.name}</p>
-                    <p class="m-0 cart-item-subgroup">${item.subgroup}</p>
-                </div>
-                <p class="cart-item-qty">${item.qty} x</p>
-                <p class="cart-item-price">${item.price.toFixed(2)} лв.</p>
-            </div>
-        `;
+                li.innerHTML = `<p class="text-center cart-empty">Вашата количка е празна!</p>`;
                 ul.appendChild(li);
-            });
+
+                cartItems.textContent = "0";
+                cartItems.classList.add("count-zero");
+                cartTotal.textContent = "0 продукт(а) - 0.00лв.";
+            } else {
+                cart.forEach(item => {
+                    total += item.price * item.qty;
+                    totalItems += item.qty;
+
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                <div class="cart-item">
+                    <img src="${item.icon}" alt="${item.name}">
+                    <div class="cart-item-names">
+                        <p class="m-0 cart-item-name">${item.name}</p>
+                        <p class="m-0 cart-item-subgroup">${item.subgroup}</p>
+                    </div>
+                    <div class="cart-item-qty-control">
+                        <button class="qty-btn" onclick="changeQty('${item.id}', -1)">−</button>
+                        <span class="qty-display">${item.qty}</span>
+                        <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
+                    </div>
+                    <p class="cart-item-price">${item.price.toFixed(2)} лв.</p>
+                </div>
+            `;
+                    ul.appendChild(li);
+                });
+
+                cartItems.textContent = totalItems;
+                cartItems.classList.remove("count-zero");
+                cartTotal.textContent = `${totalItems} продукт(а) - ${total.toFixed(2)}лв.`;
+            }
+
             cartContent.appendChild(ul);
 
-            // Footer
+            // Always show footer
             const footer = document.createElement("div");
             footer.classList.add("cart-content-footer");
             footer.innerHTML = `Общо: <span id="cart-footer-total">${total.toFixed(2)} лв.</span>`;
             cartContent.appendChild(footer);
-
-            cartItems.textContent = totalItems;
-            cartItems.classList.remove("count-zero");
-            cartTotal.textContent = `${totalItems} продукт(а) - ${total.toFixed(2)}лв.`;
         }
     </script>
     <script>
