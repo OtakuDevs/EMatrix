@@ -69,10 +69,15 @@
 
 /* Content header layout */
 .products-content-col .products-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
+    gap: 1rem;
 }
+
+
+
 
 /* Search bar from header */
 .products-header .search-bar {
@@ -87,6 +92,12 @@
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
+}
+
+@media (max-width: 900px) {
+    & .helper-buttons {
+        display: none !important;
+    }
 }
 
 /* Grid / List helper buttons styling */
@@ -130,9 +141,6 @@
         background: rgba(255, 255, 255, 0.1);
     }
 }
-
-
-
 
 
 /* Menu grid / list */
