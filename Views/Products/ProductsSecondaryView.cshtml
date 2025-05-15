@@ -156,7 +156,8 @@
 {
     <script>
         // In-memory cart array (just for demo — use localStorage or backend in production)
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        updateCartUI(); // render on load if there are items
 
         function addProductToCart(button) {
             const card = button.closest('.menu-card');
@@ -176,12 +177,11 @@
             } else {
                 cart.push({ id, name, subgroup, icon, price, qty: 1 });
             }
+            localStorage.setItem('cart', JSON.stringify(cart));
             updateCartUI();
         }
 
         function changeQty(id, delta) {
-            console.log(cart)
-            console.log(id)
             const item = cart.find(p => p.id === id);
             if (!item) return;
 
@@ -191,12 +191,12 @@
                 cart = cart.filter(p => p.id !== id);
             }
 
+            localStorage.setItem('cart', JSON.stringify(cart));
             updateCartUI(); // re-render cart
         }
 
         function updateCartUI() {
             const cartContent = document.querySelector("#cart-content");
-            const cartList = cartContent.querySelector("ul");
             const cartTotal = document.querySelector("#cart-total");
             const cartItems = document.querySelector("#cart-items");
 
