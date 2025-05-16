@@ -68,7 +68,7 @@
 }
 
 /* Content header layout */
-.products-content-col .products-header {
+.products-content-col .products-content-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -76,11 +76,8 @@
     gap: 1rem;
 }
 
-
-
-
 /* Search bar from header */
-.products-header .search-bar {
+.products-content-header .search-bar {
     display: flex;
     flex-direction: row;
     gap: 1rem;
@@ -88,7 +85,7 @@
 }
 
 /* Helper button layout */
-.products-header .helper-buttons {
+.products-content-header .helper-buttons {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
@@ -101,7 +98,7 @@
 }
 
 /* Grid / List helper buttons styling */
-.products-header .helper-buttons {
+.products-content-header .helper-buttons {
     & button, & i {
         padding: 0 0.4rem;
         border-color: var(--font-color);
@@ -120,7 +117,7 @@
 }
 
 /* Help button styling */
-.products-header .helper-buttons {
+.products-content-header .helper-buttons {
     & #help {
         background: transparent;
         font-weight: 600;
@@ -144,55 +141,50 @@
 
 
 /* Menu grid / list */
-.menu-as-grid {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 1.25rem;
-    align-self: start;
-    margin-left: 2rem;
-}
 
-.menu-as-grid .menu-card {
-    max-width: 230px;
-    width: 100%;
+/* Card for displaying "Options" in current view */
+.menu-card {
+    max-width: 250px;
+    display: flex;
+    flex-direction: column;
     background-color: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: var(--border-radius-md);
     padding: 1rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     transition: background-color 0.2s ease-in-out;
     box-shadow: rgba(0, 0, 0, 0.16) 0 3px 6px, rgba(0, 0, 0, 0.23) 0 3px 6px;
+    cursor: pointer;
+    position: relative;
 }
 
-.menu-as-grid .menu-card:hover {
+.menu-card:hover {
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.25);
 
-    & p {
+    & .menu-card-title {
         color: var(--color-highlight);
     }
 }
 
-.menu-as-grid img {
+/* Card header default layout */
+.menu-card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Card image styling */
+.menu-card-image {
     width: 90px;
     height: 90px;
     object-fit: contain;
     mix-blend-mode: multiply;
-    margin-bottom: 0.75rem;
+    margin: 0.75rem auto;
     transition: opacity 0.3s;
 }
 
-.menu-as-grid .menu-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.menu-as-grid .menu-title {
+/* Card title styling */
+.menu-card-title {
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--font-color);
@@ -200,97 +192,16 @@
     text-align: center;
 }
 
-.menu-preview-items {
+/* Hide options be default, cause default view is grid */
+.menu-card-body {
     display: none;
-    margin: 0;
-    padding-left: 1rem;
-    list-style-type: disc;
-    color: var(--font-color);
-    font-size: 0.85rem;
 }
 
-.menu-card {
-    position: relative;
-}
-
-.product-code {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    font-family: 'Roboto Light', sans-serif;
-    font-size: 0.8rem;
-    color: var(--font-color) !important;
-    margin: 0;
-    opacity: 0.9;
-    pointer-events: none; /* makes sure it doesn’t interfere with clicking */
-}
-
-.no-products-found {
-    grid-column: span 4;
-    color: var(--font-color) !important;
-    box-sizing: border-box;
-    padding: 2rem 0;
-    border-top: 1px solid var(--font-color) !important;
-    border-bottom: 1px solid var(--font-color) !important;
-    text-align: center;
-}
-
-/* Show in list mode only */
-.menu-as-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 0 2rem;
-}
-
-.menu-as-list > .menu-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.25rem;
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: var(--border-radius-md);
-    padding: 1.25rem;
-    box-shadow: rgba(0, 0, 0, 0.15) 0 4px 10px;
-    transition: background-color 0.2s ease-in-out;
-
-}
-
-.menu-as-list img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    mix-blend-mode: multiply;
-    border-radius: 0.5rem;
-    flex-shrink: 0;
-}
-
-.menu-as-list .menu-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
-}
-
-.menu-as-list .menu-title {
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--font-color);
-}
-
-.menu-as-list .menu-preview-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+/* Option badges styling (when visible) */
+.menu-card-body li {
+    height: fit-content;
     font-size: 0.9rem;
     color: var(--font-color);
-}
-
-.menu-as-list .menu-preview-items li {
     background-color: rgba(255, 255, 255, 0.05);
     padding: 0.25rem 0.6rem;
     border-radius: 0.5rem;
@@ -304,59 +215,140 @@
     }
 }
 
-.menu-as-list .menu-preview-items li:hover {
+.menu-card-body li:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Products view */
-.products-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.products-view.menu-as-grid {
-    width: 100%;
+/* Grid view layout */
+.grid-view {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 1rem;
 }
 
-.products-view .menu-card {
+/* List view layout */
+.list-view {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    box-sizing: border-box;
-    min-width: 260px;
 }
 
-.products-view.menu-as-list .menu-card {
-    flex-direction: row;
-    gap: 2rem;
-
-    & img {
-        width: 250px;
-        height: 250px;
+/* Menu card and image changes in List view */
+.list-view {
+    .menu-card {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        grid-gap: 2rem;
+        max-width: unset;
     }
 }
 
-.products-view .menu-content {
-    width: 100%;
-    padding: 0.5rem 0;
+@media (max-width: 900px) {
+    .list-view .menu-card {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+/* Menu card body visible in List view */
+.list-view .menu-card-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: flex-start;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    list-style: none;
+}
+
+/* No products for SV and SRCV */
+.no-products-found {
+    grid-column: span 4;
+    color: var(--font-color) !important;
+    box-sizing: border-box;
+    padding: 2rem 0;
+    border-top: 1px solid var(--font-color) !important;
+    border-bottom: 1px solid var(--font-color) !important;
+    text-align: center;
+}
+
+/* Products view */
+
+/* Grid layout for products */
+#secondaryPreview.grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+/* Product card styling */
+.product-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+    transition: background-color 0.2s ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.16) 0 3px 6px, rgba(0, 0, 0, 0.23) 0 3px 6px;
+    cursor: pointer;
+    position: relative;
+}
+
+#secondaryPreview.list-view .product-card {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+/* Product code for card */
+.product-card .product-code {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-family: 'Roboto Light', sans-serif;
+    font-size: 0.8rem;
+    color: var(--font-color) !important;
+    margin: 0;
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+/* Product image (grid view) */
+.product-card .product-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    margin: 0.75rem auto;
+    transition: opacity 0.3s;
+}
+
+#secondaryPreview.list-view .product-image {
+    margin: auto 2rem;
+    width: 150px;
+    height: 150px;
+}
+
+.product-card .product-content {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     flex: 1;
+    padding: 0.5rem 0;
 }
 
-.products-view.menu-as-grid .menu-content-header,
-.products-view.menu-as-list .menu-content-header {
+.list-view .product-card .product-content {
+    gap: 0.25rem;
+}
+
+.product-card .product-content-header {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     flex: 1;
     margin-bottom: 1rem;
 
-    .menu-title {
+    .product-title {
         font-weight: 500;
         font-size: 1rem;
         margin: 0 0 auto 0;
@@ -370,21 +362,24 @@
     }
 }
 
-.products-view.menu-as-grid .menu-content-body,
-.products-view.menu-as-list .menu-content-body {
+.grid-view .product-card .product-content-header {
+    align-items: center;
+}
+
+.product-card .product-content-body {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     gap: 1rem;
 
-    .price {
+    .product-price {
         font-size: 1rem;
         color: var(--font-color);
         margin: 0;
         font-weight: 500;
     }
 
-    .price span {
+    .product-price span {
         font-weight: 400;
         color: #6c6a6a;
     }
@@ -406,17 +401,19 @@
     }
 }
 
-.products-view.menu-as-list .menu-content-body {
+.list-view .product-card .product-content-body {
     flex-direction: column;
 }
 
-.products-view.menu-as-grid .menu-content-footer {
+.product-card .product-content-footer {
     display: flex;
     flex-direction: row;
     gap: 1rem;
-    justify-content: center;
+    justify-content: space-between;
 }
 
-.products-view.menu-as-list .menu-content-footer {
-    margin-top: 2rem;
+.list-view .product-card .product-content-footer {
+    width: fit-content;
+    flex-direction: row;
+    margin-left: auto;
 }

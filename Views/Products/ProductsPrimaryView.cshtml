@@ -33,7 +33,7 @@
             @await Html.PartialAsync("_AccordionPartial", Model.Accordion)
         </div>
         <div class="products-content-col">
-            <div class="products-header">
+            <div class="products-content-header">
                 <div class="helper-buttons">
                     <button data-tooltip="Решетка" id="gridViewBtn" class="btn btn-outline-secondary">
                         <i class="bi bi-grid-3x3-gap"></i>
@@ -84,28 +84,29 @@
                     </div>
                 </div>
             </div>
-            <div id="menuView" class="menu-as-grid grid-view">
+            <div id="contentView" class="products-content-body grid-view">
                 @foreach (var cat in Model.MenuPreview.Options)
                 {
                     <div id="card-@(cat.Id)" class="menu-card" onclick="toggleListView('@cat.Id')">
-                        <img src="@Url.Content(cat.Icon)" alt="icon"/>
-                        <div class="menu-content">
-                            <p class="menu-title">@cat.Name</p>
-                            <ul class="menu-preview-items">
-                                @foreach (var item in cat.Children)
-                                {
-                                    <li class="nav-item">
-                                        @if (Model.MenuPreview.Type == "MenuItem")
-                                        {
+                        <div class="menu-card-header">
+                            <img class="menu-card-image" src="@Url.Content(cat.Icon)" alt="icon"/>
+                            <p class="menu-card-title">@cat.Name</p>
+                        </div>
+                        <div class="menu-card-body">
+                            @foreach (var item in cat.Children)
+                            {
+                                <li class="nav-item">
+                                    @switch (Model.MenuPreview.Type)
+                                    {
+                                        case "MenuItem":
                                             <a class="nav-link" asp-controller="Products"
                                                asp-action="ProductsPrimaryView"
                                                asp-route-id="@item.Key"
                                                asp-route-type="Option">
                                                 @item.Value
                                             </a>
-                                        }
-                                        else if (Model.MenuPreview.Type == "Option")
-                                        {
+                                            break;
+                                        case "Option":
                                             <a class="nav-link" asp-controller="Products"
                                                asp-action="ProductsSecondaryView"
                                                asp-route-id="@item.Key"
@@ -113,10 +114,10 @@
                                                asp-route-optionId="@Model.MenuPreview.Id">
                                                 @item.Value
                                             </a>
-                                        }
-                                    </li>
-                                }
-                            </ul>
+                                            break;
+                                    }
+                                </li>
+                            }
                         </div>
                     </div>
                 }
@@ -127,116 +128,44 @@
 
 @section Scripts
 {
+    <script src="~/js/cart-render-and-update.js" asp-append-version="true"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const menuView = document.getElementById("menuView");
+            const menuView = document.getElementById("contentView");
             const gridViewBtn = document.getElementById("gridViewBtn");
             const listViewBtn = document.getElementById("listViewBtn");
 
             // Apply stored view preference
             const savedView = localStorage.getItem("menuViewMode");
             if (savedView === "list") {
-                menuView.classList.add("menu-as-list");
-                menuView.classList.remove("menu-as-grid");
+                menuView.classList.add("list-view");
+                menuView.classList.remove("grid-view");
             } else {
                 // default to grid
-                menuView.classList.add("menu-as-grid");
-                menuView.classList.remove("menu-as-list");
+                menuView.classList.add("grid-view");
+                menuView.classList.remove("list-view");
             }
 
             gridViewBtn.addEventListener("click", function () {
-                menuView.classList.add("menu-as-grid");
-                menuView.classList.remove("menu-as-list");
+                menuView.classList.add("grid-view");
+                menuView.classList.remove("list-view");
                 localStorage.setItem("menuViewMode", "grid");
             });
 
             listViewBtn.addEventListener("click", function () {
-                menuView.classList.add("menu-as-list");
-                menuView.classList.remove("menu-as-grid");
+                menuView.classList.add("list-view");
+                menuView.classList.remove("grid-view");
                 localStorage.setItem("menuViewMode", "list");
             });
         });
 
 
         function toggleListView(id) {
-            const menuView = document.getElementById("menuView");
-            menuView.classList.add("menu-as-list");
-            menuView.classList.remove("menu-as-grid");
+            const menuView = document.getElementById("contentView");
+            menuView.classList.add("list-view");
+            menuView.classList.remove("grid-view");
             const element = document.getElementById(`card-${id}`);
             element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
-        }
-    </script>
-    <script>
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        updateCartUI(); // render on load if there are items
-
-        function updateCartUI() {
-            const cartContent = document.querySelector("#cart-content");
-            const cartTotal = document.querySelector("#cart-total");
-            const cartItems = document.querySelector("#cart-items");
-
-            cartContent.innerHTML = ""; // Clear all content
-
-            let total = 0;
-            let totalItems = 0;
-
-            // Add Header always
-            const header = document.createElement("div");
-            header.classList.add("cart-content-header");
-            header.innerHTML = `
-        <div class="cart-header-item">Артикул</div>
-        <div class="cart-header-qty">Количество</div>
-        <div class="cart-header-price">Цена</div>
-    `;
-            cartContent.appendChild(header);
-
-            // Create list container
-            const ul = document.createElement("ul");
-
-            if (cart.length === 0) {
-                const li = document.createElement("li");
-                li.innerHTML = `<p class="text-center cart-empty">Вашата количка е празна!</p>`;
-                ul.appendChild(li);
-
-                cartItems.textContent = "0";
-                cartItems.classList.add("count-zero");
-                cartTotal.textContent = "0 продукт(а) - 0.00лв.";
-            } else {
-                cart.forEach(item => {
-                    total += item.price * item.qty;
-                    totalItems += item.qty;
-
-                    const li = document.createElement("li");
-                    li.innerHTML = `
-                <div class="cart-item">
-                    <img src="${item.icon}" alt="${item.name}">
-                    <div class="cart-item-names">
-                        <p class="m-0 cart-item-name">${item.name}</p>
-                        <p class="m-0 cart-item-subgroup">${item.subgroup}</p>
-                    </div>
-                    <div class="cart-item-qty-control">
-                        <button class="qty-btn" onclick="changeQty('${item.id}', -1)">−</button>
-                        <span class="qty-display">${item.qty}</span>
-                        <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
-                    </div>
-                    <p class="cart-item-price">${item.price.toFixed(2)} лв.</p>
-                </div>
-            `;
-                    ul.appendChild(li);
-                });
-
-                cartItems.textContent = totalItems;
-                cartItems.classList.remove("count-zero");
-                cartTotal.textContent = `${totalItems} продукт(а) - ${total.toFixed(2)}лв.`;
-            }
-
-            cartContent.appendChild(ul);
-
-            // Always show footer
-            const footer = document.createElement("div");
-            footer.classList.add("cart-content-footer");
-            footer.innerHTML = `Общо: <span id="cart-footer-total">${total.toFixed(2)} лв.</span>`;
-            cartContent.appendChild(footer);
         }
     </script>
 }

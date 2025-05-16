@@ -1,6 +1,8 @@
 @model EMatrix.ViewModels.Products.ProductsSecondaryViewModel
 
 <link rel="stylesheet" href="~/css/products-preview-customization.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/products-accordion-customization.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/products-cart-customization.css" asp-append-version="true"/>
 
 @{
     ViewData["Title"] = "Продукти";
@@ -18,34 +20,36 @@
             </a></li>
         <span><i class="bi bi-chevron-right"></i></span>
         <li class="breadcrumb-item active" aria-current="page">@Model.Accordion.SelectedSubGroupName</li>
-
     </ul>
 
     <div class="products-preview">
-        <div class="products-header">
-            <div class="search-bar w-100 pb-2">
-                <form asp-action="ProductsSecondaryView" class="d-flex flex-wrap flex-grow-1 gap-2 w-100">
-                    <div class="flex-grow-1">
+        <div class="products-accordion-col">
+            @await Html.PartialAsync("_AccordionPartial", Model.Accordion)
+        </div>
+        <div class="products-content-col">
+            <div class="products-content-header">
+                <div class="helper-buttons">
+                    <button data-tooltip="Решетка" id="gridViewBtn" class="btn btn-outline-secondary">
+                        <i class="bi bi-grid-3x3-gap"></i>
+                    </button>
+                    <button data-tooltip="Списък" id="listViewBtn" class="btn btn-outline-secondary">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <a href="@Url.Action("Privacy", "Home")" id="help" class="btn btn-outline-secondary">
+                        <i class="bi bi-question-circle"></i>
+                        Помощ
+                    </a>
+                </div>
+                <form asp-action="ProductsSecondaryView">
+                    <div class="search-bar">
                         <input type="hidden" name="optionId" value="@Model.Accordion.Options.First().Id"/>
                         <input type="hidden" name="childId" value="@Model.Accordion.SelectedChildId"/>
                         <input type="hidden" name="id" value="@Model.Accordion.SelectedSubGroupId"/>
-                        <input class="form-control w-100" id="search" name="search" placeholder="Търси продукти.."
+                        <input class="form-control" id="search" name="search" placeholder="Търси продукти.."
                                value="@Model.SearchTerm"/>
+                        <button type="submit" class="btn btn-main">Търси</button>
                     </div>
-                    <button type="submit" class="btn btn-main text-light">Търси</button>
                 </form>
-            </div>
-            <div class="grid-header">
-                <button data-tooltip="Решетка" id="gridViewBtn" class="btn btn-outline-secondary">
-                    <i class="bi bi-grid-3x3-gap"></i>
-                </button>
-                <button data-tooltip="Списък" id="listViewBtn" class="btn btn-outline-secondary">
-                    <i class="bi bi-list"></i>
-                </button>
-                <a href="@Url.Action("Privacy", "Home")" id="help" class="btn btn-outline-secondary">
-                    <i class="bi bi-question-circle"></i>
-                    Помощ
-                </a>
                 <div class="cart-wrapper">
                     <div id="cart" class="dropdown">
                         <a class="dropdown-toggle cart-heading" href="#" aria-expanded="false">
@@ -73,227 +77,105 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="products-body">
-            @await Html.PartialAsync("_AccordionPartial", Model.Accordion)
-
-            @* RIGHT: PREVIEW GRID (or List) *@
-            <div class="products-wrapper">
-                <div class="menu-as-grid products-view" id="secondaryPreview">
-                    @if (Model.Products.Any())
-                    {
-                        @foreach (var item in Model.Products)
-                        {
-                            <div class="menu-card">
-                                <p class="product-code"><span>Код: </span>@item.Id</p>
-                                <img src="@Url.Content(item.Icon)" alt="icon"/>
-                                <div class="menu-content">
-                                    <div class="menu-content-header">
-                                        <p class="menu-title">@item.NameAlias</p>
-                                        <p class="text-muted item-subcategory">@item.SubCategory</p>
-                                    </div>
-
-                                    <div class="menu-content-body">
-                                        <p class="price align-content-center">
-                                            <span>Цена: </span>@item.Price.ToString("F2", new System.Globalization.CultureInfo("bg-BG")) лв.
-                                        </p>
-                                        @if (item.Availability)
-                                        {
-                                            <p class="text-success">Налично</p>
-                                        }
-                                        else
-                                        {
-                                            <p class="text-danger">Изчерпано</p>
-                                        }
-                                    </div>
-
-                                    <div class="menu-content-footer">
-                                        @if (item.Availability)
-                                        {
-                                            <button class="btn btn-main btn-sm text-nowrap" onclick="addProductToCart(this)">Добави в количка</button>
-                                        }
-                                        else
-                                        {
-                                            <button class="btn btn-main btn-sm text-nowrap">Запитване</button>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="no-products-found">
-                            <h3>Няма намерени продукти</h3>
-                            <p>Изглежда, че няма продукти, отговарящи на вашето търсене или избрана категория.</p>
-                            <p>Опитайте с по-обща или различна ключова дума.</p>
-                            <p>Ако не откривате търсения продукт, <strong>свържете се с нас</strong> – ще се радваме да
-                                помогнем!</p>
-                        </div>
-                    }
-
-                </div>
-                <!-- Pagination -->
+            <div id="secondaryPreview" class="products-content-body grid-view">
                 @if (Model.Products.Any())
                 {
-                    <form asp-controller="Products"
-                          asp-action="ProductsSecondaryView">
-                        <input type="hidden" name="optionId" value="@Model.Accordion.Options.First().Id"/>
-                        <input type="hidden" name="childId" value="@Model.Accordion.SelectedChildId"/>
-                        <input type="hidden" name="id" value="@Model.Accordion.SelectedSubGroupId"/>
-                        <input type="hidden" name="search" value="@Model.SearchTerm"/>
+                    @foreach (var item in Model.Products)
+                    {
+                        <div class="product-card">
+                            <p class="product-code"><span>Код: </span>@item.Id</p>
+                            <img class="product-image" src="@Url.Content(item.Icon)" alt="icon"/>
+                            <div class="product-content">
+                                <div class="product-content-header">
+                                    <p class="product-title">@item.NameAlias</p>
+                                    <p class="text-muted product-subcategory">@item.SubCategory</p>
+                                </div>
 
-                        @await Html.PartialAsync("_PaginationPartial")
-                    </form>
+                                <div class="product-content-body">
+                                    <p class="product-price align-content-center">
+                                        <span>Цена: </span>@item.Price.ToString("F2", new System.Globalization.CultureInfo("bg-BG")) лв.
+                                    </p>
+                                    @if (item.Availability)
+                                    {
+                                        <p class="text-success">Налично</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-danger">Изчерпано</p>
+                                    }
+                                </div>
+
+                                <div class="product-content-footer">
+                                    <button class="btn btn-main btn-sm text-nowrap">Преглед</button>
+                                    @if (item.Availability)
+                                    {
+                                        <button class="btn btn-main btn-sm text-nowrap" onclick="addProductToCart(this)">Добави в количка</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-main btn-sm text-nowrap">Запитване</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="no-products-found">
+                        <h3>Няма намерени продукти</h3>
+                        <p>Изглежда, че няма продукти, отговарящи на вашето търсене или избрана категория.</p>
+                        <p>Опитайте с по-обща или различна ключова дума.</p>
+                        <p>Ако не откривате търсения продукт, <strong>свържете се с нас</strong> – ще се радваме да
+                            помогнем!</p>
+                    </div>
                 }
             </div>
+            @if (Model.Products.Any())
+            {
+                <form asp-controller="Products"
+                      asp-action="ProductsSecondaryView">
+                    <input type="hidden" name="optionId" value="@Model.Accordion.Options.First().Id"/>
+                    <input type="hidden" name="childId" value="@Model.Accordion.SelectedChildId"/>
+                    <input type="hidden" name="id" value="@Model.Accordion.SelectedSubGroupId"/>
+                    <input type="hidden" name="search" value="@Model.SearchTerm"/>
+
+                    @await Html.PartialAsync("_PaginationPartial")
+                </form>
+            }
         </div>
     </div>
 </div>
 
 @section Scripts
 {
-    <script>
-        // In-memory cart array (just for demo — use localStorage or backend in production)
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        updateCartUI(); // render on load if there are items
-
-        function addProductToCart(button) {
-            const card = button.closest('.menu-card');
-
-            const idText = card.querySelector('.product-code')?.textContent.trim();
-            const id = idText?.split(":")[1]?.trim();
-            const name = card.querySelector('.menu-title')?.textContent.trim();
-            const subgroup = card.querySelector('.item-subcategory')?.textContent.trim();
-            const icon = card.querySelector('img').getAttribute('src');
-            const priceText = card.querySelector('.price')?.textContent.trim();
-            const price = parseFloat(priceText?.split(":")[1]?.replace("лв.", "").trim().replace(',', '.')) || 0;
-
-            // Check if product already in cart
-            const existing = cart.find(p => p.id === id);
-            if (existing) {
-                existing.qty += 1;
-            } else {
-                cart.push({ id, name, subgroup, icon, price, qty: 1 });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-        }
-
-        function changeQty(id, delta) {
-            const item = cart.find(p => p.id === id);
-            if (!item) return;
-
-            item.qty += delta;
-
-            if (item.qty < 1) {
-                cart = cart.filter(p => p.id !== id);
-            }
-
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI(); // re-render cart
-        }
-
-        function updateCartUI() {
-            const cartContent = document.querySelector("#cart-content");
-            const cartTotal = document.querySelector("#cart-total");
-            const cartItems = document.querySelector("#cart-items");
-
-            cartContent.innerHTML = ""; // Clear all content
-
-            let total = 0;
-            let totalItems = 0;
-
-            // Add Header always
-            const header = document.createElement("div");
-            header.classList.add("cart-content-header");
-            header.innerHTML = `
-        <div class="cart-header-item">Артикул</div>
-        <div class="cart-header-qty">Количество</div>
-        <div class="cart-header-price">Цена</div>
-    `;
-            cartContent.appendChild(header);
-
-            // Create list container
-            const ul = document.createElement("ul");
-
-            if (cart.length === 0) {
-                const li = document.createElement("li");
-                li.innerHTML = `<p class="text-center cart-empty">Вашата количка е празна!</p>`;
-                ul.appendChild(li);
-
-                cartItems.textContent = "0";
-                cartItems.classList.add("count-zero");
-                cartTotal.textContent = "0 продукт(а) - 0.00лв.";
-            } else {
-                cart.forEach(item => {
-                    total += item.price * item.qty;
-                    totalItems += item.qty;
-
-                    const li = document.createElement("li");
-                    li.innerHTML = `
-                <div class="cart-item">
-                    <img src="${item.icon}" alt="${item.name}">
-                    <div class="cart-item-names">
-                        <p class="m-0 cart-item-name">${item.name}</p>
-                        <p class="m-0 cart-item-subgroup">${item.subgroup}</p>
-                    </div>
-                    <div class="cart-item-qty-control">
-                        <button class="qty-btn" onclick="changeQty('${item.id}', -1)">−</button>
-                        <span class="qty-display">${item.qty}</span>
-                        <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
-                    </div>
-                    <p class="cart-item-price">${item.price.toFixed(2)} лв.</p>
-                </div>
-            `;
-                    ul.appendChild(li);
-                });
-
-                cartItems.textContent = totalItems;
-                cartItems.classList.remove("count-zero");
-                cartTotal.textContent = `${totalItems} продукт(а) - ${total.toFixed(2)}лв.`;
-            }
-
-            cartContent.appendChild(ul);
-
-            // Always show footer
-            const footer = document.createElement("div");
-            footer.classList.add("cart-content-footer");
-            footer.innerHTML = `Общо: <span id="cart-footer-total">${total.toFixed(2)} лв.</span>`;
-            cartContent.appendChild(footer);
-        }
-
-    </script>
-
+    <script src="~/js/cart-render-and-update.js" asp-append-version="true"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const menuView = document.getElementById("secondaryPreview");
             const gridViewBtn = document.getElementById("gridViewBtn");
             const listViewBtn = document.getElementById("listViewBtn");
 
-            // Apply saved view mode from localStorage
+            // Apply stored view preference
             const savedView = localStorage.getItem("menuViewMode");
             if (savedView === "list") {
-                menuView.classList.add("menu-as-list");
-                menuView.classList.remove("menu-as-grid");
+                menuView.classList.add("list-view");
+                menuView.classList.remove("grid-view");
             } else {
-                // Default to grid
-                menuView.classList.add("menu-as-grid");
-                menuView.classList.remove("menu-as-list");
+                // default to grid
+                menuView.classList.add("grid-view");
+                menuView.classList.remove("list-view");
             }
 
-            // Set to grid
             gridViewBtn.addEventListener("click", function () {
-                menuView.classList.add("menu-as-grid");
-                menuView.classList.remove("menu-as-list");
+                menuView.classList.add("grid-view");
+                menuView.classList.remove("list-view");
                 localStorage.setItem("menuViewMode", "grid");
             });
 
-            // Set to list
             listViewBtn.addEventListener("click", function () {
-                menuView.classList.add("menu-as-list");
-                menuView.classList.remove("menu-as-grid");
+                menuView.classList.add("list-view");
+                menuView.classList.remove("grid-view");
                 localStorage.setItem("menuViewMode", "list");
             });
         });
