@@ -16,4 +16,5 @@ public static class StatusMessages
 
     public const string MenuItemEditorFailedToLoad =
         "Възникна грешка при зареждане на редактор елемент на меню. Моля, опитайте отново.";
+
 }

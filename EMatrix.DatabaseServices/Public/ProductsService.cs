@@ -1,5 +1,6 @@
 using EMatrix.Database;
 using EMatrix.DatabaseServices.Public.Interfaces;
+using EMatrix.DataModels;
 using EMatrix.ViewModels.Products;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,77 +18,24 @@ public class ProductsService : IProductsService
     public async Task<ProductsPrimaryViewModel> GetPrimaryViewAsync(int id, string type)
     {
         ProductsPrimaryViewModel model = new ProductsPrimaryViewModel();
-        if (type == "MenuItem")
+        switch (type)
         {
-            model.Accordion.Type = type;
-            var menuItems = await _context.MenuItems
-                .Include(o => o.Options)
-                .ThenInclude(c => c.Children)
-                .ToListAsync();
-            foreach (var item in menuItems.OrderBy(o => o.Order))
+            case "MenuItem":
             {
-                model.Accordion.Options.Add(new AccordionOptionViewModel()
-                {
-                    Name = item.Name,
-                    Options = item.Options.Select(opt => new AccordionOptionChildViewModel()
-                    {
-                        Id = opt.Id,
-                        Name = opt.Name,
-                    }).ToList(),
-                });
+                var menuItems = await GetMenuItemsAsync();
+                model.Accordion = GetAccordionForMenuItemAsync(menuItems, type);
+                model.MenuPreview = GetMenuPreviewForMenuItemAsync(menuItems, type);
+                break;
             }
-
-            model.MenuPreview.Type = type;
-            model.MenuPreview.Options = menuItems
-                .OrderBy(o => o.Order)
-                .Select(o => new MenuOptionViewModel()
-                {
-                    Id = o.Id,
-                    Name = o.Name,
-                    Icon = o.Icon,
-                    Children = o.Options.ToDictionary(c => c.Id.ToString(), c => c.Name)
-                }).ToList();
-        }
-        else if (type == "Option")
-        {
-            model.Accordion.Type = type;
-            var option = await _context.MenuOptions
-                .Include(ch => ch.Children)
-                .ThenInclude(s => s.SubGroup)
-                .Include(ch => ch.Children)
-                .ThenInclude(s => s.SubGroupSet)
-                .ThenInclude(sc => sc.Items)
-                .ThenInclude(sc => sc.SubGroup)
-                .Include(ch => ch.MenuItem)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
-            model.Accordion.Options.Add(new AccordionOptionViewModel()
+            case "Option":
             {
-                Id = option.Id,
-                Name = option.Name,
-                Options = option.Children.Select(o => new AccordionOptionChildViewModel()
-                    {
-                        Id = o.Id,
-                        Name = o.DisplayName ?? o.SubGroup?.Name,
-                        SubGroupId = o.SubGroupId != null ? o.SubGroupId : null,
-                        Entries = o.SubGroupSetId == null
-                            ? null
-                            : o.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
-                    })
-                    .ToList(),
-            });
-            model.MenuPreview.Id = option.Id;
-            model.MenuPreview.Type = type;
-            model.MenuPreview.Options = option.Children.Select(o => new MenuOptionViewModel()
-                {
-                    Id = o.Id,
-                    Name = o.DisplayName ?? o.SubGroup?.Name,
-                    Icon = !string.IsNullOrWhiteSpace(o.Icon) ? o.Icon : option.MenuItem.Icon,
-                    Children = o.SubGroupSetId == null
-                        ? new Dictionary<string, string> { { o.SubGroup!.Id, o.SubGroup.Name } }
-                        : o.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
-                })
-                .ToList();
+                model.Accordion.Type = type;
+                var option = await GetMenuOptionAsync(id);
+
+                model.Accordion = GetAccordionForMenuOptionAsync(option, type);
+                model.MenuPreview = GetMenuPreviewForMenuOptionAsync(option, type);
+                break;
+            }
         }
 
         return model;
@@ -105,6 +53,7 @@ public class ProductsService : IProductsService
             .Where(s => s.SubCategoryId == id)
             .OrderBy(i => i.NameAlias)
             .AsQueryable();
+
         if (!string.IsNullOrEmpty(search))
         {
             var normalizedSearch = search.Trim().ToLower();
@@ -119,42 +68,13 @@ public class ProductsService : IProductsService
         var totalPages = (int)Math.Ceiling((double)query.Count() / pageSize);
 
         var items = await query.Skip(skip).Take(pageSize).ToListAsync();
-
         var selectedSubGroup = await _context.SubCategories.FirstOrDefaultAsync(s => s.Id == id);
-        var model = new ProductsSecondaryViewModel();
-        model.Accordion.Type = "Option";
-        model.Accordion.SelectedSubGroupId = selectedSubGroup.Id;
-        model.Accordion.SelectedSubGroupName = selectedSubGroup.Alias;
-        model.Accordion.SelectedChildId = childId;
-        model.CurrentPage = page;
-        model.TotalPages = totalPages;
-        model.SearchTerm = search;
-        var option = await _context.MenuOptions
-            .Include(ch => ch.Children)
-            .ThenInclude(s => s.SubGroup)
-            .Include(ch => ch.Children)
-            .ThenInclude(s => s.SubGroupSet)
-            .ThenInclude(sc => sc.Items)
-            .ThenInclude(sc => sc.SubGroup)
-            .FirstOrDefaultAsync(o => o.Id == optionId);
-        model.Accordion.Options.Add(new AccordionOptionViewModel()
-        {
-            Id = option.Id,
-            Name = option.Name,
-            Options = option.Children.Select(o => new AccordionOptionChildViewModel()
-                {
-                    Id = o.Id,
-                    Name = o.DisplayName ?? o.SubGroup?.Name,
-                    SubGroupId = o.SubGroupId != null ? o.SubGroupId : null,
-                    Entries = o.SubGroupSetId == null
-                        ? null
-                        : o.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
-                })
-                .ToList(),
-        });
 
-        var childIcon = option.Children.FirstOrDefault(o => o.Id == childId).Icon;
-        model.Products = items.OrderBy(i => i.NameAlias)
+        var option = await GetMenuOptionAsync(optionId);
+        var accordion = GetAccordionForMenuOptionAsync(option, "Option");
+
+        var childIcon = option.Children.FirstOrDefault(o => o.Id == childId)!.Icon;
+        var products = items.OrderBy(i => i.NameAlias)
             .Select(i => new ProductListingViewModel()
             {
                 Id = i.Id,
@@ -165,85 +85,73 @@ public class ProductsService : IProductsService
                 Price = i.Price,
                 Availability = i.Quantity > 0
             }).ToList();
+
+        var model = new ProductsSecondaryViewModel()
+        {
+            Accordion = new AccordionViewModel()
+            {
+                Type = "Option",
+                SelectedSubGroupId = selectedSubGroup!.Id,
+                SelectedSubGroupName = selectedSubGroup.Alias,
+                SelectedChildId = childId,
+                Options = accordion.Options,
+            },
+            CurrentPage = page,
+            TotalPages = totalPages,
+            SearchTerm = search,
+            Products = products,
+        };
+
         return model;
     }
 
     public async Task<ProductsSearchViewModel> GetSearchViewAsync(int? optionId, string type, string search,
         int page = 1)
     {
-        var model = new ProductsSearchViewModel();
         const int pageSize = 12;
         var skip = (page - 1) * pageSize;
 
+        //Base query
         var query = _context.InventoryItems
             .Include(s => s.SubCategory)
             .Include(c => c.Category)
             .AsQueryable();
 
-        if (type == "MenuItem")
+        var model = new ProductsSearchViewModel();
+
+        switch (type)
         {
-            model.Accordion.Type = type;
-            var menuItems = await _context.MenuItems
-                .Include(o => o.Options)
-                .ThenInclude(c => c.Children)
-                .ToListAsync();
-            foreach (var item in menuItems.OrderBy(o => o.Order))
+            case "MenuItem":
             {
-                model.Accordion.Options.Add(new AccordionOptionViewModel()
-                {
-                    Name = item.Name,
-                    Options = item.Options.Select(opt => new AccordionOptionChildViewModel()
-                    {
-                        Id = opt.Id,
-                        Name = opt.Name,
-                    }).ToList(),
-                });
+                var menuItems = await GetMenuItemsAsync();
+                model.Accordion = GetAccordionForMenuItemAsync(menuItems, type);
+                break;
             }
-        }
-        else if (type == "Option")
-        {
-            model.Accordion.Type = type;
-            var option = await _context.MenuOptions
-                .Include(ch => ch.Children)
-                .ThenInclude(s => s.SubGroup)
-                .Include(ch => ch.Children)
-                .ThenInclude(s => s.SubGroupSet)
-                .ThenInclude(sc => sc.Items)
-                .ThenInclude(sc => sc.SubGroup)
-                .FirstOrDefaultAsync(o => o.Id == optionId);
-
-            model.Accordion.Options.Add(new AccordionOptionViewModel()
+            case "Option":
             {
-                Id = option.Id,
-                Name = option.Name,
-                Options = option.Children.Select(o => new AccordionOptionChildViewModel()
-                    {
-                        Id = o.Id,
-                        Name = o.DisplayName ?? o.SubGroup?.Name,
-                        SubGroupId = o.SubGroupId != null ? o.SubGroupId : null,
-                        Entries = o.SubGroupSetId == null
-                            ? null
-                            : o.SubGroupSet.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
-                    })
-                    .ToList(),
-            });
-            var optionSubgroupIds = option.Children
-                .SelectMany(child =>
-                {
-                    if (child.SubGroupId != null)
-                    {
-                        return new[] { child.SubGroupId };
-                    }
-                    else if (child.SubGroupSetId != null)
-                    {
-                        return child.SubGroupSet.Items.Select(i => i.SubGroupId);
-                    }
+                var option = await GetMenuOptionAsync(optionId!.Value);
+                model.Accordion = GetAccordionForMenuOptionAsync(option, type);
 
-                    return new List<string>();
-                })
-                .Distinct()
-                .ToList();
-            query = query.Where(o => optionSubgroupIds.Contains(o.SubCategoryId));
+                //When searching in option, filter items only from that option
+                var optionSubgroupIds = option.Children
+                    .SelectMany(child =>
+                    {
+                        if (child.SubGroupId != null)
+                        {
+                            return new[] { child.SubGroupId };
+                        }
+                        if (child.SubGroupSetId != null)
+                        {
+                            return child.SubGroupSet!.Items.Select(i => i.SubGroupId);
+                        }
+
+                        return new List<string>();
+                    })
+                    .Distinct()
+                    .ToList();
+                query = query.Where(o => optionSubgroupIds.Contains(o.SubCategoryId));
+                break;
+            }
         }
 
         var normalizedSearch = search.Trim().ToLower();
@@ -254,7 +162,9 @@ public class ProductsService : IProductsService
                 i.Category.Alias.ToLower().Contains(normalizedSearch) ||
                 EF.Functions.Like(i.Id, $"{normalizedSearch}%"))
             .OrderBy(i => i.NameAlias);
+
         var totalPages = (int)Math.Ceiling((double)query.Count() / pageSize);
+
         var items = await query.Skip(skip).Take(pageSize).ToListAsync();
 
         var menuOptionChildren = _context.MenuOptionChildren
@@ -285,5 +195,99 @@ public class ProductsService : IProductsService
         model.TotalPages = totalPages;
         model.SearchTerm = search;
         return model;
+    }
+
+    private AccordionViewModel GetAccordionForMenuItemAsync(List<MenuItem> menuItems, string type)
+    {
+        var options = menuItems
+            .OrderBy(o => o.Order)
+            .Select(o => new AccordionOptionViewModel()
+            {
+                Name = o.Name,
+                Options = o.Options.Select(opt => new AccordionOptionChildViewModel()
+                {
+                    Id = opt.Id,
+                    Name = opt.Name,
+                }).ToList(),
+            })
+            .ToList();
+        return new AccordionViewModel() { Type = type, Options = options };
+    }
+
+    private AccordionViewModel GetAccordionForMenuOptionAsync(MenuOption option, string type)
+    {
+        var accOption = new AccordionOptionViewModel()
+        {
+            Id = option.Id,
+            Name = option.Name,
+            Options = option.Children.Select(o => new AccordionOptionChildViewModel()
+                {
+                    Id = o.Id,
+                    Name = o.DisplayName ?? "Placeholder",
+                    SubGroupId = o.SubGroupId,
+                    Entries = o.SubGroupSetId == null
+                        ? null
+                        : o.SubGroupSet!.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
+                })
+                .ToList(),
+        };
+        var model = new AccordionViewModel()
+        {
+            Type = type,
+            Options = new List<AccordionOptionViewModel>(){ accOption }
+        };
+        return model;
+    }
+
+    private MenuPreviewViewModel GetMenuPreviewForMenuItemAsync(List<MenuItem> menuItems, string type)
+    {
+        var options = menuItems
+            .OrderBy(o => o.Order)
+            .Select(o => new MenuOptionViewModel()
+            {
+                Id = o.Id,
+                Name = o.Name,
+                Icon = o.Icon,
+                Children = o.Options.ToDictionary(c => c.Id.ToString(), c => c.Name)
+            }).ToList();
+        return new MenuPreviewViewModel() { Type = type, Options = options };
+    }
+
+    private MenuPreviewViewModel GetMenuPreviewForMenuOptionAsync(MenuOption option, string type)
+    {
+        var options = option.Children.Select(o => new MenuOptionViewModel()
+            {
+                Id = o.Id,
+                Name = o.DisplayName ?? "Placeholder",
+                Icon = !string.IsNullOrWhiteSpace(o.Icon) ? o.Icon : option.MenuItem.Icon,
+                Children = o.SubGroupSetId == null
+                    ? new Dictionary<string, string> { { o.SubGroup!.Id, o.SubGroup.Name } }
+                    : o.SubGroupSet!.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
+            })
+            .ToList();
+
+        return new MenuPreviewViewModel() { Id = option.Id, Type = type, Options = options };
+    }
+
+    private async Task<List<MenuItem>> GetMenuItemsAsync()
+    {
+        var menuItems = await _context.MenuItems
+            .Include(o => o.Options)
+            .ThenInclude(c => c.Children)
+            .ToListAsync();
+        return menuItems;
+    }
+
+    private async Task<MenuOption> GetMenuOptionAsync(int optionId)
+    {
+        var option = await _context.MenuOptions
+            .Include(ch => ch.Children)
+            .ThenInclude(s => s.SubGroup)
+            .Include(ch => ch.Children)
+            .ThenInclude(s => s.SubGroupSet)
+            .ThenInclude(sc => sc!.Items)
+            .ThenInclude(scs => scs.SubGroup)
+            .FirstOrDefaultAsync(o => o.Id == optionId);
+        return option!;
     }
 }
