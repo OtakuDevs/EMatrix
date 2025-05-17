@@ -160,6 +160,7 @@ public class ProductsService : IProductsService
                 Id = i.Id,
                 SubCategory = i.SubCategory.Alias,
                 NameAlias = i.NameAlias,
+                DescriptionAlias = i.DescriptionAlias,
                 Icon = childIcon,
                 Price = i.Price,
                 Availability = i.Quantity > 0
@@ -270,6 +271,7 @@ public class ProductsService : IProductsService
                 Id = i.Id,
                 SubCategory = i.SubCategory.Alias,
                 NameAlias = i.NameAlias,
+                DescriptionAlias = i.DescriptionAlias,
                 Icon = menuOptionChildren
                     .FirstOrDefault(c =>
                         (c.SubGroupId != null && c.SubGroupId == i.SubCategoryId) ||

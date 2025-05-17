@@ -161,11 +161,22 @@
 
 
         function toggleListView(id) {
-            const menuView = document.getElementById("contentView");
-            menuView.classList.add("list-view");
-            menuView.classList.remove("grid-view");
             const element = document.getElementById(`card-${id}`);
-            element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+
+            // Find all anchor (<a>) elements inside this card
+            const links = element.querySelectorAll("a.nav-link");
+
+            if (links.length === 1) {
+                // If there is only one link, click it directly
+                links[0].click();
+            } else {
+                // Otherwise, switch to list view and scroll
+                const menuView = document.getElementById("contentView");
+                menuView.classList.add("list-view");
+                menuView.classList.remove("grid-view");
+                element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+            }
         }
+
     </script>
 }
