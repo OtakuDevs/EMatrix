@@ -9,4 +9,6 @@ public interface IProductsService
     Task<ProductsSecondaryViewModel> GetSecondaryViewAsync(string id, int childId, int optionId, int page = 1, string search = "");
 
     Task<ProductsSearchViewModel> GetSearchViewAsync(int? optionId, string type, string search, int page = 1);
+
+    Task<ProductDetailsViewModel> GetDetailsViewAsync(string id, string type = "MenuItem");
 }

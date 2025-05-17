@@ -59,6 +59,18 @@ public class ProductsController : Controller
         {
             return RedirectToAction("Error", "Home", new { statusCode = 404, e.Message });
         }
+    }
 
+    public async Task<IActionResult> ProductDetails(string id, string type = "MenuItem")
+    {
+        try
+        {
+            var model = await _productsService.GetDetailsViewAsync(id, type);
+            return View(model);
+        }
+        catch (Exception e)
+        {
+            return RedirectToAction("Error", "Home", new { statusCode = 404, e.Message });
+        }
     }
 }

@@ -197,6 +197,41 @@ public class ProductsService : IProductsService
         return model;
     }
 
+    public async Task<ProductDetailsViewModel> GetDetailsViewAsync(string id, string type = "MenuItem")
+    {
+        var item = await _context.InventoryItems
+            .Include(i => i.SubCategory)
+            .FirstOrDefaultAsync(i => i.Id == id);
+        var menuOptionChild = _context.MenuOptionChildren
+            .Include(o => o.MenuOption)
+            .FirstOrDefault(c =>
+                (c.SubGroupId != null && c.SubGroupId == item.SubCategoryId) ||
+                (c.SubGroupSetId != null && c.SubGroupSet.Items.Any(s => s.SubGroupId == item.SubCategoryId)));
+
+        var model = new ProductDetailsViewModel()
+        {
+            Id = item.Id,
+            Name = item.NameAlias,
+            Description = item.DescriptionAlias,
+            Icon = menuOptionChild.Icon,
+            Price = item.Price,
+            Availability = item.Quantity > 0,
+            Unit = item.Unit,
+            ProductMenuOption = new OptionModel()
+            {
+                Id = menuOptionChild.MenuOption.Id,
+                Name = menuOptionChild.MenuOption.Name
+            },
+            ProductMenuOptionChild = new OptionModel()
+            {
+                Id = menuOptionChild.Id,
+                Name = menuOptionChild.DisplayName,
+                SubGroupId = item.SubCategoryId
+            }
+        };
+        return model;
+    }
+
     private AccordionViewModel GetAccordionForMenuItemAsync(List<MenuItem> menuItems, string type)
     {
         var options = menuItems
@@ -287,6 +322,7 @@ public class ProductsService : IProductsService
             .ThenInclude(s => s.SubGroupSet)
             .ThenInclude(sc => sc!.Items)
             .ThenInclude(scs => scs.SubGroup)
+            .Include(ch => ch.MenuItem)
             .FirstOrDefaultAsync(o => o.Id == optionId);
         return option!;
     }

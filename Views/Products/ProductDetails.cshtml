@@ -1,0 +1,81 @@
+@model EMatrix.ViewModels.Products.ProductDetailsViewModel
+
+<link rel="stylesheet" href="~/css/products-preview-customization.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/products-accordion-customization.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/products-cart-customization.css" asp-append-version="true"/>
+
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container-fluid mt-3 products-container">
+    <ul class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
+        <span><i class="bi bi-chevron-right"></i></span>
+        <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
+        <span><i class="bi bi-chevron-right"></i></span>
+        <li>
+            <a href="@Url.Action("ProductsPrimaryView", "Products", new { id = Model.ProductMenuOption.Id, type = "Option" })">
+                @Model.ProductMenuOption.Name
+            </a>
+        </li>
+        <span><i class="bi bi-chevron-right"></i></span>
+        <li>
+            <a href="@Url.Action("ProductsSecondaryView", "Products", new { id = Model.ProductMenuOptionChild.SubGroupId, childId = Model.ProductMenuOptionChild.Id, optionId = Model.ProductMenuOption.Id })">
+                @Model.ProductMenuOptionChild.Name
+            </a>
+        </li>
+        <span><i class="bi bi-chevron-right"></i></span>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+    </ul>
+
+    <a asp-action="Index" class="btn btn-link mb-3">&larr; Back to list</a>
+
+    <div class="card shadow-sm">
+        <div class="row g-0">
+            <div class="col-md-4 text-center p-4">
+                <img src="@Url.Content(Model.Icon ?? "~/img/placeholder.png")"
+                     alt="Icon for @Model.Name"
+                     class="img-fluid rounded-3 w-75"/>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h3 class="card-title mb-2">@Model.Name</h3>
+
+                    <p class="card-text text-muted mb-3">
+                        @Model.Description
+                    </p>
+
+                    <dl class="row small">
+                        <dt class="col-sm-4">ID</dt>
+                        <dd class="col-sm-8">@Model.Id</dd>
+
+                        <dt class="col-sm-4">Price</dt>
+                        <dd class="col-sm-8">
+                            @Model.Price.ToString("0.00") @Model.Unit
+                        </dd>
+
+                        <dt class="col-sm-4">Available</dt>
+                        <dd class="col-sm-8">
+                            @(Model.Availability ? "Yes" : "No")
+                        </dd>
+
+                        <dt class="col-sm-4">Menu option</dt>
+                        <dd class="col-sm-8">@Model.ProductMenuOption.Name</dd>
+
+                        <dt class="col-sm-4">Option child</dt>
+                        <dd class="col-sm-8">@Model.ProductMenuOptionChild.Name</dd>
+                    </dl>
+
+                    @* Test button *@
+                    <button class="btn btn-primary"
+                            disabled="@(Model.Availability ? "false" : "true")">
+                        Add to cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
