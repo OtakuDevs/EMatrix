@@ -39,17 +39,26 @@ public class ManageInventoryService : IManageInventoryService
         //Apply search filter if provided
         if (!string.IsNullOrEmpty(search))
         {
-            var normalizedSearch = search.Trim().ToLower();
+            string[] tokens = search
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.ToLower())
+                .ToArray();
+
             query = query.Where(item =>
-                item.Name.ToLower().Contains(normalizedSearch)
-                || item.NameAlias.ToLower().Contains(normalizedSearch)
-                || item.Description.ToLower().Contains(normalizedSearch)
-                || item.DescriptionAlias.ToLower().Contains(normalizedSearch)
-                || item.Category.Alias.ToLower().Contains(normalizedSearch)
-                || item.Category.Name.ToLower().Contains(normalizedSearch)
-                || item.SubCategory.Alias.ToLower().Contains(normalizedSearch)
-                || item.SubCategory.Name.ToLower().Contains(normalizedSearch)
-                || EF.Functions.Like(item.Id, $"{normalizedSearch}%"));
+
+                // every token must be found in *one* of the text columns
+                tokens.All(t =>
+                    item.Name.ToLower().Contains(t) ||
+                    item.NameAlias.ToLower().Contains(t) ||
+                    item.Description.ToLower().Contains(t) ||
+                    item.DescriptionAlias.ToLower().Contains(t) ||
+                    item.SubCategory.Name.ToLower().Contains(t) ||
+                    item.SubCategory.Alias.ToLower().Contains(t) ||
+                    item.Category.Name.ToLower().Contains(t) ||
+                    item.Category.Alias.ToLower().Contains(t)
+                )
+                || EF.Functions.Like(item.Id, $"%{search}%")
+            ).OrderBy(i => i.NameAlias);
         }
 
         var totalPages = query.Count();

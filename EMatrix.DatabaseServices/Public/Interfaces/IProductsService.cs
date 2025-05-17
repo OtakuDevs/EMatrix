@@ -10,5 +10,5 @@ public interface IProductsService
 
     Task<ProductsSearchViewModel> GetSearchViewAsync(int? optionId, string type, string search, int page = 1);
 
-    Task<ProductDetailsViewModel> GetDetailsViewAsync(string id, string type = "MenuItem");
+    Task<ProductDetailsViewModel> GetDetailsViewAsync(string id);
 }

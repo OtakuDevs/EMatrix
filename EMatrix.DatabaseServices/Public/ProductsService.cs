@@ -56,13 +56,22 @@ public class ProductsService : IProductsService
 
         if (!string.IsNullOrEmpty(search))
         {
-            var normalizedSearch = search.Trim().ToLower();
-            query = query.Where(i =>
-                    i.NameAlias.ToLower().Contains(normalizedSearch) ||
-                    i.DescriptionAlias.ToLower().Contains(normalizedSearch) ||
-                    i.SubCategory.Alias.ToLower().Contains(normalizedSearch) ||
-                    i.Category.Alias.ToLower().Contains(normalizedSearch))
-                .OrderBy(i => i.NameAlias);
+            string[] tokens = search
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.ToLower())
+                .ToArray();
+
+            query = query.Where(item =>
+
+                // every token must be found in *one* of the text columns
+                tokens.All(t =>
+                    item.NameAlias.ToLower().Contains(t) ||
+                    item.DescriptionAlias.ToLower().Contains(t) ||
+                    item.SubCategory.Alias.ToLower().Contains(t) ||
+                    item.Category.Alias.ToLower().Contains(t)
+                )
+                || EF.Functions.Like(item.Id, $"%{search}%")
+            ).OrderBy(i => i.NameAlias);
         }
 
         var totalPages = (int)Math.Ceiling((double)query.Count() / pageSize);
@@ -154,14 +163,22 @@ public class ProductsService : IProductsService
             }
         }
 
-        var normalizedSearch = search.Trim().ToLower();
-        query = query.Where(i =>
-                i.NameAlias.ToLower().Contains(normalizedSearch) ||
-                i.DescriptionAlias.ToLower().Contains(normalizedSearch) ||
-                i.SubCategory.Alias.ToLower().Contains(normalizedSearch) ||
-                i.Category.Alias.ToLower().Contains(normalizedSearch) ||
-                EF.Functions.Like(i.Id, $"{normalizedSearch}%"))
-            .OrderBy(i => i.NameAlias);
+        string[] tokens = search
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Select(t => t.ToLower())
+            .ToArray();
+
+        query = query.Where(item =>
+
+            // every token must be found in *one* of the text columns
+            tokens.All(t =>
+                item.NameAlias.ToLower().Contains(t) ||
+                item.DescriptionAlias.ToLower().Contains(t) ||
+                item.SubCategory.Alias.ToLower().Contains(t) ||
+                item.Category.Alias.ToLower().Contains(t)
+            )
+            || EF.Functions.Like(item.Id, $"%{search}%")
+        ).OrderBy(i => i.NameAlias);
 
         var totalPages = (int)Math.Ceiling((double)query.Count() / pageSize);
 
@@ -197,7 +214,7 @@ public class ProductsService : IProductsService
         return model;
     }
 
-    public async Task<ProductDetailsViewModel> GetDetailsViewAsync(string id, string type = "MenuItem")
+    public async Task<ProductDetailsViewModel> GetDetailsViewAsync(string id)
     {
         var item = await _context.InventoryItems
             .Include(i => i.SubCategory)
@@ -207,6 +224,8 @@ public class ProductsService : IProductsService
             .FirstOrDefault(c =>
                 (c.SubGroupId != null && c.SubGroupId == item.SubCategoryId) ||
                 (c.SubGroupSetId != null && c.SubGroupSet.Items.Any(s => s.SubGroupId == item.SubCategoryId)));
+        var option = await GetMenuOptionAsync(menuOptionChild.MenuOption.Id);
+        var accordion = GetAccordionForMenuOptionAsync(option, "Option");
 
         var model = new ProductDetailsViewModel()
         {
@@ -227,8 +246,17 @@ public class ProductsService : IProductsService
                 Id = menuOptionChild.Id,
                 Name = menuOptionChild.DisplayName,
                 SubGroupId = item.SubCategoryId
+            },
+            Accordion = new AccordionViewModel()
+            {
+                Type = accordion.Type,
+                SelectedSubGroupId = item.SubCategoryId,
+                SelectedSubGroupName = item.SubCategory.Alias,
+                SelectedChildId = menuOptionChild.Id,
+                Options = accordion.Options,
             }
         };
+
         return model;
     }
 
@@ -264,6 +292,7 @@ public class ProductsService : IProductsService
                         ? null
                         : o.SubGroupSet!.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
                 })
+                .OrderBy(o => o.Name)
                 .ToList(),
         };
         var model = new AccordionViewModel()
@@ -299,6 +328,7 @@ public class ProductsService : IProductsService
                     ? new Dictionary<string, string> { { o.SubGroup!.Id, o.SubGroup.Name } }
                     : o.SubGroupSet!.Items.ToDictionary(sc => sc.SubGroupId, sc => sc.SubGroup.Alias)
             })
+            .OrderBy(o => o.Name)
             .ToList();
 
         return new MenuPreviewViewModel() { Id = option.Id, Type = type, Options = options };

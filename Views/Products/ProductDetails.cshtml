@@ -30,7 +30,11 @@
         <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
     </ul>
 
-    <a asp-action="Index" class="btn btn-link mb-3">&larr; Back to list</a>
+    <div class="products-preview">
+        <div class="products-accordion-col">
+            @await Html.PartialAsync("_AccordionPartial", Model.Accordion)
+        </div>
+    </div>
 
     <div class="card shadow-sm">
         <div class="row g-0">

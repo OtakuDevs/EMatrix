@@ -19,6 +19,8 @@ public class ProductDetailsViewModel
     public OptionModel ProductMenuOption { get; set; }
 
     public OptionModel ProductMenuOptionChild { get; set; }
+
+    public AccordionViewModel Accordion { get; set; }
 }
 
 public class OptionModel()

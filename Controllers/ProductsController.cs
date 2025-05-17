@@ -61,11 +61,11 @@ public class ProductsController : Controller
         }
     }
 
-    public async Task<IActionResult> ProductDetails(string id, string type = "MenuItem")
+    public async Task<IActionResult> ProductDetails(string id)
     {
         try
         {
-            var model = await _productsService.GetDetailsViewAsync(id, type);
+            var model = await _productsService.GetDetailsViewAsync(id);
             return View(model);
         }
         catch (Exception e)
