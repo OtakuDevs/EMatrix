@@ -16,11 +16,11 @@ public class ProductDetailsViewModel
 
     public string Unit { get; set; }
 
-    public OptionModel ProductMenuOption { get; set; }
+    public OptionModel ProductMenuOption { get; set; } = new OptionModel();
 
-    public OptionModel ProductMenuOptionChild { get; set; }
+    public OptionModel ProductMenuOptionChild { get; set; } = new OptionModel();
 
-    public AccordionViewModel Accordion { get; set; }
+    public AccordionViewModel Accordion { get; set; } = new AccordionViewModel();
 }
 
 public class OptionModel()

@@ -10,29 +10,77 @@
 }
 
 <div class="container-fluid mt-3 products-container">
-    <ul class="breadcrumb">
-        <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
-        <span><i class="bi bi-chevron-right"></i></span>
-        <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
-        <span><i class="bi bi-chevron-right"></i></span>
-        <li>
-            <a href="@Url.Action("ProductsPrimaryView", "Products", new { id = Model.ProductMenuOption.Id, type = "Option" })">
-                @Model.ProductMenuOption.Name
-            </a>
-        </li>
-        <span><i class="bi bi-chevron-right"></i></span>
-        <li>
-            <a href="@Url.Action("ProductsSecondaryView", "Products", new { id = Model.ProductMenuOptionChild.SubGroupId, childId = Model.ProductMenuOptionChild.Id, optionId = Model.ProductMenuOption.Id })">
-                @Model.ProductMenuOptionChild.Name
-            </a>
-        </li>
-        <span><i class="bi bi-chevron-right"></i></span>
-        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
-    </ul>
+    @switch (Model.Accordion.Type)
+    {
+        case "MenuItem":
+            <ul class="breadcrumb">
+                <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
+                <span><i class="bi bi-chevron-right"></i></span>
+                <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
+            </ul>
+            break;
+        case "Option":
+            <ul class="breadcrumb">
+                <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
+                <span><i class="bi bi-chevron-right"></i></span>
+                <li><a href="@Url.Action("ProductsPrimaryView", "Products")">Продукти</a></li>
+                <span><i class="bi bi-chevron-right"></i></span>
+                <li>
+                    <a href="@Url.Action("ProductsPrimaryView", "Products", new { id = Model.ProductMenuOption.Id, type = "Option" })">
+                        @Model.ProductMenuOption.Name
+                    </a>
+                </li>
+                <span><i class="bi bi-chevron-right"></i></span>
+                <li>
+                    <a href="@Url.Action("ProductsSecondaryView", "Products", new { id = Model.ProductMenuOptionChild.SubGroupId, childId = Model.ProductMenuOptionChild.Id, optionId = Model.ProductMenuOption.Id })">
+                        @Model.ProductMenuOptionChild.Name
+                    </a>
+                </li>
+                <span><i class="bi bi-chevron-right"></i></span>
+                <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+            </ul>
+            break;
+    }
 
     <div class="products-preview">
         <div class="products-accordion-col">
             @await Html.PartialAsync("_AccordionPartial", Model.Accordion)
+        </div>
+        <div class="products-content-col">
+            <div class="products-content-header">
+                <div class="helper-buttons">
+                    <a href="@Url.Action("Privacy", "Home")" id="help" class="btn btn-outline-secondary">
+                        <i class="bi bi-question-circle"></i>
+                        Помощ
+                    </a>
+                </div>
+                <div class="cart-wrapper">
+                    <div id="cart" class="dropdown">
+                        <a class="dropdown-toggle cart-heading" href="#" aria-expanded="false">
+                            <span id="cart-total">0 продукт(а) - 0.00лв.</span>
+                            <div class="icon-wrapper">
+                                <i class="bi bi-cart3"></i>
+                                <span id="cart-items" class="count-badge count-zero">0</span>
+                            </div>
+                        </a>
+                        <div id="cart-content" class="dropdown-menu cart-content j-dropdown">
+                            <div class="cart-content-header">
+                                <div class="cart-header-item">Артикул</div>
+                                <div class="cart-header-qty">Количество</div>
+                                <div class="cart-header-price">Цена</div>
+                            </div>
+                            <ul id="cart-list">
+                                <li>
+                                    <p class="text-center cart-empty">Вашата количка е празна!</p>
+                                </li>
+                            </ul>
+                            <div class="cart-content-footer">
+                                Общо: <span id="cart-footer-total">0.00 лв.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

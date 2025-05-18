@@ -224,6 +224,24 @@ public class ProductsService : IProductsService
             .FirstOrDefault(c =>
                 (c.SubGroupId != null && c.SubGroupId == item.SubCategoryId) ||
                 (c.SubGroupSetId != null && c.SubGroupSet.Items.Any(s => s.SubGroupId == item.SubCategoryId)));
+        if (menuOptionChild == null)
+        {
+            var menuItems = await GetMenuItemsAsync();
+            var accordionDefault = GetAccordionForMenuItemAsync(menuItems, "MenuItem");
+
+            var modelDefault = new ProductDetailsViewModel()
+            {
+                Id = item.Id,
+                Name = item.NameAlias,
+                Description = item.DescriptionAlias,
+                Icon = "/images/default/placeholder.png",
+                Price = item.Price,
+                Availability = item.Quantity > 0,
+                Unit = item.Unit,
+                Accordion = accordionDefault,
+            };
+            return modelDefault;
+        }
         var option = await GetMenuOptionAsync(menuOptionChild.MenuOption.Id);
         var accordion = GetAccordionForMenuOptionAsync(option, "Option");
 

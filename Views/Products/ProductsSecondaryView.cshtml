@@ -106,7 +106,7 @@
                                 </div>
 
                                 <div class="product-content-footer">
-                                    <button class="btn btn-main btn-sm text-nowrap">Преглед</button>
+                                    <a asp-action="ProductDetails" asp-route-id="@item.Id" asp-route-type="@Model.Accordion.Type" class="btn btn-main btn-sm text-nowrap">Преглед</a>
                                     @if (item.Availability)
                                     {
                                         <button class="btn btn-main btn-sm text-nowrap" onclick="addProductToCart(this)">Добави в количка</button>
