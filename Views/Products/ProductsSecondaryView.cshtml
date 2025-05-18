@@ -89,6 +89,7 @@
                                 <div class="product-content-header">
                                     <p class="product-title">@item.NameAlias</p>
                                     <p class="text-muted product-subcategory">@item.SubCategory</p>
+                                    <p class="product-description">@item.DescriptionAlias</p>
                                 </div>
 
                                 <div class="product-content-body">
@@ -106,10 +107,13 @@
                                 </div>
 
                                 <div class="product-content-footer">
-                                    <a asp-action="ProductDetails" asp-route-id="@item.Id" asp-route-type="@Model.Accordion.Type" class="btn btn-main btn-sm text-nowrap">Преглед</a>
+                                    <a asp-action="ProductDetails" asp-route-id="@item.Id"
+                                       asp-route-type="@Model.Accordion.Type" class="btn btn-main btn-sm text-nowrap">Преглед</a>
                                     @if (item.Availability)
                                     {
-                                        <button class="btn btn-main btn-sm text-nowrap" onclick="addProductToCart(this)">Добави в количка</button>
+                                        <button class="btn btn-main btn-sm text-nowrap"
+                                                onclick="addProductToCart(this)">Добави в количка
+                                        </button>
                                     }
                                     else
                                     {

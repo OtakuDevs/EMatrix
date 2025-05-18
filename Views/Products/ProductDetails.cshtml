@@ -81,53 +81,57 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+            <div class="products-content-body">
+                <div class="product-details-card">
+                    <div class="details-card-header">
+                        <img src="@Url.Content(Model.Icon ?? "~/img/placeholder.png")"
+                             alt="Icon for @Model.Name"
+                             class="details-card-image"/>
+                    </div>
+                    <div class="details-card-body">
+                        <h3 class="card-title mb-2">@Model.Name</h3>
 
-    <div class="card shadow-sm">
-        <div class="row g-0">
-            <div class="col-md-4 text-center p-4">
-                <img src="@Url.Content(Model.Icon ?? "~/img/placeholder.png")"
-                     alt="Icon for @Model.Name"
-                     class="img-fluid rounded-3 w-75"/>
-            </div>
+                        <ul>
+                            @foreach (var item in @Model.Description)
+                            {
+                                <li>@item</li>
+                            }
+                        </ul>
+                        <dl class="row small">
+                            <dt class="col-sm-4">ID</dt>
+                            <dd class="col-sm-8">@Model.Id</dd>
 
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h3 class="card-title mb-2">@Model.Name</h3>
+                            <dt class="col-sm-4">Price</dt>
+                            <dd class="col-sm-8">
+                                @Model.Price.ToString("0.00") @Model.Unit
+                            </dd>
 
-                    <p class="card-text text-muted mb-3">
-                        @Model.Description
-                    </p>
+                            <dt class="col-sm-4">Available</dt>
+                            <dd class="col-sm-8">
+                                @(Model.Availability ? "Yes" : "No")
+                            </dd>
 
-                    <dl class="row small">
-                        <dt class="col-sm-4">ID</dt>
-                        <dd class="col-sm-8">@Model.Id</dd>
+                            <dt class="col-sm-4">Menu option</dt>
+                            <dd class="col-sm-8">@Model.ProductMenuOption.Name</dd>
 
-                        <dt class="col-sm-4">Price</dt>
-                        <dd class="col-sm-8">
-                            @Model.Price.ToString("0.00") @Model.Unit
-                        </dd>
+                            <dt class="col-sm-4">Option child</dt>
+                            <dd class="col-sm-8">@Model.ProductMenuOptionChild.Name</dd>
+                        </dl>
 
-                        <dt class="col-sm-4">Available</dt>
-                        <dd class="col-sm-8">
-                            @(Model.Availability ? "Yes" : "No")
-                        </dd>
-
-                        <dt class="col-sm-4">Menu option</dt>
-                        <dd class="col-sm-8">@Model.ProductMenuOption.Name</dd>
-
-                        <dt class="col-sm-4">Option child</dt>
-                        <dd class="col-sm-8">@Model.ProductMenuOptionChild.Name</dd>
-                    </dl>
-
-                    @* Test button *@
-                    <button class="btn btn-primary"
-                            disabled="@(Model.Availability ? "false" : "true")">
-                        Add to cart
-                    </button>
+                        @* Test button *@
+                        <button class="btn btn-primary"
+                                disabled="@(Model.Availability ? "false" : "true")">
+                            Add to cart
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script src="~/js/cart-render-and-update.js" asp-append-version="true"></script>
+
+}

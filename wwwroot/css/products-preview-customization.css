@@ -422,3 +422,30 @@
     flex-direction: row;
     margin-left: auto;
 }
+
+/* Product details */
+.product-details-card {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+    transition: background-color 0.2s ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.16) 0 3px 6px, rgba(0, 0, 0, 0.23) 0 3px 6px;
+}
+
+.details-card-header {
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.details-card-image {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--font-color);
+}

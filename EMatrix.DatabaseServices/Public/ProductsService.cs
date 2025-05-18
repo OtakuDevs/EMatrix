@@ -233,7 +233,7 @@ public class ProductsService : IProductsService
             {
                 Id = item.Id,
                 Name = item.NameAlias,
-                Description = item.DescriptionAlias,
+                Description = item.DescriptionAlias.Split(";").ToList(),
                 Icon = "/images/default/placeholder.png",
                 Price = item.Price,
                 Availability = item.Quantity > 0,
@@ -249,7 +249,7 @@ public class ProductsService : IProductsService
         {
             Id = item.Id,
             Name = item.NameAlias,
-            Description = item.DescriptionAlias,
+            Description = item.DescriptionAlias.Split(";").ToList(),
             Icon = menuOptionChild.Icon,
             Price = item.Price,
             Availability = item.Quantity > 0,

@@ -168,7 +168,7 @@ public class ManageInventoryService : IManageInventoryService
         if (item == null)
             throw new KeyNotFoundException();
         item.NameAlias = string.IsNullOrEmpty(nameAlias) ? item.NameAlias : nameAlias;
-        item.Description = string.IsNullOrEmpty(descriptionAlias) ? item.Description : descriptionAlias;
+        item.DescriptionAlias = string.IsNullOrEmpty(descriptionAlias) ? item.Description : descriptionAlias;
         item.Quantity = quantity;
         item.Price = price;
         _context.InventoryItems.Update(item);

@@ -114,4 +114,8 @@
     transform: rotate(90deg); /* Arrow rotates when expanded */
 }
 
+#newItemDescriptionAlias,
+#oldItemDescriptionAlias {
+    min-height: 100px;
+}
 

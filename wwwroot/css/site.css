@@ -113,7 +113,7 @@ input, select, textarea {
   border-color: var(--color-opacity-3) !important;
 }
 
-input:read-only {
+input:read-only, textarea:read-only {
   background: var(--color-opacity-1) !important;
 }
 
