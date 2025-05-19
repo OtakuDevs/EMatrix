@@ -21,6 +21,8 @@ public class ProductDetailsViewModel
     public OptionModel ProductMenuOptionChild { get; set; } = new OptionModel();
 
     public AccordionViewModel Accordion { get; set; } = new AccordionViewModel();
+
+    public List<ProductListingViewModel> SimilarProducts { get; set; } = new List<ProductListingViewModel>();
 }
 
 public class OptionModel()

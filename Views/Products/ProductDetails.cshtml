@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="products-content-body">
-                <div class="product-details-card">
+                <div class="product-details-card mb-4">
                     <div class="details-card-left">
                         <img src="@Url.Content(Model.Icon ?? "~/img/placeholder.png")"
                              alt="Icon for @Model.Name"
@@ -137,6 +137,42 @@
                             <button class="btn btn-main btn-sm text-nowrap">Запитване</button>
                         }
                     </div>
+                </div>
+                <h3 class="text-center similar-products-title">Подобни продукти</h3>
+                <hr class="mt-1"/>
+                <div class="similar-products">
+                    @foreach (var item in Model.SimilarProducts)
+                    {
+                        <div class="product-card">
+                            <p class="product-code"><span>Код: </span>@item.Id</p>
+                            <img class="product-image" src="@Url.Content(item.Icon)" alt="icon"/>
+                            <div class="product-content">
+                                <div class="product-content-header">
+                                    <p class="product-title">@item.NameAlias</p>
+                                    <p class="text-muted product-subcategory">@item.SubCategory</p>
+                                </div>
+
+                                <div class="product-content-body">
+                                    <p class="product-price align-content-center">
+                                        <span>Цена: </span>@item.Price.ToString("F2", new System.Globalization.CultureInfo("bg-BG")) лв.
+                                    </p>
+                                    @if (item.Availability)
+                                    {
+                                        <p class="text-success">Налично</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-danger">Изчерпано</p>
+                                    }
+                                </div>
+
+                                <div class="product-content-footer">
+                                    <a asp-action="ProductDetails" asp-route-id="@item.Id"
+                                       asp-route-type="@Model.Accordion.Type" class="btn btn-main btn-sm text-nowrap">Преглед</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

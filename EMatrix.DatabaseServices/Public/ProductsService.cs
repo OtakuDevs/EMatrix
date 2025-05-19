@@ -216,7 +216,37 @@ public class ProductsService : IProductsService
     {
         var item = await _context.InventoryItems
             .Include(i => i.SubCategory)
+            .Include(c => c.Category)
             .FirstOrDefaultAsync(i => i.Id == id);
+        string[] tokens = item.Description         // tokens from the *current* item
+            .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(t => t.ToLowerInvariant().Trim())   // ⇒ ["12V", "1W", "DO41" …]
+            .ToArray();
+
+// search pattern:  ";12v;"  (leading + trailing delimiter, lower-case)
+        var patterns = tokens.Select(t => $";{t};").ToArray();
+
+        var similarProducts = await _context.InventoryItems
+            .Include(i => i.SubCategory)
+            .Include(c => c.Category)
+            .Where(i =>
+                i.CategoryId == item.CategoryId &&
+                patterns.Any(p =>
+                    // add ';' at start & end of DB description before searching
+                    (";" + i.Description.ToLower() + ";").Contains(p)))
+            .OrderBy(i => i.NameAlias)
+            .Select(i => new ProductListingViewModel
+            {
+                Id           = i.Id,
+                SubCategory  = i.SubCategory.Alias,
+                NameAlias    = i.NameAlias,
+                Icon         = "/images/default/placeholder.png",
+                Price        = i.Price,
+                Availability = i.Quantity > 0
+            })
+            .ToListAsync();
+
+
         var menuOptionChild = _context.MenuOptionChildren
             .Include(o => o.MenuOption)
             .FirstOrDefault(c =>
@@ -243,6 +273,7 @@ public class ProductsService : IProductsService
                 Availability = item.Quantity > 0,
                 Unit = item.Unit,
                 Accordion = accordionDefault,
+                SimilarProducts = similarProducts
             };
             return modelDefault;
         }
@@ -282,7 +313,8 @@ public class ProductsService : IProductsService
                 SelectedSubGroupName = item.SubCategory.Alias,
                 SelectedChildId = menuOptionChild.Id,
                 Options = accordion.Options,
-            }
+            },
+            SimilarProducts = similarProducts
         };
 
         return model;
