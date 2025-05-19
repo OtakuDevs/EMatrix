@@ -8,8 +8,6 @@ public class ProductListingViewModel
 
     public string NameAlias  { get; set; } = null!;
 
-    public string? DescriptionAlias  { get; set; }
-
     public string Icon { get; set; } = null!;
 
     public float Price { get; set; }

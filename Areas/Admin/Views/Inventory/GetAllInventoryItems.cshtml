@@ -176,7 +176,7 @@
 </div>
 
 <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="min-width: 760px;">
         <form method="post" asp-action="UpdateInventoryItem">
             <div class="modal-content">
                 <div class="modal-header">
@@ -210,8 +210,41 @@
                             <input type="number" class="form-control" id="item-price" name="price" step="any" />
                             <label for="item-price">Цена</label>
                         </div>
-
                     </div>
+                    <fieldset class="mb-3 p-3 border rounded-2 bg-light-subtle">
+                        <legend class="float-none w-auto px-2 small text-muted">
+                            Формат на публичното описание
+                        </legend>
+
+                        <p class="mb-2">
+                            За да се показват автоматично характеристиките на артикула като
+                            подредена таблица в страницата с детайли, въведете описанието като
+                            <strong>последователност от двойки</strong>
+                            <kbd>Ключ&nbsp;: Стойност</kbd>,
+                            разделени с <kbd>;</kbd>.
+                        </p>
+
+                        <p class="mb-2">
+                            <u>Пример&nbsp;— така изглежда във формата за редакция&nbsp;…</u><br>
+                            <code class="d-block text-break">
+                                Напрежение: 3.3 V; Максимална мощност: 1 W;
+                                Еквивалентни части: BZX85C3V3, 1N4728; Корпус: DO-41
+                            </code>
+                        </p>
+
+                        <p class="mb-0">
+                            … и така се визуализира при клиента:
+                        </p>
+
+                        <ul class="mb-0 ps-4">
+                            <li><b>Напрежение</b>: 3.3 V</li>
+                            <li><b>Максимална мощност</b>: 1 W</li>
+                            <li><b>Еквивалентни части</b>: BZX85C3V3, 1N4728</li>
+                            <li><b>Корпус</b>: DO-41</li>
+                        </ul>
+                    </fieldset>
+
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Отказ</button>

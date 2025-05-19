@@ -24,6 +24,30 @@ function addProductToCart(button) {
     updateCartUI();
 }
 
+function addProductToCartFromDetails(button) {
+    const card = button.closest('.product-details-card');
+
+    const idText = card.querySelector('.product-code')?.textContent.trim();
+    const id = idText?.split(":")[1]?.trim();
+    const name = card.querySelector('.product-title')?.textContent.trim();
+    let subgroup = card.querySelector('.item-subcategory')?.textContent.trim();
+    if(subgroup === undefined) {
+        subgroup = "";
+    }
+    const icon = card.querySelector('img').getAttribute('src');
+    const priceText = card.querySelector('.product-price')?.textContent.trim();
+    const price = parseFloat(priceText?.replace("лв.", "").trim().replace(',', '.')) || 0;
+
+    const existing = cart.find(p => p.id === id);
+    if (existing) {
+        existing.qty += 1;
+    } else {
+        cart.push({id, name, subgroup, icon, price, qty: 1});
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartUI();
+}
+
 function changeQty(id, delta) {
     const item = cart.find(p => p.id === id);
     if (!item) return;

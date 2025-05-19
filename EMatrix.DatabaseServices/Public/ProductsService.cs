@@ -89,7 +89,6 @@ public class ProductsService : IProductsService
                 Id = i.Id,
                 SubCategory = i.SubCategory.Alias,
                 NameAlias = i.NameAlias,
-                DescriptionAlias = i.DescriptionAlias,
                 Icon = childIcon,
                 Price = i.Price,
                 Availability = i.Quantity > 0
@@ -198,7 +197,6 @@ public class ProductsService : IProductsService
                 Id = i.Id,
                 SubCategory = i.SubCategory.Alias,
                 NameAlias = i.NameAlias,
-                DescriptionAlias = i.DescriptionAlias,
                 Icon = menuOptionChildren
                     .FirstOrDefault(c =>
                         (c.SubGroupId != null && c.SubGroupId == i.SubCategoryId) ||
@@ -233,7 +231,13 @@ public class ProductsService : IProductsService
             {
                 Id = item.Id,
                 Name = item.NameAlias,
-                Description = item.DescriptionAlias.Split(";").ToList(),
+                Description = item.DescriptionAlias.Split(';', StringSplitOptions.RemoveEmptyEntries)          // "k : v" pieces
+                    .Select(piece =>
+                    {
+                        var parts = piece.Split(':', 2, StringSplitOptions.TrimEntries); // split on FIRST ':'
+                        return (Key: parts[0], Value: parts.Length > 1 ? parts[1] : "");
+                    })
+                    .ToDictionary(x => x.Key, x => x.Value),
                 Icon = "/images/default/placeholder.png",
                 Price = item.Price,
                 Availability = item.Quantity > 0,
@@ -249,7 +253,13 @@ public class ProductsService : IProductsService
         {
             Id = item.Id,
             Name = item.NameAlias,
-            Description = item.DescriptionAlias.Split(";").ToList(),
+            Description = item.DescriptionAlias.Split(';', StringSplitOptions.RemoveEmptyEntries)          // "k : v" pieces
+                .Select(piece =>
+                {
+                    var parts = piece.Split(':', 2, StringSplitOptions.TrimEntries); // split on FIRST ':'
+                    return (Key: parts[0], Value: parts.Length > 1 ? parts[1] : "");
+                })
+                .ToDictionary(x => x.Key, x => x.Value),
             Icon = menuOptionChild.Icon,
             Price = item.Price,
             Availability = item.Quantity > 0,

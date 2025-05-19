@@ -83,46 +83,59 @@
             </div>
             <div class="products-content-body">
                 <div class="product-details-card">
-                    <div class="details-card-header">
+                    <div class="details-card-left">
                         <img src="@Url.Content(Model.Icon ?? "~/img/placeholder.png")"
                              alt="Icon for @Model.Name"
                              class="details-card-image"/>
                     </div>
-                    <div class="details-card-body">
-                        <h3 class="card-title mb-2">@Model.Name</h3>
+                    <div class="details-card-right">
+                        <div class="details-card-header">
+                            <div class="d-flex flex-column">
+                                <h3 class="product-title">@Model.Name</h3>
+                                <p class="product-code text-muted">Код: @Model.Id</p>
+                            </div>
+                            <p class="product-price">@Model.Price.ToString("0.00") лв.</p>
+                        </div>
+                        @if (Model.ProductMenuOption.Name != null && Model.ProductMenuOptionChild.Name != null)
+                        {
+                            <div class="product-categories">
+                                <p class="text-muted m-0">Категории:</p>
+                                <a href="@Url.Action("ProductsPrimaryView", "Products", new { id = Model.ProductMenuOption.Id, type = "Option" })">
+                                    @Model.ProductMenuOption.Name
+                                </a>
+                                <a href="@Url.Action("ProductsSecondaryView", "Products", new { id = Model.ProductMenuOptionChild.SubGroupId, childId = Model.ProductMenuOptionChild.Id, optionId = Model.ProductMenuOption.Id })">
+                                    @Model.ProductMenuOptionChild.Name
+                                </a>
+                            </div>
+                        }
 
-                        <ul>
-                            @foreach (var item in @Model.Description)
+                        @if (Model.Availability)
+                        {
+                            <p class="text-success">Налично</p>
+                        }
+                        else
+                        {
+                            <p class="text-danger">Изчерпано</p>
+                        }
+
+                        <dl class="row small product-specs">
+                            @foreach (var item in Model.Description)
                             {
-                                <li>@item</li>
+                                <dt class="col-sm-4">@item.Key</dt>
+                                <dd class="col-sm-8">@item.Value</dd>
                             }
-                        </ul>
-                        <dl class="row small">
-                            <dt class="col-sm-4">ID</dt>
-                            <dd class="col-sm-8">@Model.Id</dd>
-
-                            <dt class="col-sm-4">Price</dt>
-                            <dd class="col-sm-8">
-                                @Model.Price.ToString("0.00") @Model.Unit
-                            </dd>
-
-                            <dt class="col-sm-4">Available</dt>
-                            <dd class="col-sm-8">
-                                @(Model.Availability ? "Yes" : "No")
-                            </dd>
-
-                            <dt class="col-sm-4">Menu option</dt>
-                            <dd class="col-sm-8">@Model.ProductMenuOption.Name</dd>
-
-                            <dt class="col-sm-4">Option child</dt>
-                            <dd class="col-sm-8">@Model.ProductMenuOptionChild.Name</dd>
                         </dl>
 
-                        @* Test button *@
-                        <button class="btn btn-primary"
-                                disabled="@(Model.Availability ? "false" : "true")">
-                            Add to cart
-                        </button>
+                        @if (Model.Availability)
+                        {
+                            <button class="btn btn-main btn-sm text-nowrap"
+                                    onclick="addProductToCartFromDetails(this)">Добави в количка
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-main btn-sm text-nowrap">Запитване</button>
+                        }
                     </div>
                 </div>
             </div>
