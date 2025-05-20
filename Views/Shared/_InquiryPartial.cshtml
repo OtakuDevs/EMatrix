@@ -1,0 +1,55 @@
+
+<link rel="stylesheet" href="~/css/inquiry-partial-customization.css" asp-append-version="true"/>
+
+
+<div class="inquiryContainer">
+    <h2 class="text-center">Запитване за продукт</h2>
+    <div class="inquiryWrapper">
+        <div class="mb-3">
+            <label for="inquiryReason" class="form-label">Причина за запитването</label>
+            <select class="form-select" id="inquiryReason" name="inquiryReason" required>
+                <option value="" selected disabled>Изберете причина</option>
+                <option value="availability">Наличност на продукт</option>
+                <option value="compatibility">Съвместимост или технически въпроси</option>
+                <option value="price">Цена или оферта</option>
+                <option value="delivery">Доставка и срокове</option>
+                <option value="customOrder">Поръчка на нестандартен артикул</option>
+                <option value="other">Друго</option>
+            </select>
+        </div>
+
+        <div class="data-row">
+            <div class="mb-3">
+                <label for="name" class="form-label">Вашето име*</label>
+                <input id="name" class="form-control" placeholder="Собствено Фамилно" required/>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Вашият Email*</label>
+                <input id="email" class="form-control" placeholder="Собствено Фамилно" required/>
+            </div>
+        </div>
+        <div class="data-row">
+            <div class="mb-3">
+                <label for="number" class="form-label">Телефон*</label>
+                <input id="number" class="form-control" placeholder="+359 XXX XXX XXX" required/>
+            </div>
+            <div class="mb-3">
+                <label for="company" class="form-label">Фирма</label>
+                <input id="company" class="form-control" placeholder="Име на фирма"/>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="product" class="form-label">Име на продукта</label>
+            <input id="product" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label for="info" class="form-label">Допълнителна информация</label>
+            <textarea id="info" class="form-control" placeholder="Допълнителна информация/коментар"></textarea>
+        </div>
+        <label>
+            <input type="checkbox" name="gdpr-consent" value="1" aria-invalid="false">
+            <span>Давам съгласие личните ми данни да бъдат използвани за целите на запитването</span>
+        </label>
+    </div>
+</div>
+
