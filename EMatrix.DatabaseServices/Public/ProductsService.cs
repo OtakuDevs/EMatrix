@@ -218,34 +218,43 @@ public class ProductsService : IProductsService
             .Include(i => i.SubCategory)
             .Include(c => c.Category)
             .FirstOrDefaultAsync(i => i.Id == id);
-        string[] tokens = item.Description         // tokens from the *current* item
+        string[] tokens = item.Description
             .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-            .Select(t => t.ToLowerInvariant().Trim())   // ⇒ ["12V", "1W", "DO41" …]
+            .Select(t => t.ToLowerInvariant().Trim())
             .ToArray();
 
-// search pattern:  ";12v;"  (leading + trailing delimiter, lower-case)
         var patterns = tokens.Select(t => $";{t};").ToArray();
 
-        var similarProducts = await _context.InventoryItems
+// Fetch possible candidates with any match
+        var potentialMatches = await _context.InventoryItems
             .Include(i => i.SubCategory)
-            .Include(c => c.Category)
+            .Include(i => i.Category)
+            .Where(i => i.CategoryId == item.CategoryId &&
+                        i.Id != item.Id &&
+                        patterns.Any(p => (";" + i.Description.ToLower() + ";").Contains(p)))
+            .ToListAsync(); // move to memory here
+
+// Now filter for at least 3 matches
+        var similarProducts = potentialMatches
             .Where(i =>
-                i.CategoryId == item.CategoryId &&
-                patterns.Any(p =>
-                    // add ';' at start & end of DB description before searching
-                    (";" + i.Description.ToLower() + ";").Contains(p)))
+            {
+                string description = ";" + i.Description.ToLower() + ";";
+                int matchCount = patterns.Count(p => description.Contains(p));
+                return matchCount >= 3;
+            })
             .OrderBy(i => i.NameAlias)
             .Select(i => new ProductListingViewModel
             {
-                Id           = i.Id,
-                SubCategory  = i.SubCategory.Alias,
-                NameAlias    = i.NameAlias,
-                Icon         = "/images/default/placeholder.png",
-                Price        = i.Price,
+                Id = i.Id,
+                SubCategory = i.SubCategory.Alias,
+                NameAlias = i.NameAlias,
+                Icon =  _context.MenuOptionChildren
+                    .FirstOrDefault(c => c.SubGroupId != null && c.SubGroupId == i.SubCategoryId
+                    || c.SubGroupSetId != null && c.SubGroupSet.Items.Any(s => s.SubGroupId == i.SubCategoryId)).Icon,
+                Price = i.Price,
                 Availability = i.Quantity > 0
             })
-            .ToListAsync();
-
+            .ToList();
 
         var menuOptionChild = _context.MenuOptionChildren
             .Include(o => o.MenuOption)

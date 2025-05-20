@@ -141,36 +141,47 @@
                 <h3 class="text-center similar-products-title">Подобни продукти</h3>
                 <hr class="mt-1"/>
                 <div class="similar-products">
-                    @foreach (var item in Model.SimilarProducts)
+                    @if (Model.SimilarProducts.Any())
                     {
-                        <div class="product-card">
-                            <p class="product-code"><span>Код: </span>@item.Id</p>
-                            <img class="product-image" src="@Url.Content(item.Icon)" alt="icon"/>
-                            <div class="product-content">
-                                <div class="product-content-header">
-                                    <p class="product-title">@item.NameAlias</p>
-                                    <p class="text-muted product-subcategory">@item.SubCategory</p>
-                                </div>
+                        @foreach (var item in Model.SimilarProducts)
+                        {
+                            <div class="product-card">
+                                <p class="product-code"><span>Код: </span>@item.Id</p>
+                                <img class="product-image" src="@Url.Content(item.Icon)" alt="icon"/>
+                                <div class="product-content">
+                                    <div class="product-content-header">
+                                        <p class="product-title">@item.NameAlias</p>
+                                        <p class="text-muted product-subcategory">@item.SubCategory</p>
+                                    </div>
 
-                                <div class="product-content-body">
-                                    <p class="product-price align-content-center">
-                                        <span>Цена: </span>@item.Price.ToString("F2", new System.Globalization.CultureInfo("bg-BG")) лв.
-                                    </p>
-                                    @if (item.Availability)
-                                    {
-                                        <p class="text-success">Налично</p>
-                                    }
-                                    else
-                                    {
-                                        <p class="text-danger">Изчерпано</p>
-                                    }
-                                </div>
+                                    <div class="product-content-body">
+                                        <p class="product-price align-content-center">
+                                            <span>Цена: </span>@item.Price.ToString("F2", new System.Globalization.CultureInfo("bg-BG")) лв.
+                                        </p>
+                                        @if (item.Availability)
+                                        {
+                                            <p class="text-success">Налично</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-danger">Изчерпано</p>
+                                        }
+                                    </div>
 
-                                <div class="product-content-footer">
-                                    <a asp-action="ProductDetails" asp-route-id="@item.Id"
-                                       asp-route-type="@Model.Accordion.Type" class="btn btn-main btn-sm text-nowrap">Преглед</a>
+                                    <div class="product-content-footer">
+                                        <a asp-action="ProductDetails" asp-route-id="@item.Id"
+                                           asp-route-type="@Model.Accordion.Type" class="btn btn-main btn-sm text-nowrap">Преглед</a>
+                                    </div>
                                 </div>
                             </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-products-found">
+                            <h3>Няма подобни продукти</h3>
+                            <p>Към момента не откриваме други артикули със сходни характеристики.</p>
+                            <p>Разгледайте останалите продукти в същата категория или се свържете с нас за съдействие.</p>
                         </div>
                     }
                 </div>
