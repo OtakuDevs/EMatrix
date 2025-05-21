@@ -1,55 +1,113 @@
-
 <link rel="stylesheet" href="~/css/inquiry-partial-customization.css" asp-append-version="true"/>
 
+<!-- Tabs -->
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="generalInquiry-tab" data-bs-toggle="tab" href="#generalInquiry" role="tab"
+           aria-controls="generalInquiry" aria-selected="true">Запитване от общо естество</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" id="productInquiry-tab" data-bs-toggle="tab" href="#productInquiry" role="tab"
+           aria-controls="productInquiry" aria-selected="false">Запитване за продукт</a>
+    </li>
+</ul>
 
-<div class="inquiryContainer">
-    <h2 class="text-center">Запитване за продукт</h2>
-    <div class="inquiryWrapper">
-        <div class="mb-3">
-            <label for="inquiryReason" class="form-label">Причина за запитването</label>
-            <select class="form-select" id="inquiryReason" name="inquiryReason" required>
-                <option value="" selected disabled>Изберете причина</option>
-                <option value="availability">Наличност на продукт</option>
-                <option value="compatibility">Съвместимост или технически въпроси</option>
-                <option value="price">Цена или оферта</option>
-                <option value="delivery">Доставка и срокове</option>
-                <option value="customOrder">Поръчка на нестандартен артикул</option>
-                <option value="other">Друго</option>
-            </select>
-        </div>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="generalInquiry" role="tabpanel" aria-labelledby="generalInquiry-tab">
+        <div class="inquiryContainer">
+            <h2 class="text-center">Запитване от общо естество</h2>
+            <div class="inquiryWrapper">
+                <div class="mb-3">
+                    <label for="inquiryGeneralReason" class="form-label">Причина за запитването</label>
+                    <select class="form-select" id="inquiryGeneralReason" name="generalInquiryReason" required>
+                        <option value="" selected disabled>Изберете причина</option>
+                        <option value="question">Общ въпрос</option>
+                        <option value="partnership">Партньорство или сътрудничество</option>
+                        <option value="support">Техническа поддръжка</option>
+                        <option value="feedback">Обратна връзка или предложение</option>
+                        <option value="return">Връщане на продукт</option>
+                        <option value="damaged">Рекламация / Повреден продукт</option>
+                        <option value="complaint">Сигнал или оплакване</option>
+                        <option value="other">Друго</option>
+                    </select>
+                </div>
 
-        <div class="data-row">
-            <div class="mb-3">
-                <label for="name" class="form-label">Вашето име*</label>
-                <input id="name" class="form-control" placeholder="Собствено Фамилно" required/>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Вашият Email*</label>
-                <input id="email" class="form-control" placeholder="Собствено Фамилно" required/>
+                <div class="data-row">
+                    <div class="mb-3 w-50">
+                        <label for="nameG" class="form-label">Вашето име*</label>
+                        <input id="nameG" class="form-control" placeholder="Собствено Фамилно" required/>
+                    </div>
+                    <div class="mb-3 w-50">
+                        <label for="emailG" class="form-label">Вашият Email*</label>
+                        <input id="emailG" class="form-control" placeholder="Собствено Фамилно" required/>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Относно</label>
+                    <input id="title" class="form-control" placeholder="Тема на запитването (напр. Срок на доставка)"
+                    />
+                </div>
+                <div class="mb-3">
+                    <label for="infoG" class="form-label">Допълнителна информация</label>
+                    <textarea id="infoG" class="form-control" placeholder="Допълнителна информация/коментар"></textarea>
+                </div>
+                <label>
+                    <input type="checkbox" name="gdpr-consent" value="1" aria-invalid="false">
+                    <span>Давам съгласие личните ми данни да бъдат използвани за целите на запитването</span>
+                </label>
             </div>
         </div>
-        <div class="data-row">
-            <div class="mb-3">
-                <label for="number" class="form-label">Телефон*</label>
-                <input id="number" class="form-control" placeholder="+359 XXX XXX XXX" required/>
+    </div>
+    <div class="tab-pane fade" id="productInquiry" role="tabpanel" aria-labelledby="productInquiry-tab">
+        <div class="inquiryContainer">
+            <h2 class="text-center">Запитване за продукт</h2>
+            <div class="inquiryWrapper">
+                <div class="mb-3">
+                    <label for="inquiryReason" class="form-label">Причина за запитването</label>
+                    <select class="form-select" id="inquiryReason" name="inquiryReason" required>
+                        <option value="" selected disabled>Изберете причина</option>
+                        <option value="availability">Наличност на продукт</option>
+                        <option value="compatibility">Съвместимост или технически въпроси</option>
+                        <option value="price">Цена или оферта</option>
+                        <option value="delivery">Доставка и срокове</option>
+                        <option value="customOrder">Поръчка на нестандартен артикул</option>
+                        <option value="other">Друго</option>
+                    </select>
+                </div>
+
+                <div class="data-row">
+                    <div class="mb-3 w-50">
+                        <label for="name" class="form-label">Вашето име*</label>
+                        <input id="name" class="form-control" placeholder="Собствено Фамилно" required/>
+                    </div>
+                    <div class="mb-3 w-50">
+                        <label for="email" class="form-label">Вашият Email*</label>
+                        <input id="email" class="form-control" placeholder="Собствено Фамилно" required/>
+                    </div>
+                </div>
+                <div class="data-row">
+                    <div class="mb-3 w-50">
+                        <label for="number" class="form-label">Телефон*</label>
+                        <input id="number" class="form-control" placeholder="+359 XXX XXX XXX" required/>
+                    </div>
+                    <div class="mb-3 w-50">
+                        <label for="company" class="form-label">Фирма</label>
+                        <input id="company" class="form-control" placeholder="Име на фирма"/>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="product" class="form-label">Име на продукта</label>
+                    <input id="product" class="form-control"/>
+                </div>
+                <div class="mb-3">
+                    <label for="info" class="form-label">Допълнителна информация</label>
+                    <textarea id="info" class="form-control" placeholder="Допълнителна информация/коментар"></textarea>
+                </div>
+                <label>
+                    <input type="checkbox" name="gdpr-consent" value="1" aria-invalid="false">
+                    <span>Давам съгласие личните ми данни да бъдат използвани за целите на запитването</span>
+                </label>
             </div>
-            <div class="mb-3">
-                <label for="company" class="form-label">Фирма</label>
-                <input id="company" class="form-control" placeholder="Име на фирма"/>
-            </div>
         </div>
-        <div class="mb-3">
-            <label for="product" class="form-label">Име на продукта</label>
-            <input id="product" class="form-control"/>
-        </div>
-        <div class="mb-3">
-            <label for="info" class="form-label">Допълнителна информация</label>
-            <textarea id="info" class="form-control" placeholder="Допълнителна информация/коментар"></textarea>
-        </div>
-        <label>
-            <input type="checkbox" name="gdpr-consent" value="1" aria-invalid="false">
-            <span>Давам съгласие личните ми данни да бъдат използвани за целите на запитването</span>
-        </label>
     </div>
 </div>
-
