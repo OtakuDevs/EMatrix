@@ -34,11 +34,11 @@
 
                 <div class="data-row">
                     <div class="mb-3 w-50">
-                        <label for="nameG" class="form-label">Вашето име*</label>
+                        <label for="nameG" class="form-label">Вашето име<span>*</span></label>
                         <input id="nameG" class="form-control" placeholder="Собствено Фамилно" required/>
                     </div>
                     <div class="mb-3 w-50">
-                        <label for="emailG" class="form-label">Вашият Email*</label>
+                        <label for="emailG" class="form-label">Вашият Email<span>*</span></label>
                         <input id="emailG" class="form-control" placeholder="Собствено Фамилно" required/>
                     </div>
                 </div>
@@ -51,10 +51,13 @@
                     <label for="infoG" class="form-label">Допълнителна информация</label>
                     <textarea id="infoG" class="form-control" placeholder="Допълнителна информация/коментар"></textarea>
                 </div>
-                <label>
-                    <input type="checkbox" name="gdpr-consent" value="1" aria-invalid="false">
-                    <span>Давам съгласие личните ми данни да бъдат използвани за целите на запитването</span>
-                </label>
+                <div class="d-flex flex-row justify-content-between">
+                    <label>
+                        <input type="checkbox" name="gdpr-consent" value="1" aria-invalid="false">
+                        <span class="agreement">Давам съгласие личните ми данни да бъдат използвани за целите на запитването</span>
+                    </label>
+                    <button class="btn btn-main text-nowrap">Запитване</button>
+                </div>
             </div>
         </div>
     </div>
@@ -70,6 +73,7 @@
                         <option value="compatibility">Съвместимост или технически въпроси</option>
                         <option value="price">Цена или оферта</option>
                         <option value="delivery">Доставка и срокове</option>
+                        <option value="exchange">Замяна на закупена стока</option>
                         <option value="customOrder">Поръчка на нестандартен артикул</option>
                         <option value="other">Друго</option>
                     </select>
@@ -77,17 +81,17 @@
 
                 <div class="data-row">
                     <div class="mb-3 w-50">
-                        <label for="name" class="form-label">Вашето име*</label>
+                        <label for="name" class="form-label">Вашето име<span>*</span></label>
                         <input id="name" class="form-control" placeholder="Собствено Фамилно" required/>
                     </div>
                     <div class="mb-3 w-50">
-                        <label for="email" class="form-label">Вашият Email*</label>
+                        <label for="email" class="form-label">Вашият Email<span>*</span></label>
                         <input id="email" class="form-control" placeholder="Собствено Фамилно" required/>
                     </div>
                 </div>
                 <div class="data-row">
                     <div class="mb-3 w-50">
-                        <label for="number" class="form-label">Телефон*</label>
+                        <label for="number" class="form-label">Телефон<span>*</span></label>
                         <input id="number" class="form-control" placeholder="+359 XXX XXX XXX" required/>
                     </div>
                     <div class="mb-3 w-50">
@@ -103,10 +107,13 @@
                     <label for="info" class="form-label">Допълнителна информация</label>
                     <textarea id="info" class="form-control" placeholder="Допълнителна информация/коментар"></textarea>
                 </div>
-                <label>
-                    <input type="checkbox" name="gdpr-consent" value="1" aria-invalid="false">
-                    <span>Давам съгласие личните ми данни да бъдат използвани за целите на запитването</span>
-                </label>
+                <div class="d-flex flex-row justify-content-between">
+                    <label>
+                        <input type="checkbox" name="gdpr-consent" value="1" aria-invalid="false">
+                        <span class="agreement">Давам съгласие личните ми данни да бъдат използвани за целите на запитването</span>
+                    </label>
+                    <button class="btn btn-main text-nowrap">Запитване</button>
+                </div>
             </div>
         </div>
     </div>

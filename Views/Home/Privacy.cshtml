@@ -1,8 +1,134 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+﻿<link rel="stylesheet" href="~/css/privacy-customization.css" asp-append-version="true"/>
+
+@{
+    ViewData["Title"] = "Условия за ползване";
 }
-<h1>@ViewData["Title"]</h1>
+<div class="container-fluid mt-3 privacy-container">
+    <ul class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
+        <span><i class="bi bi-chevron-right"></i></span>
+        <li><a href="@Url.Action("Privacy", "Home")">Общи условия</a></li>
+    </ul>
+    <div class="privacy-body">
+        <div class="list-quick-links">
+            <ul>
+                <li><a href="">placeholder link</a></li>
+                <li><a href="">placeholder link</a></li>
+                <li><a href="">placeholder link</a></li>
+                <li><a href="">placeholder link</a></li>
+                <li><a href="">placeholder link</a></li>
+                <li><a href="">placeholder link</a></li>
+                <li><a href="">placeholder link</a></li>
+                <li><a href="">placeholder link</a></li>
+                <li><a href="">placeholder link</a></li>
+                <li><a href="">placeholder link</a></li>
+                <li><a href="">placeholder link</a></li>
+            </ul>
+        </div>
+        <div class="content-table-wrapper">
+            <h2>Категории</h2>
+            <ul class="cards-wrapper">
+                <li><a class="content-card" href="#first">
+                        <div class="icon-container">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <p>Общи условия</p>
+                    </a></li>
+                <li><a class="content-card" href="#" data-partial="PrivacyPartials/_InquiryPartial">
+                        <div class="icon-container">
+                            <i class="bi bi-question-circle"></i>
+                        </div>
+                        <p>Запитвания</p>
+                    </a></li>
+                <li><a class="content-card" href="#first">
+                        <div class="icon-container">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <p>Консултация</p>
+                    </a></li>
+                <li><a class="content-card" href="#second">
+                        <div class="icon-container">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+                        <p>Поръчки и плащания</p>
+                    </a></li>
+                <li><a class="content-card" href="#third">
+                        <div class="icon-container">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <p>Доставка с куриер</p>
+                    </a></li>
+                <li><a class="content-card" href="#" data-partial="PrivacyPartials/_OrderCancellationPartial">
+                        <div class="icon-container">
+                            <i class="bi bi-x-circle"></i>
+                        </div>
+                        <p>Отказ от поръчка</p>
+                    </a></li>
+                <li><a class="content-card" href="#" data-partial="PrivacyPartials/_WarrantyAndClaimsPartial">
+                        <div class="icon-container">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <p>Гаранция и рекламация</p>
+                    </a></li>
+                <li><a class="content-card" href="#" data-partial="PrivacyPartials/_PrivacyPolicyPartial">
+                        <div class="icon-container">
+                            <i class="bi bi-lock"></i>
+                        </div>
+                        <p>Политика на личните данни</p>
+                    </a></li>
+            </ul>
+            <hr/>
+            <div id="partial-container">
+                <!-- Loaded partial will appear here -->
+            </div>
 
-<p>Use this page to detail your site's privacy policy.</p>
+        </div>
+    </div>
+</div>
 
-@await Html.PartialAsync("_InquiryPartial")
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cards = document.querySelectorAll(".content-card");
+
+            cards.forEach(card => {
+                card.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    const partialName = card.getAttribute("data-partial");
+                    if (!partialName) return;
+
+                    try {
+                        const response = await fetch(`/Home/LoadPartial?partialName=${partialName}`);
+                        const html = await response.text();
+                        const partialContainer = document.getElementById("partial-container");
+                        partialContainer.innerHTML = html;
+                        partialContainer.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+                    } catch (error) {
+                        console.error("Error loading partial:", error);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        async function loadPartial() {
+            const partialName = "PrivacyPartials/_InquiryPartial";
+            try {
+                const response = await fetch(`/Home/LoadPartial?partialName=${encodeURIComponent(partialName)}`);
+                if (!response.ok) throw new Error("Failed to load partial: " + response.statusText);
+
+                const html = await response.text();
+                const partialContainer = document.getElementById("partial-container");
+
+                if (partialContainer) {
+                    partialContainer.innerHTML = html;
+                    partialContainer.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+                }
+            } catch (error) {
+                console.error("Error loading partial:", error);
+            }
+}
+
+    </script>
+}
+

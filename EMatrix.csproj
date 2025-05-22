@@ -89,4 +89,8 @@
       <Folder Include="wwwroot\images\menu-categories\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Shared\PrivacyPartials\_InquiryPartial.cshtml" />
+    </ItemGroup>
+
 </Project>

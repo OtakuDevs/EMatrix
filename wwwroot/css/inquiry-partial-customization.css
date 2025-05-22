@@ -1,11 +1,13 @@
 
 .inquiryContainer {
-    border: 1px solid var(--font-color);
     width: 70vw;
     margin: auto;
     padding: 2rem;
-    border-radius: var(--border-radius-md);
     color: var(--font-color);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-md);
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: rgba(0, 0, 0, 0.16) 0 3px 6px, rgba(0, 0, 0, 0.23) 0 3px 6px;
 }
 
 .inquiryWrapper {
@@ -20,8 +22,17 @@
     gap: 1rem;
 }
 
-.textarea {
-    min-height: 100px;
+textarea {
+    min-height: 160px !important;
+}
+
+label > span {
+    color: #9a0202;
+}
+
+.agreement {
+    color: var(--font-color);
+    font-weight: 500;
 }
 
 /* Base tab styles */

@@ -27,6 +27,13 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult LoadPartial(string partialName)
+    {
+        if (string.IsNullOrWhiteSpace(partialName)) return BadRequest();
+
+        return PartialView(partialName);
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error(int statusCode, string? message)
     {
