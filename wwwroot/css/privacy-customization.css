@@ -173,3 +173,16 @@
         text-decoration-color: var(--color-highlight);
     }
 }
+
+.terms-and-conditions-title {
+    padding: 0.75rem 1rem;
+    border-left: 4px solid var(--color-highlight);
+    background-color: rgba(139, 69, 19, 0.1);
+    margin-bottom: 0.5rem;
+}
+
+.lower-alpha-li {
+    list-style: lower-alpha !important;
+    font-style: normal !important;
+    font-weight: 400;
+}
