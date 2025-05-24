@@ -11,22 +11,29 @@
     </ul>
     <div class="privacy-body">
         <div class="list-quick-links">
+            <h2 class="section-title">Важни теми</h2>
             <ul>
-                <li><a href="">placeholder link</a></li>
-                <li><a href="">placeholder link</a></li>
-                <li><a href="">placeholder link</a></li>
-                <li><a href="">placeholder link</a></li>
-                <li><a href="">placeholder link</a></li>
-                <li><a href="">placeholder link</a></li>
-                <li><a href="">placeholder link</a></li>
-                <li><a href="">placeholder link</a></li>
-                <li><a href="">placeholder link</a></li>
-                <li><a href="">placeholder link</a></li>
-                <li><a href="">placeholder link</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_TermsAndConditionsPartial">Общи условия</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_InquiryPartial" data-target="generalInquiry">Запитване от общо естество</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_InquiryPartial" data-target="productInquiry">Запитване за продукт</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_ConsultationPartial">Консултация</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_OrderAndPaymentPartial" data-target="q1">Процедура по извършване на поръчка</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_OrderAndPaymentPartial" data-target="q3">Методи за плащания при онлайн поръчки</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_OrderAndPaymentPartial" data-target="q7">Опция „Вземи от магазин“ – условия и начин на плащане</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_OrderAndPaymentPartial" data-target="q8">Издаване и корекция на фактури</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_ShippingCourierPartial" data-target="q3">Куриерски услуги</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_ShippingCourierPartial" data-target="q5">Статус на поръчка</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_ShippingCourierPartial" data-target="q6">Проследяване на пратка</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_OrderCancellationPartial" data-target="q3">Упражняване право на отказ от поръчка</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_OrderCancellationPartial" data-target="q4">Процедура за възстановяване на плащания при отказ от договора</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_WarrantyAndClaimsPartial" data-target="q1">Замяна на закупена стока</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_WarrantyAndClaimsPartial" data-target="q3">Процедура за подаване на рекламация</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_WarrantyAndClaimsPartial" data-target="q5">Гаранционна карта</a></li>
+                <li><a href="#" data-partial="PrivacyPartials/_PrivacyPolicyPartial">Политика на личните данни</a></li>
             </ul>
         </div>
         <div class="content-table-wrapper">
-            <h2>Категории</h2>
+            <h2 class="section-title">Всички условия и политики</h2>
             <ul class="cards-wrapper">
                 <li><a class="content-card" href="#" data-partial="PrivacyPartials/_TermsAndConditionsPartial">
                         <div class="icon-container">
@@ -77,7 +84,6 @@
                         <p>Политика на личните данни</p>
                     </a></li>
             </ul>
-            <hr/>
             <div id="partial-container">
                 <!-- Loaded partial will appear here -->
             </div>
@@ -89,26 +95,54 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const cards = document.querySelectorAll(".content-card");
-
-            cards.forEach(card => {
-                card.addEventListener("click", async (e) => {
+            document.querySelectorAll('[data-partial]').forEach(el => {
+                el.addEventListener("click", function (e) {
                     e.preventDefault();
-                    const partialName = card.getAttribute("data-partial");
-                    if (!partialName) return;
-
-                    try {
-                        const response = await fetch(`/Home/LoadPartial?partialName=${partialName}`);
-                        const html = await response.text();
-                        const partialContainer = document.getElementById("partial-container");
-                        partialContainer.innerHTML = html;
-                        partialContainer.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-                    } catch (error) {
-                        console.error("Error loading partial:", error);
-                    }
+                    loadPartialFromElement(this);
                 });
             });
         });
+
+        async function loadPartialFromElement(element) {
+            const partialName = element.getAttribute("data-partial");
+            const targetSelector = element.getAttribute("data-target"); // e.g., "#q1"
+
+            if (!partialName) return;
+
+            try {
+                const response = await fetch(`/Home/LoadPartial?partialName=${encodeURIComponent(partialName)}`);
+                const html = await response.text();
+                const partialContainer = document.getElementById("partial-container");
+                partialContainer.innerHTML = html;
+
+                // Smooth scroll into view
+                partialContainer.scrollIntoView({behavior: "smooth", block: "start"});
+
+                // Optional: wait for a moment to ensure DOM is updated
+                setTimeout(() => {
+                    if(targetSelector === 'productInquiry') {
+                        document.getElementById('generalInquiry-tab').classList.remove('active');
+                        document.getElementById('generalInquiry').classList.remove('show');
+                        document.getElementById('generalInquiry').classList.remove('active');
+                        document.getElementById('productInquiry-tab').classList.add('active');
+                        document.getElementById('productInquiry').classList.add('show');
+                        document.getElementById('productInquiry').classList.add('active');
+                    }
+                    else if (targetSelector) {
+                        const collapseEl = partialContainer.querySelector(targetSelector);
+                        if (collapseEl && typeof bootstrap !== "undefined") {
+                            const bsCollapse = new bootstrap.Collapse(collapseEl, {toggle: false});
+                            bsCollapse.show();
+                        } else if (collapseEl) {
+                            // Fallback for non-Bootstrap collapse (just add show class)
+                            collapseEl.classList.add("show");
+                        }
+                    }
+                }, 100); // slight delay to ensure content is fully injected
+            } catch (error) {
+                console.error("Error loading partial:", error);
+            }
+        }
     </script>
     <script>
         async function loadPartial() {
@@ -122,12 +156,12 @@
 
                 if (partialContainer) {
                     partialContainer.innerHTML = html;
-                    partialContainer.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+                    partialContainer.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
                 }
             } catch (error) {
                 console.error("Error loading partial:", error);
             }
-}
+        }
 
     </script>
 }

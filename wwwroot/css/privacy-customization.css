@@ -36,12 +36,42 @@
 .privacy-body {
     display: flex;
     flex-direction: row;
-    gap: 1rem;
+    gap: 2rem;
 }
 
 .list-quick-links {
-    min-width: 330px;
+    max-width: 330px;
     flex-shrink: 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.section-title {
+    padding-bottom: 0.5rem;
+    color: var(--font-color);
+    font-size: 24px;
+    margin: 0;
+}
+
+.list-quick-links ul {
+    border-top: 1px solid rgba(0, 0, 0, 0.25);
+    padding: 0.25rem 0.75rem 0 0;
+}
+
+.list-quick-links ul li {
+    color: var(--font-color);
+    margin-bottom: 0.25rem;
+}
+
+.list-quick-links ul li a {
+    color: var(--font-color);
+    font-weight: 400;
+    text-decoration: underline;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.list-quick-links ul li a:hover {
+    color: var(--color-highlight);
+    text-decoration-color: var(--color-highlight);
 }
 
 .content-table-wrapper {
