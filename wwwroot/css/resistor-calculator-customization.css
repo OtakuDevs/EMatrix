@@ -1,37 +1,40 @@
 
 .nav-tabs {
-    border-bottom: 2px solid #dee2e6;
+    border-bottom: none;
 }
 
 .nav-tabs .tab-link {
-    background-color: #ffffff;
-    border: 1px solid #dee2e6;
+    background-color: rgb(184, 182, 166);
+    border: 1px solid rgba(0, 0, 0, 0.125);
     border-bottom: none;
-    color: #495057;
+    color: var(--font-color);
     padding: 10px 16px;
     margin-right: 4px;
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
+    box-sizing: border-box;
 }
 
 .nav-tabs .tab-link.active {
-    background-color: #e9ecef; /* light gray */
-    color: #212529;
+    background-color: #c2c0b3;
+    color: var(--font-color);
     font-weight: 500;
-    border-color: #dee2e6 #dee2e6 #f8f9fa;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-bottom: none;
 }
 
 .tab-content {
-    background-color: #ffffff;
-    border: 1px solid #dee2e6;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: var(--border-radius-md);
     border-top: none;
-    padding: 16px;
-    border-bottom-left-radius: 0.5rem;
-    border-bottom-right-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
 
 .table {
     background-color: rgba(0, 0, 0, .01);
+    border-color: var(--color-opacity-3) !important;
 }
 
 .table th,
@@ -58,7 +61,7 @@ button {
     width: 100%;
     height: 100%;
     padding: 4px;
-    border: 1px solid #ced4da;
+    border: var(--color-opacity-3) !important;
     border-radius: 0.25rem;
     background-color: transparent;
     color: #212529;
