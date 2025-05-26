@@ -50,7 +50,7 @@ public class ProductsService : IProductsService
         //Base query
         var query = _context.InventoryItems
             .Include(s => s.SubCategory)
-            .Where(s => s.SubCategoryId == id)
+            .Where(s => s.SubCategoryId == id && !s.Id.StartsWith("99"))
             .OrderBy(i => i.NameAlias)
             .AsQueryable();
 
@@ -123,6 +123,7 @@ public class ProductsService : IProductsService
         var query = _context.InventoryItems
             .Include(s => s.SubCategory)
             .Include(c => c.Category)
+            .Where(s => !s.Id.StartsWith("99"))
             .AsQueryable();
 
         var model = new ProductsSearchViewModel();

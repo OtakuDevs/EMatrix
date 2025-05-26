@@ -63,6 +63,10 @@ public class ProductsController : Controller
 
     public async Task<IActionResult> ProductDetails(string id)
     {
+        if (id.StartsWith("99"))
+        {
+            return RedirectToAction("ProductsPrimaryView");
+        }
         try
         {
             var model = await _productsService.GetDetailsViewAsync(id);
