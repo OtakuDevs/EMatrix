@@ -148,6 +148,7 @@ public class ProductsService : IProductsService
                         {
                             return new[] { child.SubGroupId };
                         }
+
                         if (child.SubGroupSetId != null)
                         {
                             return child.SubGroupSet!.Items.Select(i => i.SubGroupId);
@@ -248,9 +249,12 @@ public class ProductsService : IProductsService
                 Id = i.Id,
                 SubCategory = i.SubCategory.Alias,
                 NameAlias = i.NameAlias,
-                Icon =  _context.MenuOptionChildren
-                    .FirstOrDefault(c => c.SubGroupId != null && c.SubGroupId == i.SubCategoryId
-                    || c.SubGroupSetId != null && c.SubGroupSet.Items.Any(s => s.SubGroupId == i.SubCategoryId)).Icon,
+                Icon = _context.MenuOptionChildren
+                    .FirstOrDefault(c =>
+                        (c.SubGroupId != null && c.SubGroupId == i.SubCategoryId) ||
+                        (c.SubGroupSetId != null && c.SubGroupSet != null && c.SubGroupSet.Items != null &&
+                         c.SubGroupSet.Items.Any(s => s.SubGroupId == i.SubCategoryId))
+                    )?.Icon ?? "/images/default/placeholder.png",
                 Price = i.Price,
                 Availability = i.Quantity > 0
             })
@@ -270,7 +274,7 @@ public class ProductsService : IProductsService
             {
                 Id = item.Id,
                 Name = item.NameAlias,
-                Description = item.DescriptionAlias.Split(';', StringSplitOptions.RemoveEmptyEntries)          // "k : v" pieces
+                Description = item.DescriptionAlias.Split(';', StringSplitOptions.RemoveEmptyEntries) // "k : v" pieces
                     .Select(piece =>
                     {
                         var parts = piece.Split(':', 2, StringSplitOptions.TrimEntries); // split on FIRST ':'
@@ -286,6 +290,7 @@ public class ProductsService : IProductsService
             };
             return modelDefault;
         }
+
         var option = await GetMenuOptionAsync(menuOptionChild.MenuOption.Id);
         var accordion = GetAccordionForMenuOptionAsync(option, "Option");
 
@@ -293,7 +298,7 @@ public class ProductsService : IProductsService
         {
             Id = item.Id,
             Name = item.NameAlias,
-            Description = item.DescriptionAlias.Split(';', StringSplitOptions.RemoveEmptyEntries)          // "k : v" pieces
+            Description = item.DescriptionAlias.Split(';', StringSplitOptions.RemoveEmptyEntries) // "k : v" pieces
                 .Select(piece =>
                 {
                     var parts = piece.Split(':', 2, StringSplitOptions.TrimEntries); // split on FIRST ':'
@@ -367,7 +372,7 @@ public class ProductsService : IProductsService
         var model = new AccordionViewModel()
         {
             Type = type,
-            Options = new List<AccordionOptionViewModel>(){ accOption }
+            Options = new List<AccordionOptionViewModel>() { accOption }
         };
         return model;
     }

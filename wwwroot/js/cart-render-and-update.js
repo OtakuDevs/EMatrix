@@ -3,14 +3,14 @@ let cart = JSON.parse(localStorage.getItem('cart')) || [];
 updateCartUI(); // render on load if there are items
 
 function addProductToCart(button) {
-    const card = button.closest('.menu-card');
+    const card = button.closest('.product-card');
 
     const idText = card.querySelector('.product-code')?.textContent.trim();
     const id = idText?.split(":")[1]?.trim();
-    const name = card.querySelector('.menu-title')?.textContent.trim();
-    const subgroup = card.querySelector('.item-subcategory')?.textContent.trim();
+    const name = card.querySelector('.product-title')?.textContent.trim();
+    const subgroup = card.querySelector('.product-subcategory')?.textContent.trim();
     const icon = card.querySelector('img').getAttribute('src');
-    const priceText = card.querySelector('.price')?.textContent.trim();
+    const priceText = card.querySelector('.product-price')?.textContent.trim();
     const price = parseFloat(priceText?.split(":")[1]?.replace("лв.", "").trim().replace(',', '.')) || 0;
 
     // Check if product already in cart
