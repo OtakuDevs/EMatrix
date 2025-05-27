@@ -1,0 +1,44 @@
+@model EMatrix.ViewModels.Cart.CartViewModel
+<div id="cart-preview-container"></div>
+
+<h2>Преглед на количката</h2>
+
+@if (!Model.Products.Any())
+{
+    <p>Количката ви е празна.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Продукт</th>
+            <th>Количество</th>
+            <th>Цена</th>
+            <th>Общо</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>
+                    <img src="@item.Icon" alt="@item.Name" width="40" height="40" style="object-fit:cover;" />
+                    @item.Name
+                </td>
+                <td>@item.Qty</td>
+                <td>@item.Price.ToString("F2") лв.</td>
+                <td>@(item.Price * item.Qty).ToString("F2") лв.</td>
+            </tr>
+        }
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="3" class="text-end"><strong>Общо:</strong></td>
+            <td>
+                @Model.Products.Sum(i => i.Price * i.Qty).ToString("F2") лв.
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+}

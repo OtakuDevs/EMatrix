@@ -22,10 +22,11 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Privacy()
+    public IActionResult Privacy(string[]? args)
     {
         return View();
     }
+
 
     public IActionResult LoadPartial(string partialName)
     {

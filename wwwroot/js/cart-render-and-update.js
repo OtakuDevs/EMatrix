@@ -126,6 +126,33 @@ function updateCartUI() {
     // Always show footer
     const footer = document.createElement("div");
     footer.classList.add("cart-content-footer");
-    footer.innerHTML = `Общо: <span id="cart-footer-total">${total.toFixed(2)} лв.</span>`;
+
+// Use flex to align total and button
+    footer.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <a id="review-btn" class="btn btn-main btn-sm text-nowrap">Преглед</a>
+        <div>Общо: <span id="cart-footer-total">${total.toFixed(2)} лв.</span></div>
+    </div>
+`;
+
     cartContent.appendChild(footer);
 }
+
+document.getElementById("review-btn").addEventListener("click", () => {
+    fetch('/Cart/ReceiveCartContent', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cart)
+    })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = response.url.replace(/ReceiveCartContent$/, "CartPreview");
+            } else {
+                return response.text().then(text => console.error("Response:", text));
+            }
+        })
+        .catch(error => console.error("Error:", error));
+});
+

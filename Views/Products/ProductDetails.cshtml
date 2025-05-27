@@ -93,6 +93,13 @@
                             <div class="d-flex flex-column">
                                 <h3 class="product-title">@Model.Name</h3>
                                 <p class="product-code text-muted">Код: @Model.Id</p>
+                                @if (!Model.Availability)
+                                {
+                                    <p class="text-danger">
+                                            Посочената цена подлежи на потвърждение спрямо текущите условия на
+                                            доставчика. За актуална информация и поръчка, моля направете запитване.
+                                    </p>
+                                }
                             </div>
                             <p class="product-price">@Model.Price.ToString("0.00") лв.</p>
                         </div>
@@ -134,7 +141,7 @@
                         }
                         else
                         {
-                            <button class="btn btn-main btn-sm text-nowrap">Запитване</button>
+                            <a class="btn btn-main btn-sm text-nowrap" href="#">Запитване</a>
                         }
                     </div>
                 </div>
@@ -170,7 +177,8 @@
 
                                     <div class="product-content-footer">
                                         <a asp-action="ProductDetails" asp-route-id="@item.Id"
-                                           asp-route-type="@Model.Accordion.Type" class="btn btn-main btn-sm text-nowrap">Преглед</a>
+                                           asp-route-type="@Model.Accordion.Type"
+                                           class="btn btn-main btn-sm text-nowrap">Преглед</a>
                                     </div>
                                 </div>
                             </div>
@@ -181,7 +189,8 @@
                         <div class="no-products-found">
                             <h3>Няма подобни продукти</h3>
                             <p>Към момента не откриваме други артикули със сходни характеристики.</p>
-                            <p>Разгледайте останалите продукти в същата категория или се свържете с нас за съдействие.</p>
+                            <p>Разгледайте останалите продукти в същата категория или се свържете с нас за
+                                съдействие.</p>
                         </div>
                     }
                 </div>
@@ -193,5 +202,4 @@
 @section Scripts
 {
     <script src="~/js/cart-render-and-update.js" asp-append-version="true"></script>
-
 }

@@ -43,6 +43,7 @@ public class Program
         builder.Services.AddScoped<IManageInventoryService, ManageInventoryService>();
         builder.Services.AddScoped<IToolsService, ToolsService>();
         builder.Services.AddScoped<IProductsService, ProductsService>();
+        builder.Services.AddScoped<ICartService, CartService>();
 
         var app = builder.Build();
 
