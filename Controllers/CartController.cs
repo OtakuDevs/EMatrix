@@ -18,14 +18,15 @@ public class CartController : Controller
     public async Task<IActionResult> ReceiveCartContent([FromBody] List<CartProductViewModel> cart)
     {
         var model = await _cartService.GetCartAsync(cart);
-        TempData["CartModel"] = JsonConvert.SerializeObject(model); // Store in TempData
+        HttpContext.Session.SetString("CartModel", JsonConvert.SerializeObject(model));
         return Ok();
     }
 
     [HttpGet]
     public IActionResult CartPreview()
     {
-        if (TempData["CartModel"] is string cartJson)
+        var cartJson = HttpContext.Session.GetString("CartModel");
+        if (!string.IsNullOrEmpty(cartJson))
         {
             var model = JsonConvert.DeserializeObject<CartViewModel>(cartJson);
             return View("CartPreview", model);

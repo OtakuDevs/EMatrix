@@ -1,44 +1,67 @@
 @model EMatrix.ViewModels.Cart.CartViewModel
-<div id="cart-preview-container"></div>
 
-<h2>Преглед на количката</h2>
+<link rel="stylesheet" href="~/css/cart-view-customization.css" asp-append-version="true"/>
 
-@if (!Model.Products.Any())
-{
-    <p>Количката ви е празна.</p>
+@{
+    ViewData["Title"] = "Количка";
 }
-else
-{
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Продукт</th>
-            <th>Количество</th>
-            <th>Цена</th>
-            <th>Общо</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.Products)
-        {
+
+
+<div class="container-fluid mt-3" id="cart-preview-container">
+    <ul class="breadcrumb">
+        <li><a href="@Url.Action("Index", "Home")">Начало</a></li>
+        <span><i class="bi bi-chevron-right"></i></span>
+        <li><a class="breadcrumb-item active" aria-current="page">Количка</a></li>
+    </ul>
+    <div class="cart-header">
+        <h3>Преглед на количката</h3>
+        <button class="btn btn-main btn-sm text-nowrap">Премахни всички</button>
+    </div>
+    <div class="cart-body">
+        <div class="cart-content">
+            @if (!Model.Products.Any())
+            {
+                <p>Количката ви е празна.</p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Продукт</th>
+                        <th>Количество</th>
+                        <th>Цена</th>
+                        <th>Общо</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Products)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@item.Icon" alt="@item.Name" width="40" height="40" style="object-fit:cover;"/>
+                                @item.Name
+                            </td>
+                            <td>@item.Qty</td>
+                            <td>@item.Price.ToString("F2") лв.</td>
+                            <td>@(item.Price * item.Qty).ToString("F2") лв.</td>
+                        </tr>
+                    }
+                    </tbody>
+
+                </table>
+            }
+        </div>
+        <div class="cart-total">
+            <tfoot>
             <tr>
+                <td colspan="3" class="text-end"><strong>Общо:</strong></td>
                 <td>
-                    <img src="@item.Icon" alt="@item.Name" width="40" height="40" style="object-fit:cover;" />
-                    @item.Name
+                    @Model.Products.Sum(i => i.Price * i.Qty).ToString("F2") лв.
                 </td>
-                <td>@item.Qty</td>
-                <td>@item.Price.ToString("F2") лв.</td>
-                <td>@(item.Price * item.Qty).ToString("F2") лв.</td>
             </tr>
-        }
-        </tbody>
-        <tfoot>
-        <tr>
-            <td colspan="3" class="text-end"><strong>Общо:</strong></td>
-            <td>
-                @Model.Products.Sum(i => i.Price * i.Qty).ToString("F2") лв.
-            </td>
-        </tr>
-        </tfoot>
-    </table>
-}
+            </tfoot>
+        </div>
+    </div>
+</div>
+

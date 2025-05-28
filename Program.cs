@@ -35,6 +35,9 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+
+        // ConfigureServices
+        builder.Services.AddSession();
         
         //Register Services
         builder.Services.AddScoped<IAdminPanelService, AdminPanelService>();
@@ -55,6 +58,7 @@ public class Program
             app.UseHsts();
         }
 
+        app.UseSession();
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 

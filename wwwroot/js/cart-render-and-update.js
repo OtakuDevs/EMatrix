@@ -1,5 +1,4 @@
 
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
 updateCartUI(); // render on load if there are items
 
 function addProductToCart(button) {
@@ -96,6 +95,7 @@ function updateCartUI() {
         cart.forEach(item => {
             total += item.price * item.qty;
             totalItems += item.qty;
+            item.icon = item.icon ? item.icon : "/images/default/placeholder.png";
 
             const li = document.createElement("li");
             li.innerHTML = `
@@ -130,7 +130,7 @@ function updateCartUI() {
 // Use flex to align total and button
     footer.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-        <a id="review-btn" class="btn btn-main btn-sm text-nowrap">Преглед</a>
+        <a id="review-btn" class="btn btn-main btn-sm text-nowrap" onclick="fetchCartAndPreview()">Към количка</a>
         <div>Общо: <span id="cart-footer-total">${total.toFixed(2)} лв.</span></div>
     </div>
 `;
@@ -138,21 +138,4 @@ function updateCartUI() {
     cartContent.appendChild(footer);
 }
 
-document.getElementById("review-btn").addEventListener("click", () => {
-    fetch('/Cart/ReceiveCartContent', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(cart)
-    })
-        .then(response => {
-            if (response.ok) {
-                window.location.href = response.url.replace(/ReceiveCartContent$/, "CartPreview");
-            } else {
-                return response.text().then(text => console.error("Response:", text));
-            }
-        })
-        .catch(error => console.error("Error:", error));
-});
 
