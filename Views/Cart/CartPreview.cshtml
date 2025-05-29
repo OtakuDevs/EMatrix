@@ -28,10 +28,12 @@
                 <table class="table">
                     <thead>
                     <tr>
+                        <th></th>
                         <th>Продукт</th>
+                        <th>Категория</th>
+                        <th>Описание</th>
                         <th>Количество</th>
                         <th>Цена</th>
-                        <th>Общо</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -40,11 +42,12 @@
                         <tr>
                             <td>
                                 <img src="@item.Icon" alt="@item.Name" width="40" height="40" style="object-fit:cover;"/>
-                                @item.Name
                             </td>
+                            <td>@item.Name</td>
+                            <td>Категория</td>
+                            <td>Описание</td>
                             <td>@item.Qty</td>
                             <td>@item.Price.ToString("F2") лв.</td>
-                            <td>@(item.Price * item.Qty).ToString("F2") лв.</td>
                         </tr>
                     }
                     </tbody>
