@@ -57,3 +57,42 @@
     grid-template-columns: 3fr 1fr;
     grid-gap: 3rem;
 }
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
+    color: var(--font-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.cart-table thead {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--color-highlight);
+}
+
+.cart-table th,
+.cart-table td {
+    padding: 7px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cart-table tbody tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.cart-table tbody tr:hover {
+    background-color: rgba(211, 84, 0, 0.08); /* subtle orange highlight on hover */
+}
+
+.cart-table img {
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    mix-blend-mode: multiply;
+    margin: auto;
+}

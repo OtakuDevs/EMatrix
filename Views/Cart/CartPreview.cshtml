@@ -25,13 +25,12 @@
             }
             else
             {
-                <table class="table">
+                <table class="cart-table">
                     <thead>
                     <tr>
                         <th></th>
                         <th>Продукт</th>
                         <th>Категория</th>
-                        <th>Описание</th>
                         <th>Количество</th>
                         <th>Цена</th>
                     </tr>
@@ -41,18 +40,17 @@
                     {
                         <tr>
                             <td>
-                                <img src="@item.Icon" alt="@item.Name" width="40" height="40" style="object-fit:cover;"/>
+                                <img src="@item.Icon" alt="@item.Name" />
                             </td>
                             <td>@item.Name</td>
-                            <td>Категория</td>
-                            <td>Описание</td>
+                            <td>@item.Subgroup</td>
                             <td>@item.Qty</td>
                             <td>@item.Price.ToString("F2") лв.</td>
                         </tr>
                     }
                     </tbody>
-
                 </table>
+
             }
         </div>
         <div class="cart-total">
