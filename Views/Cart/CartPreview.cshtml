@@ -4,8 +4,12 @@
 
 @{
     ViewData["Title"] = "Количка";
+    var total = Model.Products.Sum(p => p.Price * p.Qty);
+    var discount = total > 100 ? 10 : 0; // 10 лв discount on orders over 100
+    var shipping = 6.99m;
+    var tax = (total - discount + shipping) * 0.2m;
+    var grandTotal = total - discount + shipping + tax;
 }
-
 
 <div class="container-fluid mt-3" id="cart-preview-container">
     <ul class="breadcrumb">
@@ -13,10 +17,12 @@
         <span><i class="bi bi-chevron-right"></i></span>
         <li><a class="breadcrumb-item active" aria-current="page">Количка</a></li>
     </ul>
+
     <div class="cart-header">
         <h3>Преглед на количката</h3>
         <button class="btn btn-main btn-sm text-nowrap">Премахни всички</button>
     </div>
+
     <div class="cart-body">
         <div class="cart-content">
             @if (!Model.Products.Any())
@@ -27,42 +33,39 @@
             {
                 <table class="cart-table">
                     <thead>
-                    <tr>
-                        <th></th>
-                        <th>Продукт</th>
-                        <th>Категория</th>
-                        <th>Количество</th>
-                        <th>Цена</th>
-                    </tr>
+                        <tr>
+                            <th></th>
+                            <th>Продукт</th>
+                            <th>Категория</th>
+                            <th>Количество</th>
+                            <th>Цена</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @foreach (var item in Model.Products)
-                    {
-                        <tr>
-                            <td>
-                                <img src="@item.Icon" alt="@item.Name" />
-                            </td>
-                            <td>@item.Name</td>
-                            <td>@item.Subgroup</td>
-                            <td>@item.Qty</td>
-                            <td>@item.Price.ToString("F2") лв.</td>
-                        </tr>
-                    }
+                        @foreach (var item in Model.Products)
+                        {
+                            <tr>
+                                <td><img src="@item.Icon" alt="@item.Name" /></td>
+                                <td>@item.Name</td>
+                                <td>@item.Subgroup</td>
+                                <td>@item.Qty</td>
+                                <td>@item.Price.ToString("F2") лв.</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
-
             }
         </div>
-        <div class="cart-total">
-            <tfoot>
-            <tr>
-                <td colspan="3" class="text-end"><strong>Общо:</strong></td>
-                <td>
-                    @Model.Products.Sum(i => i.Price * i.Qty).ToString("F2") лв.
-                </td>
-            </tr>
-            </tfoot>
+
+        <div class="cart-summary">
+            <h4>Резюме</h4>
+            <div class="summary-line"><span>Междинна сума:</span> <span>@total.ToString("F2") лв.</span></div>
+            <div class="summary-line"><span>Отстъпка:</span> <span>-@discount.ToString("F2") лв.</span></div>
+            <div class="summary-line"><span>Доставка:</span> <span>@shipping.ToString("F2") лв.</span></div>
+            <div class="summary-line"><span>ДДС (20%):</span> <span>@tax.ToString("F2") лв.</span></div>
+            <hr />
+            <div class="summary-total"><strong>Обща сума:</strong> <strong>@grandTotal.ToString("F2") лв.</strong></div>
+            <button class="btn btn-success w-100 mt-3">Продължи към плащане</button>
         </div>
     </div>
 </div>
-

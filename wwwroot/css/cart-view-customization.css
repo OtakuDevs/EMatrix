@@ -33,38 +33,19 @@
     flex-direction: column;
 }
 
-.cart-header {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    padding: 0.5rem 1.25rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--font-color);
-    color: var(--font-color);
-
-    & > * {
-        margin: 0;
-        align-content: center;
-    }
-
-    & button {
-        margin-left: auto;
-    }
-}
-
+/* --- Layout --- */
 .cart-body {
     display: grid;
     grid-template-columns: 3fr 1fr;
-    grid-gap: 3rem;
+    gap: 2rem;
 }
 
+/* --- Table --- */
 .cart-table {
     width: 100%;
     border-collapse: collapse;
     margin: 24px 0;
-    font-family: 'Segoe UI', sans-serif;
     font-size: 16px;
-    color: var(--font-color);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -73,8 +54,7 @@
     color: var(--color-highlight);
 }
 
-.cart-table th,
-.cart-table td {
+.cart-table th, .cart-table td {
     padding: 7px 10px;
     border: 1px solid rgba(0, 0, 0, 0.15);
     text-align: center;
@@ -86,7 +66,7 @@
 }
 
 .cart-table tbody tr:hover {
-    background-color: rgba(211, 84, 0, 0.08); /* subtle orange highlight on hover */
+    background-color: rgba(211, 84, 0, 0.08);
 }
 
 .cart-table img {
@@ -94,5 +74,52 @@
     height: 75px;
     object-fit: cover;
     mix-blend-mode: multiply;
-    margin: auto;
+}
+
+/* --- Summary Panel --- */
+.cart-summary {
+    padding: 1.25rem;
+    font-size: 15px;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius-md);
+    box-shadow: rgba(0, 0, 0, 0.16) 0 3px 6px, rgba(0, 0, 0, 0.23) 0 3px 6px;
+}
+
+.cart-summary h4 {
+    margin-bottom: 1rem;
+    color: #222;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    color: #111;
+}
+
+/* --- Buttons --- */
+.btn-main {
+    background-color: #a25400;
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 0.25rem;
+}
+
+.btn-main:hover {
+    background-color: #cc6c00;
+}
+
+@media screen and (max-width: 768px) {
+    .cart-body {
+        grid-template-columns: 1fr;
+    }
 }
